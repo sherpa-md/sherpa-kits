@@ -1,0 +1,38 @@
+{
+  "catalog_version": "0.1.0",
+  "organization": "SherpaMD",
+  "domain": "sherpamd.org",
+  "updated_at": "2026-08-21T20:45:00-05:00",
+  "kits": [
+    {
+      "id": "core-fleet",
+      "title": "Core Fleet & Multi-Agent Coordination",
+      "domain": "fleet-ops",
+      "version": "0.1.0",
+      "path": "domains/core/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "hermes-llm-wiki",
+      "title": "Hermes LLM Wiki & Vault Architecture",
+      "domain": "fleet-knowledge",
+      "version": "0.1.0",
+      "path": "domains/hermes-llm-wiki/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "token-piggy-bank",
+      "title": "Token Piggy Bank — LLM Quota & Value Governor",
+      "domain": "fleet-operations",
+      "version": "1.0.0",
+      "path": "domains/token-piggy-bank/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    }
+  ]
+}

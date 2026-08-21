@@ -1,0 +1,36 @@
+# Secrets and Credentials
+*.env
+*.env.*
+*.key
+*.pem
+*.token
+*.secret
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+
+# Runtime and Temp
+__pycache__/
+*.py[cod]
+*$py.class
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+
+# Testing & Caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
