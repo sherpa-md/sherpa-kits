@@ -32,6 +32,10 @@ The active domain kits registered in this repository:
 | [`core-fleet`](./domains/core/SHERPA.md) | Fleet Infrastructure & Ops | `domains/core/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
 | [`hermes-llm-wiki`](./domains/hermes-llm-wiki/SHERPA.md) | Fleet Knowledge & Vault | `domains/hermes-llm-wiki/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
 | [`token-piggy-bank`](./domains/token-piggy-bank/SHERPA.md) | LLM Quota & Value Governor | `domains/token-piggy-bank/SHERPA.md` | `1.0.0` | `active` | `verified` | `public` |
+| [`bounded-agent-control-plane`](./domains/bounded-agent-control-plane/SHERPA.md) | Agent Security & Control Plane | `domains/bounded-agent-control-plane/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
+| [`ai-to-ai-bus`](./domains/ai-to-ai-bus/SHERPA.md) | Fleet Coordination & Messaging | `domains/ai-to-ai-bus/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
+| [`multi-llm-watchdog`](./domains/multi-llm-watchdog/SHERPA.md) | LLM Observability & Quota | `domains/multi-llm-watchdog/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
+| [`context-vault-efficiency`](./domains/context-vault-efficiency/SHERPA.md) | Memory Optimization & Tiering | `domains/context-vault-efficiency/SHERPA.md` | `0.1.0` | `active` | `verified` | `public` |
 
 ---
 
@@ -42,12 +46,26 @@ The active domain kits registered in this repository:
 ├── catalog.json                  # Machine-readable registry of all domain kits
 ├── validate.sh                   # Fast local schema and YAML validator
 ├── domains/                      # Domain kits container
+│   ├── ai-to-ai-bus/             # Inter-agent event bus & durable routing
+│   │   ├── README.md
+│   │   └── SHERPA.md
+│   ├── bounded-agent-control-plane/ # Safe MCP execution & parameter allowlists
+│   │   ├── README.md
+│   │   └── SHERPA.md
+│   ├── context-vault-efficiency/ # Knowledge anti-rot & model tiering
+│   │   ├── README.md
+│   │   └── SHERPA.md
 │   ├── core/                     # Core fleet coordination kit
 │   │   └── SHERPA.md
 │   ├── hermes-llm-wiki/          # Knowledge vault & anti-rot architecture
 │   │   ├── SHERPA.md
 │   │   └── sources/              # Upstream source summaries and reference specs
+│   ├── multi-llm-watchdog/       # Provider health & quota telemetry
+│   │   ├── README.md
+│   │   └── SHERPA.md
 │   └── token-piggy-bank/         # Token governance and quota pacing kit
+│       ├── ONE_SHOT_INSTALL.md
+│       ├── README.md
 │       └── SHERPA.md
 ├── CONTRIBUTING.md               # Kit authoring and validation guide
 ├── SECURITY.md                   # Security policy & disclosure guidelines

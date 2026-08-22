@@ -2,7 +2,7 @@
   "catalog_version": "0.1.0",
   "organization": "SherpaMD",
   "domain": "sherpamd.org",
-  "updated_at": "2026-08-21T20:45:00-05:00",
+  "updated_at": "2026-08-21T22:45:00-05:00",
   "kits": [
     {
       "id": "core-fleet",
@@ -30,6 +30,46 @@
       "domain": "fleet-operations",
       "version": "1.0.0",
       "path": "domains/token-piggy-bank/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "bounded-agent-control-plane",
+      "title": "Bounded Agent Control Plane — Safe MCP & API Execution Gateway",
+      "domain": "agent-security",
+      "version": "0.1.0",
+      "path": "domains/bounded-agent-control-plane/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "ai-to-ai-bus",
+      "title": "AI-to-AI Bus — Inter-Agent Coordination & Durable Event Routing",
+      "domain": "fleet-coordination",
+      "version": "0.1.0",
+      "path": "domains/ai-to-ai-bus/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "multi-llm-watchdog",
+      "title": "Multi-LLM Watchdog — Provider Health, Quota Telemetry & Deduplicated Alerts",
+      "domain": "llm-observability",
+      "version": "0.1.0",
+      "path": "domains/multi-llm-watchdog/SHERPA.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "context-vault-efficiency",
+      "title": "Context Vault & Token Efficiency — Living Knowledge & Model Tiering",
+      "domain": "agent-memory-optimization",
+      "version": "0.1.0",
+      "path": "domains/context-vault-efficiency/SHERPA.md",
       "status": "active",
       "verification_state": "verified",
       "confidentiality": "public"
