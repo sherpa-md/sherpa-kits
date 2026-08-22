@@ -1,6 +1,6 @@
-# SherpaMD Baseline Status Report
+# Sherpa Kits Project Status
 
-- **Date**: 2026-08-22T21:30:00Z
+- **Updated**: 2026-08-22T23:57:04Z
 - **Organization**: `sherpa-md`
 - **Repository**: `sherpa-kits`
 - **Catalog entries**: 8

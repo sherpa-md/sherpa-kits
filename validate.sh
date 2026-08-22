@@ -36,7 +36,7 @@ while IFS= read -r path; do
   fi
 done < <(jq -r '.kits[] | select(.share_path != null) | .share_path' catalog.json)
 
-mapfile -t SHERPA_FILES < <(find domains -name SHERPA.md -type f | sort)
+mapfile -t SHERPA_FILES < <(find kits -name SHERPA.md -type f | sort)
 if python3 scripts/validate_sherpa.py "${SHERPA_FILES[@]}"; then
   echo "[PASS] SherpaMD front matter and secret checks"
 else
@@ -59,14 +59,14 @@ else
   echo "[PASS] Sherpa file naming language"
 fi
 
-if grep -rnE --include='*.md' '(/home/[A-Za-z0-9_-]+|/Users/[A-Za-z0-9_-]+|[A-Za-z]:\\Users\\[A-Za-z0-9_-]+)' domains >/dev/null 2>&1; then
+if grep -rnE --include='*.md' '(/home/[A-Za-z0-9_-]+|/Users/[A-Za-z0-9_-]+|[A-Za-z]:\\Users\\[A-Za-z0-9_-]+)' kits >/dev/null 2>&1; then
   echo "[FAIL] Hardcoded personal home path detected"
   FAIL=1
 else
   echo "[PASS] No hardcoded personal home paths"
 fi
 
-if grep -rnE 'confidentiality:[[:space:]]*"private"' domains catalog.json >/dev/null 2>&1; then
+if grep -rnE 'confidentiality:[[:space:]]*"private"' kits catalog.json >/dev/null 2>&1; then
   echo "[FAIL] Private confidentiality marker detected in public catalog"
   FAIL=1
 else

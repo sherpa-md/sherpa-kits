@@ -8,7 +8,7 @@ Thank you for contributing to **Sherpa Kits**! This repository hosts standard, r
 
 A **Sherpa Kit** is a self-contained, domain-specific operational knowledge package. It bridges human architectural documentation and deterministic AI context prompts, eliminating context rot through continuous in-place synthesis (the Karpathy LLM-Wiki pattern).
 
-Each kit lives in `domains/<kit-id>/` and consists of:
+Each kit lives in `kits/<kit-id>/` and consists of:
 - `SHERPA.md`: The primary domain entrypoint, directives, procedures, and knowledge graph.
 - `sources/`: (Optional) Upstream reference documents, summaries, and source evidence.
 
@@ -17,7 +17,7 @@ Each kit lives in `domains/<kit-id>/` and consists of:
 ## Contribution Workflow
 
 1. **Scaffold Your Kit**: Use the canonical [`sherpa-kit-template`](https://github.com/sherpa-md/sherpa-kit-template).
-2. **Directory Placement**: Create `domains/<kit-id>/` where `<kit-id>` is kebab-case (e.g., `domains/token-piggy-bank/`).
+2. **Directory Placement**: Create `kits/<kit-id>/` where `<kit-id>` is kebab-case (e.g., `kits/token-piggy-bank/`).
 3. **YAML Front Matter**: Every `SHERPA.md` MUST include valid YAML front matter complying with schema `0.1.0`:
    - `schema_version`: `"0.1.0"`
    - `id`: Unique kebab-case identifier matching the directory name.
@@ -54,3 +54,15 @@ Put directly shareable handoffs in `handoffs/` and name them:
 ```
 
 Use a short outcome description, preserve useful acronyms, and make the filename understandable before the file is opened. Examples: `BOMbilling.sherpa.md`, `ComputerGithubSetup.sherpa.md`, and `TokenPiggyBank.sherpa.md`.
+
+
+---
+
+## Repository map
+
+- `handoffs/`: individually shareable `<BriefDescription>.sherpa.md` files.
+- `kits/`: supporting packages and canonical `SHERPA.md` files.
+- `scripts/`: maintenance and validation tools.
+- `.github/`: automation and project status.
+
+New visitors should be able to find the shareable outcome in `handoffs/` without reading the supporting package first.
