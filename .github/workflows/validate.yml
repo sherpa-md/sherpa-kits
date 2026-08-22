@@ -18,10 +18,3 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check PyYAML
       - name: Validate catalog and kits
         run: ./validate.sh
-      - name: Build Sherpa handoff bundle
-        run: ./scripts/build-handoff-bundle.sh
-      - name: Upload Sherpa handoff bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: SherpaHandoffs
-          path: dist/SherpaHandoffs.zip
