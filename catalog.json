@@ -2,7 +2,7 @@
   "catalog_version": "0.1.0",
   "organization": "SherpaMD",
   "domain": "sherpamd.org",
-  "updated_at": "2026-08-21T22:45:00-05:00",
+  "updated_at": "2026-08-22T21:30:00Z",
   "kits": [
     {
       "id": "core-fleet",
@@ -30,6 +30,7 @@
       "domain": "fleet-operations",
       "version": "1.0.0",
       "path": "domains/token-piggy-bank/SHERPA.md",
+      "share_path": "handoffs/TokenPiggyBank.sherpa.md",
       "status": "active",
       "verification_state": "verified",
       "confidentiality": "public"
@@ -72,6 +73,17 @@
       "path": "domains/context-vault-efficiency/SHERPA.md",
       "status": "active",
       "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "portable-agent-handoff",
+      "title": "Portable Agent Handoff & Workspace Bootstrap",
+      "domain": "agent-onboarding",
+      "version": "0.1.0",
+      "path": "domains/portable-agent-handoff/SHERPA.md",
+      "share_path": "handoffs/ComputerGithubSetup.sherpa.md",
+      "status": "draft",
+      "verification_state": "unverified",
       "confidentiality": "public"
     }
   ]

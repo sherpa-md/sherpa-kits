@@ -41,3 +41,16 @@ Each kit lives in `domains/<kit-id>/` and consists of:
 - Use standard GitHub Flavored Markdown.
 - Write concise, dense, verifiable operational procedures with executable verification commands.
 - Resolve contradictions in-place rather than appending uncurated logs.
+
+
+---
+
+## Shareable Sherpa filenames
+
+Put directly shareable handoffs in `handoffs/` and name them:
+
+```text
+<BriefDescription>.sherpa.md
+```
+
+Use a short outcome description, preserve useful acronyms, and make the filename understandable before the file is opened. Examples: `BOMbilling.sherpa.md`, `ComputerGithubSetup.sherpa.md`, and `TokenPiggyBank.sherpa.md`.

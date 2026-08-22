@@ -1,43 +1,32 @@
-# SherpaMD v0.1 Baseline Status Report
+# SherpaMD Baseline Status Report
 
-- **Date**: 2026-08-21T20:45:00-05:00
-- **Organization**: `sherpa-md` (Public Release)
-- **Author**: SherpaMD Maintainers
-- **Release Version**: `v0.1.0`
+- **Date**: 2026-08-22T21:30:00Z
+- **Organization**: `sherpa-md`
+- **Repository**: `sherpa-kits`
+- **Catalog entries**: 8
 
----
+## Current state
 
-## 1. Built Artifacts & Repositories
+| Kit | State | Notes |
+|---|---|---|
+| `core-fleet` | Active / verified | Public identifiers sanitized |
+| `hermes-llm-wiki` | Active / verified | Public identifiers sanitized |
+| `token-piggy-bank` | Active / verified | Shareable file uses Sherpa naming |
+| `bounded-agent-control-plane` | Active / verified | Existing kit |
+| `ai-to-ai-bus` | Active / verified | Existing kit |
+| `multi-llm-watchdog` | Active / verified | Existing kit |
+| `context-vault-efficiency` | Active / verified | Existing kit |
+| `portable-agent-handoff` | Draft / unverified | First user-facing sharing kit; cross-platform tests pending |
 
-| Repository | Visibility | Status | Key Deliverables |
-|---|---|---|---|
-| [`sherpa-spec`](https://github.com/sherpa-md/sherpa-spec) | Public | Complete | `SHERPA.md` normative spec v0.1.0, `SPEC.md`, `LLM_WIKI_GUIDELINES.md`, `scripts/validate_sherpa.py` |
-| [`sherpa-kit-template`](https://github.com/sherpa-md/sherpa-kit-template) | Public | Complete | Canonical `SHERPA.md` reusable template, `sources/` layout & README, starter onboarding `README.md` |
-| [`sherpa-kits`](https://github.com/sherpa-md/sherpa-kits) | Public | Complete | `core-fleet`, `hermes-llm-wiki`, `token-piggy-bank` domain kits, updated `catalog.json`, public `README.md` |
+## Release evidence
 
----
+- Root public-release documents are present.
+- Current-tree scan found no live credentials, private keys, personal names, email addresses, private IP addresses, or accidental medical content.
+- GitHub Actions now runs `validate.sh` on pushes and pull requests.
+- The portable handoff remains visibly unverified until the acceptance cases pass in two independent agent environments.
 
-## 2. Validation & Test Evidence
+## Known limits
 
-- **Format Linter**: Run via `./validate.sh`:
-  - `domains/core/SHERPA.md`: `PASS`
-  - `domains/hermes-llm-wiki/SHERPA.md`: `PASS`
-  - `domains/token-piggy-bank/SHERPA.md`: `PASS`
-  - `catalog.json`: `PASS`
-- **Security Check**: Verified 0 secrets, tokens, passwords, or personal credentials committed across all repositories.
-- **Path Sanitization**: Verified 0 hardcoded local filesystem paths in repository tree and history.
+- This status does not certify the complete Git history; only the current default-branch tree was audited.
+- The current validator checks catalog JSON, front-matter presence, public confidentiality, hardcoded personal home paths, and repository baseline documents. Schema validation should be strengthened in a later release.
 
----
-
-## 3. Open Issues / Notes
-
-- **Zero Blocking Issues**: Repositories are clean, verified, and ready for public use.
-- **Context Efficiency**: Plain Markdown without bloated transcript logs. All source references isolated in `sources/`.
-
----
-
-## 4. Recommended Next Steps
-
-1. **Integrate Validator in CI**: Add `validate.sh` / `validate_sherpa.py` in GitHub Actions CI workflow.
-2. **Expand Example Kits**: Add upcoming domain kits following the canonical template.
-3. **Automate Checkpointing**: Maintain up-to-date `last_verified` timestamps during automated agent validation cycles.

@@ -1,4 +1,4 @@
-# Token Piggy Bank — ONE-SHOT INSTALL
+# Token Piggy Bank — Sherpa
 
 > Give this single file to a capable coding/operations AI and say: **“Install this on my system.”**
 >
@@ -916,7 +916,7 @@ Never claim `VERIFIED` for an untested item.
 
 # 27. DEFINITION OF DONE
 
-The one-shot succeeded when:
+The Sherpa setup is complete when:
 
 1. providers are enumerated;
 2. provider collectors fail independently;
@@ -939,7 +939,7 @@ Advanced automatic routing/harvesting may remain advisory if the host cannot saf
 
 If a Token Piggy Bank `SHERPA.md` exists beside this file, use it as the canonical long-form knowledge source for additional detail.
 
-**Do not stop if it is absent. This ONE-SHOT file is self-contained.**
+**Do not stop if it is absent. This Sherpa file is self-contained.**
 
 ---
 

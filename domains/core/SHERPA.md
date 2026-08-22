@@ -34,9 +34,9 @@ related_links:
 Defines the multi-agent node topology, communication mechanisms, and coordination rules for distributed agent operations.
 
 ## 2. Fleet Topology & Node Archetypes
-- **Orchestrator Node (`h1`)**: Central continuity pivot, scheduling orchestrator, and external gateway bridge.
-- **Local Worker Node (`hb`)**: High-performance compute node (GPU workloads, media processing, local computer execution).
-- **Helper Worker Node (`hx`)**: Dedicated subagent task worker for parallelized execution.
+- **Orchestrator Node (`orchestrator-node`)**: Central continuity pivot, scheduling orchestrator, and external gateway bridge.
+- **Local Worker Node (`compute-worker`)**: High-performance compute node (GPU workloads, media processing, local computer execution).
+- **Helper Worker Node (`helper-worker`)**: Dedicated subagent task worker for parallelized execution.
 - **Workspace Node (`ho`)**: Isolated workspace and project execution environment.
 
 ## 3. Core Directives

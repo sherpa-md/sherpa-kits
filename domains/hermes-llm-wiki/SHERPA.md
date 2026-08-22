@@ -46,9 +46,9 @@ related_links:
 ## 1. Purpose & Scope
 
 This domain kit defines the **Hermes Knowledge Vault and Multi-Agent Coordination Architecture** across distributed agent topologies:
-- **Orchestrator Node (`h1`)**: Central continuity pivot and orchestrator.
-- **Local Worker Node (`hb`)**: Local compute node for GPU workloads, media pipeline, and local computer operations.
-- **Helper Worker Node (`hx`)**: Dedicated subagent helper node.
+- **Orchestrator Node (`orchestrator-node`)**: Central continuity pivot and orchestrator.
+- **Local Worker Node (`compute-worker`)**: Local compute node for GPU workloads, media pipeline, and local computer operations.
+- **Helper Worker Node (`helper-worker`)**: Dedicated subagent helper node.
 - **Workspace Node (`ho`)**: Project workspace node.
 
 ### The Anti-Rot Paradigm (Karpathy LLM-Wiki)
@@ -128,7 +128,7 @@ During long-running tasks, write persistent reports and execution records to dis
 Agent services run under the systemd user manager:
 ```bash
 # Check service status:
-systemctl --user status ai-chat-bus-outbox-relay.timer
+systemctl --user status agent-bus-relay.timer
 
 # View recent service journal logs:
 journalctl --user -u agent-gateway -n 50 --no-pager
@@ -159,6 +159,6 @@ journalctl --user -u agent-gateway -n 50 --no-pager
 
 - **2026-08-21T20:45:00-05:00**: Updated `hermes-llm-wiki` kit v0.1.0 under `sherpa-kits` for public release.
 - **Validation**:
-  - `ai-chat health` -> OK (connected to bus).
+  - Generic bus health procedure reviewed without publishing live endpoint details.
   - `./validate.sh` -> Verified schema compliance across all kits.
   - Front matter conforms to `sherpa-spec` schema v0.1.0.
