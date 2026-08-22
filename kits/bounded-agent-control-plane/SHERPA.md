@@ -138,5 +138,5 @@ def record_audit_entry(audit_file: str, caller_id: str, tool: str, payload: Dict
 
 - **Tool Schema Validation**: All exposed tools define OpenAPI/Pydantic schemas with rejected parameter fuzzing.
 - **Path Traversal Rejection**: Paths containing `..` or leading `/` outside workspace boundaries raise validation errors.
-- **Secret Redaction Test**: Injected fake API keys (`sk-demo12345678901234567890123456789012`) are masked to `sk-[REDACTED]` in all output streams.
+- **Secret Redaction Test**: Injected fake API keys (`EXAMPLE_API_KEY_VALUE`) are masked to `sk-[REDACTED]` in all output streams.
 - **Audit Immutability**: Actions are written to the JSONL audit ledger prior to dispatching external system calls.
