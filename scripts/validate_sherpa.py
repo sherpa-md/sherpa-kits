@@ -80,6 +80,10 @@ def validate_sherpa_file(filepath):
     if not body_raw.strip():
         return False, "Markdown body is empty"
 
+    filename = os.path.basename(filepath)
+    if filename == "SHERPA.md" or not filename.endswith(".sherpa.md"):
+        return False, "Filename must use <BriefDescription>.sherpa.md"
+
     return True, "Valid SherpaMD v0.1.0 document"
 
 
@@ -95,4 +99,3 @@ if __name__ == "__main__":
         passed = passed and ok
 
     raise SystemExit(0 if passed else 1)
-

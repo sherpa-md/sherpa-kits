@@ -19,4 +19,4 @@ Durable, asynchronous event bus and inter-agent coordination layer for distribut
 
 ## Files & Artifacts
 
-- [`SHERPA.md`](SHERPA.md) — Formal SherpaMD domain kit specification.
+- [`AItoAIBus.sherpa.md`](AItoAIBus.sherpa.md) — Formal SherpaMD domain kit specification.

@@ -6,7 +6,7 @@ If you only want a file to send to a person or AI, go to **[handoffs/](../handof
 
 ## What is inside a kit?
 
-- `SHERPA.md` — canonical technical entrypoint.
+- `<BriefDescription>.sherpa.md` — canonical technical entrypoint with a descriptive filename.
 - `README.md` — short human explanation when available.
 - Supporting instructions, workflow, checklist, compatibility, validation, changelog, or sources when the kit needs them.
 

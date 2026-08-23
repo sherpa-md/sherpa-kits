@@ -28,7 +28,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "core-fleet"
-    uri: "../core-fleet/SHERPA.md"
+    uri: "../core-fleet/CoreFleet.sherpa.md"
 ---
 
 # Bounded Agent Control Plane — Safe MCP & API Execution Gateway

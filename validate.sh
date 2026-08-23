@@ -36,11 +36,18 @@ while IFS= read -r path; do
   fi
 done < <(jq -r '.kits[] | select(.share_path != null) | .share_path' catalog.json)
 
-mapfile -t SHERPA_FILES < <(find kits -name SHERPA.md -type f | sort)
+mapfile -t SHERPA_FILES < <(find kits -name '*.sherpa.md' -type f | sort)
 if python3 scripts/validate_sherpa.py "${SHERPA_FILES[@]}"; then
   echo "[PASS] SherpaMD front matter and secret checks"
 else
   FAIL=1
+fi
+
+if find . -type f -name 'SHERPA.md' -print -quit | grep -q .; then
+  echo "[FAIL] Generic SHERPA.md filename detected; use <BriefDescription>.sherpa.md"
+  FAIL=1
+else
+  echo "[PASS] All Sherpa entrypoints have descriptive filenames"
 fi
 
 for doc in README.md LICENSE CONTRIBUTING.md SECURITY.md .gitignore; do

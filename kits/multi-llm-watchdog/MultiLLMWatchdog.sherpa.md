@@ -27,7 +27,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "token-piggy-bank"
-    uri: "../token-piggy-bank/SHERPA.md"
+    uri: "../token-piggy-bank/TokenPiggyBank.sherpa.md"
 ---
 
 # Multi-LLM Watchdog — Provider Health, Quota Telemetry & Deduplicated Alerts

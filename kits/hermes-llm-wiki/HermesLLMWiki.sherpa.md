@@ -36,7 +36,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "core-fleet"
-    uri: "../core-fleet/SHERPA.md"
+    uri: "../core-fleet/CoreFleet.sherpa.md"
   - rel: "sources"
     uri: "./sources/README.md"
 ---
@@ -150,7 +150,7 @@ journalctl --user -u agent-gateway -n 50 --no-pager
 
 - **Specification**: [SherpaMD Specification v0.1.0](https://github.com/sherpa-md/sherpa-spec)
 - **Kit Scaffold**: [Sherpa Kit Template](https://github.com/sherpa-md/sherpa-kit-template)
-- **Core Fleet Domain**: [`../core-fleet/SHERPA.md`](../core-fleet/SHERPA.md)
+- **Core Fleet Domain**: [`../core-fleet/CoreFleet.sherpa.md`](../core-fleet/CoreFleet.sherpa.md)
 - **Sources Directory**: [`./sources/README.md`](./sources/README.md)
 
 ---

@@ -68,7 +68,7 @@ The [`kits/`](./kits/) folder contains the deeper documentation, validation evid
 - Never include credentials, private keys, personal paths, or private infrastructure identifiers.
 - Keep unfinished work visibly marked `draft` and `unverified`.
 - Do not generate a ZIP or bundle unless somebody asks for one.
-- Keep `SHERPA.md` as the canonical internal entrypoint for each supporting kit.
+- Give every canonical kit entrypoint a descriptive `<BriefDescription>.sherpa.md` filename.
 
 ## Validation
 

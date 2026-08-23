@@ -15,11 +15,11 @@ provenance:
 sources:
   - id: "src-sherpa-spec"
     title: "SherpaMD Format Specification"
-    uri: "https://github.com/sherpa-md/sherpa-spec/blob/main/SHERPA.md"
+    uri: "https://github.com/sherpa-md/sherpa-spec/blob/main/SherpaMDSpecification.sherpa.md"
     type: "normative-spec"
   - id: "src-ai-bus"
     title: "AI-to-AI Bus Kit"
-    uri: "../ai-to-ai-bus/SHERPA.md"
+    uri: "../ai-to-ai-bus/AItoAIBus.sherpa.md"
     type: "related-kit"
 tags:
   - "handoff"
@@ -32,7 +32,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "extends"
-    uri: "../ai-to-ai-bus/SHERPA.md"
+    uri: "../ai-to-ai-bus/AItoAIBus.sherpa.md"
 ---
 
 # Portable Agent Handoff & Workspace Bootstrap
@@ -134,7 +134,7 @@ Unresolved contradictions must be marked `BLOCKED` rather than guessed through.
 - [Workflow](./WORKFLOW.md)
 - [Validation](./VALIDATION.md)
 - [SherpaMD specification](https://github.com/sherpa-md/sherpa-spec)
-- [AI-to-AI Bus kit](../ai-to-ai-bus/SHERPA.md)
+- [AI-to-AI Bus kit](../ai-to-ai-bus/AItoAIBus.sherpa.md)
 
 ## 7. Verification & Audit Evidence
 

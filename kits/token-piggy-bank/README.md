@@ -71,5 +71,5 @@ An immutable reserve floor of 20% to 25% of total window allowance is reserved s
 
 ## Files & Artifacts
 
-- [`SHERPA.md`](SHERPA.md) — Formal SherpaMD domain kit specification.
+- [`TokenPiggyBank.sherpa.md`](TokenPiggyBank.sherpa.md) — Formal SherpaMD domain kit specification.
 - `TokenPiggyBank.sherpa.md` — Portable Sherpa file available from [`../../handoffs/TokenPiggyBank.sherpa.md`](../../handoffs/TokenPiggyBank.sherpa.md).

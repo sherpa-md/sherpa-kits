@@ -26,7 +26,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "core-fleet"
-    uri: "../core-fleet/SHERPA.md"
+    uri: "../core-fleet/CoreFleet.sherpa.md"
 ---
 
 # AI-to-AI Bus — Inter-Agent Coordination & Durable Event Routing

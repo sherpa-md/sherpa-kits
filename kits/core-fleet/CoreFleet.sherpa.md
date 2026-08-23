@@ -25,7 +25,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "hermes-llm-wiki"
-    uri: "../hermes-llm-wiki/SHERPA.md"
+    uri: "../hermes-llm-wiki/HermesLLMWiki.sherpa.md"
 ---
 
 # Core Fleet & Multi-Agent Coordination Kit

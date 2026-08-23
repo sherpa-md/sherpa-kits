@@ -31,7 +31,7 @@ related_links:
   - rel: "spec"
     uri: "https://github.com/sherpa-md/sherpa-spec"
   - rel: "token-piggy-bank"
-    uri: "../token-piggy-bank/SHERPA.md"
+    uri: "../token-piggy-bank/TokenPiggyBank.sherpa.md"
 ---
 
 # Context Vault & Token Efficiency — Living Knowledge & Model Tiering
@@ -92,7 +92,7 @@ Uncurated log accretion causes:
 2. Contradictory instructions across conversational history.
 3. Hallucinatory loops driven by stale context.
 
-**Remedy**: Workers write durable facts directly to topic-specific domain runbooks (`SHERPA.md` / `artifacts/<task>/`). Chat transcripts are discarded after task completion once durable conclusions have been recorded.
+**Remedy**: Workers write durable facts directly to descriptively named topic runbooks (`<BriefDescription>.sherpa.md` / `artifacts/<task>/`). Chat transcripts are discarded after task completion once durable conclusions have been recorded.
 
 ---
 

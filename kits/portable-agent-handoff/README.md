@@ -10,7 +10,7 @@ Send [`ComputerGithubSetup.sherpa.md`](../../handoffs/ComputerGithubSetup.sherpa
 
 ## Package contents
 
-- [`SHERPA.md`](./SHERPA.md) — canonical SherpaMD kit definition.
+- [`PortableAgentHandoff.sherpa.md`](./PortableAgentHandoff.sherpa.md) — canonical SherpaMD kit definition.
 - [`ComputerGithubSetup.sherpa.md`](../../handoffs/ComputerGithubSetup.sherpa.md) — the Sherpa file to share.
 - [`INSTRUCTIONS.md`](./INSTRUCTIONS.md) — operator and agent rules.
 - [`WORKFLOW.md`](./WORKFLOW.md) — setup and verification sequence.

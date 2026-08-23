@@ -17,4 +17,4 @@ Autonomous Agent --> Typed MCP/FastAPI Request --> Allowlist Validator --> Sandb
 
 ## Files & Artifacts
 
-- [`SHERPA.md`](SHERPA.md) — Formal SherpaMD domain kit specification.
+- [`BoundedAgentControlPlane.sherpa.md`](BoundedAgentControlPlane.sherpa.md) — Formal SherpaMD domain kit specification.

@@ -1,6 +1,6 @@
 # Sources for Hermes LLM Wiki Kit (`sources/`)
 
-This directory contains upstream reference documents, architecture summaries, and conceptual source texts used to build and verify [`../SHERPA.md`](../SHERPA.md).
+This directory contains upstream reference documents, architecture summaries, and conceptual source texts used to build and verify [`../HermesLLMWiki.sherpa.md`](../HermesLLMWiki.sherpa.md).
 
 ---
 

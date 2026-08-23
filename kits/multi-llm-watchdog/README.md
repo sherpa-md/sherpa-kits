@@ -17,4 +17,4 @@ Providers --> Isolated Polling Collectors --> Confidence Evaluator --> Alert Ded
 
 ## Files & Artifacts
 
-- [`SHERPA.md`](SHERPA.md) — Formal SherpaMD domain kit specification.
+- [`MultiLLMWatchdog.sherpa.md`](MultiLLMWatchdog.sherpa.md) — Formal SherpaMD domain kit specification.

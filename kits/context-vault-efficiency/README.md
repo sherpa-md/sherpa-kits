@@ -17,4 +17,4 @@ Incoming Task --> Targeted Search --> Living Doc Compaction --> Cheapest Adequat
 
 ## Files & Artifacts
 
-- [`SHERPA.md`](SHERPA.md) — Formal SherpaMD domain kit specification.
+- [`ContextVaultEfficiency.sherpa.md`](ContextVaultEfficiency.sherpa.md) — Formal SherpaMD domain kit specification.

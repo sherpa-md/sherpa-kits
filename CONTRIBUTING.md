@@ -9,7 +9,7 @@ Thank you for contributing to **Sherpa Kits**! This repository hosts standard, r
 A **Sherpa Kit** is a self-contained, domain-specific operational knowledge package. It bridges human architectural documentation and deterministic AI context prompts, eliminating context rot through continuous in-place synthesis (the Karpathy LLM-Wiki pattern).
 
 Each kit lives in `kits/<kit-id>/` and consists of:
-- `SHERPA.md`: The primary domain entrypoint, directives, procedures, and knowledge graph.
+- `<BriefDescription>.sherpa.md`: The descriptively named primary domain entrypoint, directives, procedures, and knowledge graph.
 - `sources/`: (Optional) Upstream reference documents, summaries, and source evidence.
 
 ---
@@ -18,7 +18,7 @@ Each kit lives in `kits/<kit-id>/` and consists of:
 
 1. **Scaffold Your Kit**: Use the canonical [`sherpa-kit-template`](https://github.com/sherpa-md/sherpa-kit-template).
 2. **Directory Placement**: Create `kits/<kit-id>/` where `<kit-id>` is kebab-case (e.g., `kits/token-piggy-bank/`).
-3. **YAML Front Matter**: Every `SHERPA.md` MUST include valid YAML front matter complying with schema `0.1.0`:
+3. **YAML Front Matter**: Every `*.sherpa.md` entrypoint MUST include valid YAML front matter complying with schema `0.1.0`:
    - `schema_version`: `"0.1.0"`
    - `id`: Unique kebab-case identifier matching the directory name.
    - `title`: Descriptive title of the domain kit.
@@ -61,7 +61,7 @@ Use a short outcome description, preserve useful acronyms, and make the filename
 ## Repository map
 
 - `handoffs/`: individually shareable `<BriefDescription>.sherpa.md` files.
-- `kits/`: supporting packages and canonical `SHERPA.md` files.
+- `kits/`: supporting packages and canonical descriptively named `*.sherpa.md` files.
 - `scripts/`: maintenance and validation tools.
 - `.github/`: automation and project status.
 

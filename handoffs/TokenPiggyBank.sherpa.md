@@ -937,7 +937,7 @@ Advanced automatic routing/harvesting may remain advisory if the host cannot saf
 
 # 28. OPTIONAL COMPANION
 
-If a Token Piggy Bank `SHERPA.md` exists beside this file, use it as the canonical long-form knowledge source for additional detail.
+For additional detail, use the canonical supporting [`TokenPiggyBank.sherpa.md`](../kits/token-piggy-bank/TokenPiggyBank.sherpa.md) file.
 
 **Do not stop if it is absent. This Sherpa file is self-contained.**
 
