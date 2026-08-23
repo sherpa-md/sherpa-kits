@@ -34,6 +34,18 @@ Each kit lives in `kits/<kit-id>/` and consists of:
 6. **Security Check**: Verify zero hardcoded local paths, zero private keys/tokens, and zero private network addresses.
 7. **Submit Pull Request**: Open a pull request describing the domain scope, sources, and verification evidence.
 
+## Share a working project or alternate implementation
+
+You do not need to change the canonical Sherpa Kit to share something you built from it.
+
+1. Pick the matching showcase under `projects/`. Token Piggy Bank builds belong in `projects/token-piggy-bank/`.
+2. Copy `projects/PROJECT_TEMPLATE.md` into a new folder named with your project slug, such as `projects/token-piggy-bank/ocean-dashboard/README.md`.
+3. Credit the builder, link the source or demo, explain what is different, and state what has actually been tested.
+4. Put screenshots in that same folder under `screenshots/`. Remove names, tokens, email addresses, private URLs, account totals, and internal hostnames first.
+5. Submit a pull request. If Git is unfamiliar, open a **Share a community project** issue and a maintainer can help turn the submission into a pull request.
+
+Community projects are credited implementations, not endorsements. They stay separate from `kits/`, and they cannot silently replace a canonical Sherpa file.
+
 ---
 
 ## Style Guidelines
@@ -62,6 +74,7 @@ Use a short outcome description, preserve useful acronyms, and make the filename
 
 - `handoffs/`: individually shareable `<BriefDescription>.sherpa.md` files.
 - `kits/`: supporting packages and canonical descriptively named `*.sherpa.md` files.
+- `projects/`: credited community builds, screenshots, demos, and alternate implementations.
 - `scripts/`: maintenance and validation tools.
 - `.github/`: automation and project status.
 

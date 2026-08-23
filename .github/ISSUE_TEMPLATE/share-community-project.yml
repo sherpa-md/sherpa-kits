@@ -1,0 +1,70 @@
+name: Share a community project
+description: Submit a working build, demo, or alternate implementation for the SherpaMD project gallery.
+title: "[Community Project]: "
+labels:
+  - community-project
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for building with SherpaMD. Do not include credentials, private URLs, customer data, employer data, or unredacted account screenshots.
+  - type: dropdown
+    id: family
+    attributes:
+      label: Project family
+      options:
+        - Token Piggy Bank
+        - Another existing Sherpa Kit
+        - New Sherpa Kit idea
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Project name
+    validations:
+      required: true
+  - type: input
+    id: credit
+    attributes:
+      label: Builder credit
+      description: Name or handle exactly as it should appear.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What does it do?
+      description: Explain the useful outcome and what is different from the canonical kit.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source or demo link
+      description: A public repository, download, or demo URL.
+    validations:
+      required: true
+  - type: textarea
+    id: testing
+    attributes:
+      label: What has been tested?
+      description: Include environment, test result, and anything still unverified.
+    validations:
+      required: true
+  - type: textarea
+    id: media
+    attributes:
+      label: Sanitized screenshots or video
+      description: Drag files here after removing private or employer information.
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Publication checks
+      options:
+        - label: I have permission to publish this project and its media.
+          required: true
+        - label: I removed secrets, private infrastructure details, personal data, customer data, and employer data.
+          required: true
+        - label: I understand this will be labeled as a community implementation, not an official verified release.
+          required: true
