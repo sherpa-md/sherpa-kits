@@ -15,7 +15,7 @@ provenance:
 sources:
   - id: "src-sherpa-spec"
     title: "SherpaMD Format Specification"
-    uri: "https://github.com/sherpa-md/sherpa-spec/blob/main/SHERPA.md"
+    uri: "https://github.com/sherpa-md/sherpa-spec/blob/main/SherpaMDSpecification.sherpa.md"
     type: "normative-spec"
   - id: "src-ai-bus"
     title: "AI-to-AI Bus Kit"
