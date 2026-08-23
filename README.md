@@ -12,6 +12,8 @@ Sherpa files are descriptive Markdown handoffs that a person can read and an AI 
 |---|---|
 | Find a file to give an AI | **[handoffs/](./handoffs/)** |
 | Read the supporting package behind a handoff | **[kits/](./kits/)** |
+| Explore substantial unverified system designs | **[candidates/](./candidates/)** |
+| Browse or share working community builds | **[projects/](./projects/)** |
 | Create your own Sherpa file | **[sherpa-kit-template](https://github.com/sherpa-md/sherpa-kit-template)** |
 | Understand the SherpaMD format | **[sherpa-spec](https://github.com/sherpa-md/sherpa-spec)** |
 | Contribute a file or correction | **[CONTRIBUTING.md](./CONTRIBUTING.md)** |
@@ -48,12 +50,26 @@ The [`kits/`](./kits/) folder contains the deeper documentation, validation evid
 | [`portable-agent-handoff`](./kits/portable-agent-handoff/) | Supporting package for collaborator computer and GitHub setup | Draft |
 | [`token-piggy-bank`](./kits/token-piggy-bank/) | Token quota and value governance | Active |
 
+## Deep system candidates
+
+The [Deep 10 candidate collection](./candidates/) contains ten in-depth, buildable AI system designs covering private-company analysis, multimodal work, operational reconciliation, evidence-bound decisions, incident replay, institutional memory, approved-model routing, forecast learning, document automation, and agent outcome QA.
+
+They are intentionally excluded from the active catalog and shareable handoffs while `draft / unverified`. Each candidate has its own descriptive Sherpa file, validation plan, and authoritative source notes.
+
+## Community projects
+
+The [`projects/`](./projects/) area is where people can show what they actually built with a Sherpa Kit. A project can include screenshots, setup notes, a demo link, source code, lessons learned, and credit to its creator. It does not replace the canonical kit.
+
+The first showcase is [`projects/token-piggy-bank/`](./projects/token-piggy-bank/), which accepts alternate Token Piggy Bank dashboards and implementations. Use the included template or open a **Share a community project** issue—no knowledge of Git is required to start.
+
 ## Repository map
 
 ```text
 .
 ├── handoffs/        # Descriptive .sherpa.md files people actually share
 ├── kits/            # Supporting packages, instructions, and evidence
+├── candidates/      # In-depth draft systems with their own test and source files
+├── projects/        # Credited community builds and alternate implementations
 ├── scripts/         # Maintainer validation and requested bundle tools
 ├── .github/         # Automation and project status
 ├── catalog.json     # Machine-readable kit index
@@ -69,6 +85,7 @@ The [`kits/`](./kits/) folder contains the deeper documentation, validation evid
 - Keep supporting material in `kits/`.
 - Never include credentials, private keys, personal paths, or private infrastructure identifiers.
 - Keep unfinished work visibly marked `draft` and `unverified`.
+- Keep unverified research candidates out of the active catalog and handoffs.
 - Do not generate a ZIP or bundle unless somebody asks for one.
 - Give every canonical kit entrypoint a descriptive `<BriefDescription>.sherpa.md` filename.
 
