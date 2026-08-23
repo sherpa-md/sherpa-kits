@@ -26,6 +26,7 @@ Shareable files use this naming format:
 
 | Sherpa file | What it does | State |
 |---|---|---|
+| [`RaspberryPi4OxAlpha.sherpa.md`](./handoffs/RaspberryPi4OxAlpha.sherpa.md) | Installs OpenCode with the free Ox Alpha preview model on a 64-bit Raspberry Pi 4 | Draft; physical Pi testing pending |
 | [`ComputerGithubSetup.sherpa.md`](./handoffs/ComputerGithubSetup.sherpa.md) | Helps another person set up their own computer workspace and GitHub access, with optional AI-to-AI messaging | Draft; additional platform testing pending |
 | [`TokenPiggyBank.sherpa.md`](./handoffs/TokenPiggyBank.sherpa.md) | Installs and integrates the Token Piggy Bank quota and value governor | Verified |
 
@@ -43,6 +44,7 @@ The [`kits/`](./kits/) folder contains the deeper documentation, validation evid
 | [`core-fleet`](./kits/core-fleet/) | Multi-agent fleet coordination | Active |
 | [`hermes-llm-wiki`](./kits/hermes-llm-wiki/) | Living knowledge and anti-rot architecture | Active |
 | [`multi-llm-watchdog`](./kits/multi-llm-watchdog/) | Provider health and quota monitoring | Active |
+| [`raspberry-pi4-ox-alpha`](./kits/raspberry-pi4-ox-alpha/) | Beginner installer for an OpenCode/Ox Alpha Pi 4 worker | Draft |
 | [`portable-agent-handoff`](./kits/portable-agent-handoff/) | Supporting package for collaborator computer and GitHub setup | Draft |
 | [`token-piggy-bank`](./kits/token-piggy-bank/) | Token quota and value governance | Active |
 
