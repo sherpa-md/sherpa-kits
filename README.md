@@ -31,6 +31,7 @@ Shareable files use this naming format:
 | [`RaspberryPi4OxAlpha.sherpa.md`](./handoffs/RaspberryPi4OxAlpha.sherpa.md) | Installs OpenCode with the free Ox Alpha preview model on a 64-bit Raspberry Pi 4 | Draft; physical Pi testing pending |
 | [`ComputerGithubSetup.sherpa.md`](./handoffs/ComputerGithubSetup.sherpa.md) | Helps another person set up their own computer workspace and GitHub access, with optional AI-to-AI messaging | Draft; additional platform testing pending |
 | [`TokenPiggyBank.sherpa.md`](./handoffs/TokenPiggyBank.sherpa.md) | Installs and integrates the Token Piggy Bank quota and value governor | Verified |
+| [`DiscordBotFleetSillyTavern.sherpa.md`](./handoffs/DiscordBotFleetSillyTavern.sherpa.md) | Builds a loop-safe Discord text-agent fleet and SillyTavern-compatible multi-character voice bridge | Verified |
 
 Each Sherpa file is available individually. A bundle is created only when somebody specifically requests one.
 
@@ -44,6 +45,7 @@ The [`kits/`](./kits/) folder contains the deeper documentation, validation evid
 | [`bounded-agent-control-plane`](./kits/bounded-agent-control-plane/) | Safe MCP and API execution boundaries | Active |
 | [`context-vault-efficiency`](./kits/context-vault-efficiency/) | Context preservation and model-cost tiering | Active |
 | [`core-fleet`](./kits/core-fleet/) | Multi-agent fleet coordination | Active |
+| [`discord-bot-fleet-sillytavern`](./kits/discord-bot-fleet-sillytavern/) | Loop-safe Discord text agents and SillyTavern-compatible character voice bots, with a practical HOW-TO | Active |
 | [`hermes-llm-wiki`](./kits/hermes-llm-wiki/) | Living knowledge and anti-rot architecture | Active |
 | [`multi-llm-watchdog`](./kits/multi-llm-watchdog/) | Provider health and quota monitoring | Active |
 | [`raspberry-pi4-ox-alpha`](./kits/raspberry-pi4-ox-alpha/) | Beginner installer for an OpenCode/Ox Alpha Pi 4 worker | Draft |

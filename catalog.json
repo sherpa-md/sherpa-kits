@@ -2,7 +2,7 @@
   "catalog_version": "0.1.0",
   "organization": "SherpaMD",
   "domain": "sherpamd.org",
-  "updated_at": "2026-08-22T23:57:04Z",
+  "updated_at": "2026-08-31T01:00:00Z",
   "kits": [
     {
       "id": "core-fleet",
@@ -61,6 +61,17 @@
       "domain": "llm-observability",
       "version": "0.1.0",
       "path": "kits/multi-llm-watchdog/MultiLLMWatchdog.sherpa.md",
+      "status": "active",
+      "verification_state": "verified",
+      "confidentiality": "public"
+    },
+    {
+      "id": "discord-bot-fleet-sillytavern",
+      "title": "Discord Bot Fleet & SillyTavern Voice Bridge — Safe Multi-Agent Text and Voice",
+      "domain": "conversational-agent-operations",
+      "version": "0.1.0",
+      "path": "kits/discord-bot-fleet-sillytavern/DiscordBotFleetSillyTavern.sherpa.md",
+      "share_path": "handoffs/DiscordBotFleetSillyTavern.sherpa.md",
       "status": "active",
       "verification_state": "verified",
       "confidentiality": "public"
