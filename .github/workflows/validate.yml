@@ -15,6 +15,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Install validator dependency
-        run: python3 -m pip install --disable-pip-version-check PyYAML
+        run: python3 -m pip install --disable-pip-version-check -r requirements-site.txt
       - name: Validate catalog and kits
         run: ./validate.sh
+      - name: Build portable site
+        run: python3 scripts/build-site.py
+      - name: Verify site parity and archives
+        run: python3 scripts/test-site.py
