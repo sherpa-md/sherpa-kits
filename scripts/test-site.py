@@ -53,10 +53,33 @@ def main() -> None:
             fail("all-sherpas.zip inventory mismatch")
     with zipfile.ZipFile(DIST / "sherpamd-portable-site.zip") as archive:
         names = set(archive.namelist())
-        required = ("index.html", "index.json", "llms.txt", "ratings.json", "sitemap.xml", "assets/site.css", "assets/site.js", "all-sherpas.zip")
+        required = (
+            "index.html",
+            "index.json",
+            "llms.txt",
+            "ratings.json",
+            "sitemap.xml",
+            "REHOSTING.md",
+            "assets/site.css",
+            "assets/site.js",
+            "all-sherpas.zip",
+        )
         for name in required:
             if name not in names:
                 fail(f"portable site archive is missing {name}")
+        expected_site_files = {
+            path.relative_to(DIST).as_posix()
+            for path in DIST.rglob("*")
+            if path.is_file() and path.name != "sherpamd-portable-site.zip"
+        }
+        if names != expected_site_files:
+            fail("portable site archive does not exactly match the generated site")
+
+        for item in items:
+            raw_name = item["raw_url"].lstrip("/")
+            detail_name = item["route"].strip("/") + "/index.html"
+            if raw_name not in names or detail_name not in names:
+                fail(f"portable site archive cannot serve {item['source_path']}")
 
     script = (DIST / "assets" / "site.js").read_text(encoding="utf-8")
     if "innerHTML" in script or "visually update anyway" in script:
@@ -67,6 +90,7 @@ def main() -> None:
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
+    print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] ratings fail closed and repository data uses DOM-safe rendering")
 
 

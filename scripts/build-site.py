@@ -299,6 +299,7 @@ def build(output: Path) -> list[dict]:
     (output / "assets").mkdir(parents=True)
     shutil.copy2(ASSET_ROOT / "site.css", output / "assets" / "site.css")
     shutil.copy2(ASSET_ROOT / "site.js", output / "assets" / "site.js")
+    shutil.copy2(PORTABLE_ROOT / "REHOSTING.md", output / "REHOSTING.md")
 
     for record in records:
         raw_destination = output / "raw" / record["source_path"]
