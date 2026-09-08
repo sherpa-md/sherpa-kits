@@ -86,11 +86,16 @@ def main() -> None:
         fail("unsafe or misleading client rendering pattern detected")
     if "button.disabled = true" not in script:
         fail("rating controls must be disabled without a real backend")
+    if 'navigator.clipboard?.writeText' not in script or 'document.execCommand("copy")' not in script:
+        fail("Use with AI must support secure and portable clipboard paths")
+    if 'if (!copied) throw new Error("clipboard unavailable")' not in script:
+        fail("Use with AI must not report an unconfirmed copy")
 
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] rehost archive exactly matches every generated route and download")
+    print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] ratings fail closed and repository data uses DOM-safe rendering")
 
 

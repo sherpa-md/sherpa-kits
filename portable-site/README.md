@@ -18,6 +18,8 @@ See [REHOSTING.md](REHOSTING.md) for local preview and hosting instructions.
 
 The generator does not replace the production site automatically. Production adoption requires a separate reviewed deployment.
 
+The **Use with AI** action tries the modern Clipboard API first and falls back to a temporary text selection for static mirrors that do not provide the secure-context clipboard permission. It reports success only when the browser confirms that one of those methods copied the instruction and Markdown.
+
 ## Ratings contract
 
 `data/ratings.json` is a portable, read-only snapshot:

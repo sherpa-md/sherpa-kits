@@ -84,11 +84,43 @@
     return response.text();
   }
 
+  async function writeClipboard(text) {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_error) {
+        // Static mirrors served over plain HTTP may not expose the Clipboard API.
+      }
+    }
+
+    const field = document.createElement("textarea");
+    const previousFocus = document.activeElement;
+    field.value = text;
+    field.readOnly = true;
+    field.setAttribute("aria-hidden", "true");
+    field.style.position = "fixed";
+    field.style.inset = "0 auto auto -9999px";
+    document.body.append(field);
+    try {
+      field.focus();
+      field.select();
+      field.setSelectionRange(0, field.value.length);
+      return document.execCommand("copy");
+    } catch (_error) {
+      return false;
+    } finally {
+      field.remove();
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    }
+  }
+
   async function copyForAI(record) {
     try {
       const raw = await rawText(record);
       const instruction = "Read the Sherpa below, inspect my environment, implement the requested outcome safely, run its validation checks, and report evidence. Do not claim completion without proof.\n\n";
-      await navigator.clipboard.writeText(instruction + raw);
+      const copied = await writeClipboard(instruction + raw);
+      if (!copied) throw new Error("clipboard unavailable");
       toast("Sherpa and execution instruction copied.");
     } catch (_error) {
       toast("Copy failed. Download the Markdown file instead.");
