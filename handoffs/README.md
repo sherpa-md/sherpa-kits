@@ -21,6 +21,7 @@ Use a short description of the outcome. Preserve useful acronyms. Do not put dat
 | File | What it does |
 |---|---|
 | [`ComputerGithubSetup.sherpa.md`](./ComputerGithubSetup.sherpa.md) | Helps another person set up their own computer workspace and GitHub access, with optional AI-to-AI bus messaging |
+| [`FDELearningTrack.sherpa.md`](./FDELearningTrack.sherpa.md) | Builds and continuously expands a source-linked Forward Deployed Engineering learning track with labs, projects, specializations, mobile lessons, progress evidence, and current job-skill harvesting |
 | [`TokenPiggyBank.sherpa.md`](./TokenPiggyBank.sherpa.md) | Installs and integrates the Token Piggy Bank quota and value governor |
 
 ## Optional requested ZIP
@@ -32,4 +33,3 @@ Do not generate a bundle automatically. Only when someone specifically requests 
 ```
 
 The result is `dist/SherpaHandoffs.zip`.
-
