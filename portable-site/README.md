@@ -20,6 +20,8 @@ The generator does not replace the production site automatically. Production ado
 
 The **Use with AI** action tries the modern Clipboard API first and falls back to a temporary text selection for static mirrors that do not provide the secure-context clipboard permission. It reports success only when the browser confirms that one of those methods copied the instruction and Markdown.
 
+The **Listen** action uses the browser's Web Speech API to read public Sherpa narrative text aloud. It skips fenced code blocks, divides long files into smaller reliable speech chunks, and provides play/pause, stop, and speed controls in a mobile-safe player. SherpaMD does not operate a speech backend; voice availability and processing depend on the visitor's browser and operating system.
+
 ## Ratings contract
 
 `data/ratings.json` is a portable, read-only snapshot:

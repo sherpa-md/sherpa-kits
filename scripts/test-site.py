@@ -90,12 +90,26 @@ def main() -> None:
         fail("Use with AI must support secure and portable clipboard paths")
     if 'if (!copied) throw new Error("clipboard unavailable")' not in script:
         fail("Use with AI must not report an unconfirmed copy")
+    for reader_contract in (
+        "SpeechSynthesisUtterance",
+        "speechEngine.pause()",
+        "speechEngine.resume()",
+        "speechEngine?.cancel()",
+        "Code example omitted.",
+    ):
+        if reader_contract not in script:
+            fail(f"reader contract is missing: {reader_contract}")
+    index_html = (DIST / "index.html").read_text(encoding="utf-8")
+    for reader_control in ("reader-player", "reader-toggle", "reader-rate", "reader-stop"):
+        if f'id="{reader_control}"' not in index_html:
+            fail(f"reader control is missing: {reader_control}")
 
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
+    print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed and repository data uses DOM-safe rendering")
 
 

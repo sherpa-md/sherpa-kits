@@ -255,6 +255,14 @@ def shell(records: list[dict], *, detail: dict | None = None) -> str:
 {content}
 <dialog id="preview-dialog" aria-labelledby="preview-title"><div class="dialog-head"><h2 id="preview-title">Sherpa preview</h2><button id="dialog-close" class="icon-button" aria-label="Close preview">×</button></div><pre id="preview-content" tabindex="0"></pre><div class="dialog-actions"><button id="dialog-copy" class="button button--primary">Use with AI</button><a id="dialog-download" class="button" download>Download .md</a></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<aside class="reader-player" id="reader-player" aria-label="Sherpa reader" hidden>
+  <div class="reader-copy"><strong id="reader-title">Sherpa reader</strong><span id="reader-progress" aria-live="polite"></span></div>
+  <div class="reader-controls">
+    <button id="reader-toggle" class="button button--primary" type="button" aria-pressed="false">Pause</button>
+    <label class="reader-rate">Speed <select id="reader-rate" aria-label="Reading speed"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option></select></label>
+    <button id="reader-stop" class="button" type="button">Stop</button>
+  </div>
+</aside>
 <footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a></div></footer>
 <script id="sherpa-data" type="application/json">{safe_json(payload)}</script>
 <script>window.SHERPA_DETAIL_KEY={safe_json(detail_key)};window.SHERPA_ASSET_PREFIX={safe_json(relative_from(route, '/'))};</script>

@@ -4,6 +4,9 @@
   const records = JSON.parse(document.getElementById("sherpa-data").textContent);
   const prefix = window.SHERPA_ASSET_PREFIX || "./";
   const ratings = new Map();
+  const speechEngine = window.speechSynthesis || null;
+  const speechAvailable = Boolean(speechEngine && window.SpeechSynthesisUtterance);
+  const reader = { record: null, chunks: [], index: 0, utterance: null, paused: false, token: 0 };
   let activeRecord = null;
   let toastTimer = null;
 
@@ -127,6 +130,132 @@
     }
   }
 
+  function speechText(markdown) {
+    return markdown
+      .replace(/^---\s*\n[\s\S]*?\n---\s*\n/, "")
+      .replace(/```[\s\S]*?```/g, "\nCode example omitted.\n")
+      .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/^#{1,6}\s+/gm, "")
+      .replace(/^>\s?/gm, "")
+      .replace(/^[-*+]\s+/gm, "")
+      .replace(/^\d+\.\s+/gm, "")
+      .replace(/[*_~`|]/g, " ")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+  }
+
+  function splitForSpeech(text, limit = 1200) {
+    const chunks = [];
+    const add = (piece) => {
+      const clean = piece.trim();
+      if (!clean) return;
+      if (clean.length <= limit) {
+        chunks.push(clean);
+        return;
+      }
+      const sentences = clean.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [clean];
+      let current = "";
+      sentences.forEach((sentence) => {
+        const next = `${current} ${sentence.trim()}`.trim();
+        if (next.length <= limit) {
+          current = next;
+          return;
+        }
+        if (current) chunks.push(current);
+        if (sentence.length <= limit) {
+          current = sentence.trim();
+          return;
+        }
+        const words = sentence.trim().split(/\s+/);
+        current = "";
+        words.forEach((word) => {
+          const wordNext = `${current} ${word}`.trim();
+          if (current && wordNext.length > limit) {
+            chunks.push(current);
+            current = word;
+          } else {
+            current = wordNext;
+          }
+        });
+      });
+      if (current) chunks.push(current);
+    };
+    text.split(/\n+/).forEach(add);
+    return chunks;
+  }
+
+  function updateReader() {
+    const player = byId("reader-player");
+    if (!player || !reader.record) return;
+    player.hidden = false;
+    document.body.classList.add("reader-active");
+    byId("reader-title").textContent = reader.record.title;
+    byId("reader-progress").textContent = `Part ${reader.index + 1} of ${reader.chunks.length}`;
+    byId("reader-toggle").textContent = reader.paused ? "Resume" : "Pause";
+    byId("reader-toggle").setAttribute("aria-pressed", String(reader.paused));
+  }
+
+  function stopReader({ announce = false } = {}) {
+    reader.token += 1;
+    speechEngine?.cancel();
+    reader.record = null;
+    reader.chunks = [];
+    reader.index = 0;
+    reader.utterance = null;
+    reader.paused = false;
+    byId("reader-player").hidden = true;
+    document.body.classList.remove("reader-active");
+    if (announce) toast("Reader stopped.");
+  }
+
+  function speakReaderPart() {
+    if (!reader.record || reader.index >= reader.chunks.length) {
+      stopReader();
+      toast("Finished reading this Sherpa.");
+      return;
+    }
+    const token = ++reader.token;
+    const utterance = new SpeechSynthesisUtterance(reader.chunks[reader.index]);
+    utterance.rate = Number(byId("reader-rate").value);
+    utterance.onend = () => {
+      if (token !== reader.token) return;
+      reader.index += 1;
+      speakReaderPart();
+    };
+    utterance.onerror = (event) => {
+      if (token !== reader.token || event.error === "canceled" || event.error === "interrupted") return;
+      stopReader();
+      toast("The browser reader stopped unexpectedly.");
+    };
+    reader.utterance = utterance;
+    reader.paused = false;
+    updateReader();
+    speechEngine.speak(utterance);
+  }
+
+  async function listen(record) {
+    if (!speechAvailable) {
+      toast("This browser does not provide a speech reader.");
+      return;
+    }
+    try {
+      const chunks = splitForSpeech(speechText(await rawText(record)));
+      if (!chunks.length) throw new Error("nothing to read");
+      stopReader();
+      reader.record = record;
+      reader.chunks = chunks;
+      reader.index = 0;
+      updateReader();
+      speakReaderPart();
+    } catch (_error) {
+      stopReader();
+      toast("Reader could not load this Sherpa.");
+    }
+  }
+
   async function preview(record) {
     const dialog = byId("preview-dialog");
     try {
@@ -146,6 +275,10 @@
     row.className = "card-actions";
     const previewButton = button("Preview");
     previewButton.addEventListener("click", () => preview(record));
+    const listenButton = button("Listen");
+    listenButton.disabled = !speechAvailable;
+    listenButton.title = speechAvailable ? "Read this Sherpa aloud" : "Speech is not supported by this browser";
+    listenButton.addEventListener("click", () => listen(record));
     const copyButton = button("Use with AI", "button button--primary");
     copyButton.addEventListener("click", () => copyForAI(record));
     const download = document.createElement("a");
@@ -159,7 +292,7 @@
     source.target = "_blank";
     source.rel = "noopener";
     source.textContent = "GitHub";
-    row.append(previewButton, copyButton, download, source);
+    row.append(previewButton, listenButton, copyButton, download, source);
     return row;
   }
 
@@ -228,6 +361,26 @@
     if (event.target === byId("preview-dialog")) byId("preview-dialog").close();
   });
   byId("dialog-copy")?.addEventListener("click", () => activeRecord && copyForAI(activeRecord));
+  byId("reader-toggle")?.addEventListener("click", () => {
+    if (!reader.record) return;
+    if (reader.paused) {
+      speechEngine.resume();
+      reader.paused = false;
+    } else {
+      speechEngine.pause();
+      reader.paused = true;
+    }
+    updateReader();
+  });
+  byId("reader-stop")?.addEventListener("click", () => stopReader({ announce: true }));
+  byId("reader-rate")?.addEventListener("change", () => {
+    if (!reader.record) return;
+    speechEngine.cancel();
+    reader.token += 1;
+    speakReaderPart();
+    toast(`Reading speed set to ${byId("reader-rate").value}×.`);
+  });
+  window.addEventListener("beforeunload", () => speechEngine?.cancel());
 
   if (byId("catalog-grid")) {
     ["search", "kind-filter", "verification-filter"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
