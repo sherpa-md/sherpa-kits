@@ -15,6 +15,21 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Install validator dependency
-        run: python3 -m pip install --disable-pip-version-check PyYAML
+        run: python3 -m pip install --disable-pip-version-check -r requirements-site.txt
       - name: Validate catalog and kits
         run: ./validate.sh
+      - name: Build portable site
+        run: python3 scripts/build-site.py
+      - name: Verify site parity and archives
+        run: python3 scripts/test-site.py
+      - name: Publish portable downloads
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sherpamd-portable-${{ github.sha }}
+          path: |
+            dist/all-sherpas.zip
+            dist/sherpamd-portable-site.zip
+            dist/index.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

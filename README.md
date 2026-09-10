@@ -17,6 +17,7 @@ Sherpa files are descriptive Markdown handoffs that a person can read and an AI 
 | Create your own Sherpa file | **[sherpa-kit-template](https://github.com/sherpa-md/sherpa-kit-template)** |
 | Understand the SherpaMD format | **[sherpa-spec](https://github.com/sherpa-md/sherpa-spec)** |
 | Contribute a file or correction | **[CONTRIBUTING.md](./CONTRIBUTING.md)** |
+| Download or rehost the complete catalog | **[portable-site/](./portable-site/)** |
 
 ## Available Sherpa files
 
@@ -72,6 +73,7 @@ The first showcase is [`projects/token-piggy-bank/`](./projects/token-piggy-bank
 ├── kits/            # Supporting packages, instructions, and evidence
 ├── candidates/      # In-depth draft systems with their own test and source files
 ├── projects/        # Credited community builds and alternate implementations
+├── portable-site/   # Authored assets and rehosting instructions
 ├── scripts/         # Maintainer validation and requested bundle tools
 ├── .github/         # Automation and project status
 ├── catalog.json     # Machine-readable kit index
@@ -100,6 +102,8 @@ Run:
 ```
 
 GitHub Actions runs the same validation on pushes and pull requests.
+
+The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths, and creates both a complete site archive and an all-Sherpas archive.
 
 ## License
 
