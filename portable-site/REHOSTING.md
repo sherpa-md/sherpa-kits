@@ -4,11 +4,20 @@ The portable site is static: it needs no database, application server, or secret
 
 ## Download
 
+For the latest permanent GitHub snapshot:
+
+1. Download the [`portable-site` branch ZIP](https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip), or clone that branch.
+2. Extract the download. Its top-level folder contains the complete generated site.
+
+For an exact 90-day build artifact:
+
 1. Open a successful **Validate Sherpa Kits** run in GitHub Actions.
 2. Download the `sherpamd-portable-<commit>` artifact.
 3. Extract `sherpamd-portable-site.zip`.
 
 The same artifact includes `all-sherpas.zip` if you only want the Markdown files.
+
+The `portable-site` branch is updated only after the repository validator and site parity tests succeed on `main`. It is an auditable generated snapshot, not a second source of truth. Submit changes to `main`; do not edit the snapshot branch by hand.
 
 ## Check locally
 
@@ -38,10 +47,11 @@ No server-side rewrite rules are required because each Sherpa detail route conta
 After publishing, check:
 
 1. `/index.json` loads and its `count` matches the number shown by the catalog.
-2. A Sherpa can be previewed and downloaded.
-3. `/all-sherpas.zip` downloads successfully.
-4. Search and the type and verification filters work on a phone-sized screen.
-5. The verification labels still match `index.json`.
+2. Its `source_commit` identifies the validated `main` commit used for the snapshot.
+3. A Sherpa can be previewed and downloaded.
+4. `/all-sherpas.zip` downloads successfully.
+5. Search and the type and verification filters work on a phone-sized screen.
+6. The verification labels still match `index.json`.
 
 Ratings are snapshots. A portable copy deliberately disables voting unless the host adds an authenticated, rate-limited, moderated, and durable ratings service.
 

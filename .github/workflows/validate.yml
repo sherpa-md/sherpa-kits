@@ -33,3 +33,49 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
+
+  publish-portable-snapshot:
+    name: Publish permanent portable snapshot
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: portable-site-snapshot
+      cancel-in-progress: false
+    steps:
+      - name: Check out validated source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Install builder dependency
+        run: python3 -m pip install --disable-pip-version-check -r requirements-site.txt
+      - name: Rebuild portable site
+        run: python3 scripts/build-site.py
+      - name: Recheck site parity and archives
+        run: python3 scripts/test-site.py
+      - name: Publish generated snapshot branch
+        env:
+          SNAPSHOT_BRANCH: portable-site
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          snapshot_dir="${RUNNER_TEMP}/sherpamd-portable-site"
+          mkdir -p "${snapshot_dir}"
+          cp -a dist/. "${snapshot_dir}/"
+          touch "${snapshot_dir}/.nojekyll"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          export GIT_INDEX_FILE="${RUNNER_TEMP}/portable-site.index"
+          git read-tree --empty
+          git --work-tree="${snapshot_dir}" add --all
+          tree_sha="$(git write-tree)"
+          parent_sha="$(git ls-remote --heads origin "refs/heads/${SNAPSHOT_BRANCH}" | awk '{print $1}')"
+
+          if [[ -n "${parent_sha}" ]]; then
+            commit_sha="$(git commit-tree "${tree_sha}" -p "${parent_sha}" -m "Publish portable site from ${SOURCE_SHA}")"
+          else
+            commit_sha="$(git commit-tree "${tree_sha}" -m "Publish portable site from ${SOURCE_SHA}")"
+          fi
+
+          git push origin "${commit_sha}:refs/heads/${SNAPSHOT_BRANCH}"

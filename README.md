@@ -33,6 +33,7 @@ Shareable files use this naming format:
 | [`ComputerGithubSetup.sherpa.md`](./handoffs/ComputerGithubSetup.sherpa.md) | Helps another person set up their own computer workspace and GitHub access, with optional AI-to-AI messaging | Draft; additional platform testing pending |
 | [`TokenPiggyBank.sherpa.md`](./handoffs/TokenPiggyBank.sherpa.md) | Installs and integrates the Token Piggy Bank quota and value governor | Verified |
 | [`DiscordBotFleetSillyTavern.sherpa.md`](./handoffs/DiscordBotFleetSillyTavern.sherpa.md) | Builds a loop-safe Discord text-agent fleet and SillyTavern-compatible multi-character voice bridge | Verified |
+| [`FDELearningTrack.sherpa.md`](./handoffs/FDELearningTrack.sherpa.md) | Guides an agent to build a living, source-linked Forward Deployed Engineering curriculum | Draft; unverified |
 
 Each Sherpa file is available individually. A bundle is created only when somebody specifically requests one.
 
@@ -103,7 +104,7 @@ Run:
 
 GitHub Actions runs the same validation on pushes and pull requests.
 
-The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths, and creates both a complete site archive and an all-Sherpas archive.
+The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths, and creates both a complete site archive and an all-Sherpas archive. After a successful `main` build, GitHub publishes the same output to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site), which can be downloaded or cloned for rehosting without relying on an expiring artifact.
 
 ## License
 

@@ -14,9 +14,11 @@ Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netli
 
 Every successful GitHub Actions run also publishes both ZIPs as a 90-day `sherpamd-portable-<commit>` artifact. Open the run, download the artifact, then follow `REHOSTING.md` inside the site ZIP. The workflow checks that the archive contains every generated detail page and raw Markdown download before publishing it.
 
+After validation succeeds on `main`, the same generated output is committed to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site). Download that branch as a [complete site ZIP](https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip), or clone it when a rehost needs update history. The branch is generated output; contribute source changes through `main` instead of editing the snapshot.
+
 See [REHOSTING.md](REHOSTING.md) for local preview and hosting instructions.
 
-The generator does not replace the production site automatically. Production adoption requires a separate reviewed deployment.
+The snapshot publisher does not replace the production site automatically. Production adoption requires a separate reviewed deployment.
 
 The **Use with AI** action tries the modern Clipboard API first and falls back to a temporary text selection for static mirrors that do not provide the secure-context clipboard permission. It reports success only when the browser confirms that one of those methods copied the instruction and Markdown.
 
