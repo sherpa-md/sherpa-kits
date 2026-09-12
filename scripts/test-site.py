@@ -90,6 +90,29 @@ def main() -> None:
         fail("Use with AI must support secure and portable clipboard paths")
     if 'if (!copied) throw new Error("clipboard unavailable")' not in script:
         fail("Use with AI must not report an unconfirmed copy")
+    ratings = json.loads((DIST / "ratings.json").read_text(encoding="utf-8"))
+    if ratings.get("submit_url") != "https://github.com/sherpa-md/sherpa-kits/issues/new?template=rate-sherpa.yml":
+        fail("official ratings snapshot must use the moderated GitHub issue form")
+    for rating_contract in (
+        'candidate.protocol === "https:"',
+        'link.textContent = "Rate on GitHub"',
+        'url.searchParams.set("title"',
+        'link.setAttribute("aria-label"',
+    ):
+        if rating_contract not in script:
+            fail(f"rating submission contract is missing: {rating_contract}")
+    rating_template = (ROOT / ".github" / "ISSUE_TEMPLATE" / "rate-sherpa.yml").read_text(encoding="utf-8")
+    for template_contract in (
+        "5 — Built or used it successfully",
+        "1 — Not usable for the stated outcome",
+        "ratings do not promote a Sherpa",
+        "employer data",
+    ):
+        if template_contract not in rating_template:
+            fail(f"rating issue form contract is missing: {template_contract}")
+    stylesheet = (DIST / "assets" / "site.css").read_text(encoding="utf-8")
+    if ".rating-link" not in stylesheet or "min-height: 44px" not in stylesheet:
+        fail("rating submission link must keep a mobile-safe touch target")
     for reader_contract in (
         "SpeechSynthesisUtterance",
         "speechEngine.pause()",
@@ -110,7 +133,8 @@ def main() -> None:
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
-    print("[PASS] ratings fail closed and repository data uses DOM-safe rendering")
+    print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
+    print("[PASS] repository data uses DOM-safe rendering")
 
 
 if __name__ == "__main__":

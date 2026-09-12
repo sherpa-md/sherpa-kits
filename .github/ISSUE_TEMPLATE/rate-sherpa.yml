@@ -1,0 +1,63 @@
+name: Rate a Sherpa
+description: Share a 1–5 star experience rating for a specific Sherpa and version.
+title: "[Rating]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Rate what you actually tried. A community rating measures usefulness; it does not change a Sherpa's verification state.
+
+        Do not include credentials, private URLs, customer or employer data, personal information, or unredacted screenshots.
+  - type: input
+    id: sherpa
+    attributes:
+      label: Sherpa
+      description: Paste the descriptive filename, title, or stable ID shown on the Sherpa page.
+      placeholder: TokenPiggyBank.sherpa.md
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version rated
+      description: Use the version shown on the Sherpa page. Write "unversioned" when that is what the page shows.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: rating
+    attributes:
+      label: Rating
+      description: Choose the score that best matches your hands-on experience.
+      options:
+        - "5 — Built or used it successfully"
+        - "4 — Useful with small issues"
+        - "3 — Partly useful; meaningful gaps"
+        - "2 — Major problems blocked the outcome"
+        - "1 — Not usable for the stated outcome"
+    validations:
+      required: true
+  - type: textarea
+    id: experience
+    attributes:
+      label: What happened?
+      description: Describe the environment, useful result, friction, or failure you personally observed.
+      placeholder: What did you ask the AI to build, and what was the result?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence or links
+      description: Optional public demo, repository, test output, or screenshot with all private information removed.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: This rating reflects my own use or review of the named Sherpa version.
+          required: true
+        - label: I removed secrets, private infrastructure details, personal data, customer data, and employer data.
+          required: true
+        - label: I understand ratings do not promote a Sherpa from draft/unverified to verified.
+          required: true
