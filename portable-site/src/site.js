@@ -8,6 +8,7 @@
   const speechAvailable = Boolean(speechEngine && window.SpeechSynthesisUtterance);
   const reader = { record: null, chunks: [], index: 0, utterance: null, paused: false, token: 0 };
   let activeRecord = null;
+  let ratingsSubmitUrl = null;
   let toastTimer = null;
 
   const byId = (id) => document.getElementById(id);
@@ -29,6 +30,10 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const snapshot = await response.json();
       Object.entries(snapshot.ratings || {}).forEach(([key, value]) => ratings.set(key, value));
+      if (typeof snapshot.submit_url === "string" && snapshot.submit_url.trim()) {
+        const candidate = new URL(snapshot.submit_url, window.location.href);
+        if (candidate.protocol === "https:") ratingsSubmitUrl = candidate.toString();
+      }
       document.dispatchEvent(new CustomEvent("ratings-ready"));
     } catch (_error) {
       toast("Ratings are unavailable; no vote was recorded.");
@@ -38,6 +43,19 @@
   function ratingFragment(record) {
     const row = document.createElement("div");
     row.className = "rating-row";
+    const appendSubmissionLink = () => {
+      if (!ratingsSubmitUrl) return;
+      const url = new URL(ratingsSubmitUrl);
+      url.searchParams.set("title", `[Rating]: ${record.title} (${record.key}, v${record.version})`);
+      const link = document.createElement("a");
+      link.className = "rating-link";
+      link.href = url.toString();
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "Rate on GitHub";
+      link.setAttribute("aria-label", `Rate ${record.title} on GitHub`);
+      row.append(link);
+    };
     const rating = ratings.get(record.key);
     if (rating && rating.version === record.version && Number(rating.count) > 0) {
       const rounded = Math.max(0, Math.min(5, Math.round(Number(rating.average))));
@@ -48,6 +66,7 @@
       const count = document.createElement("span");
       count.textContent = `${Number(rating.average).toFixed(1)} · ${rating.count} rating${rating.count === 1 ? "" : "s"}`;
       row.append(stars, count);
+      appendSubmissionLink();
       return row;
     }
     const label = document.createElement("span");
@@ -60,9 +79,12 @@
       button.disabled = true;
       button.textContent = "☆";
       button.setAttribute("aria-label", `Rate ${value} out of 5`);
-      button.title = "Community rating submissions are not enabled in this portable copy.";
+      button.title = ratingsSubmitUrl
+        ? "Use Rate on GitHub to submit a moderated community rating."
+        : "Community rating submissions are not enabled in this portable copy.";
       row.append(button);
     }
+    appendSubmissionLink();
     return row;
   }
 

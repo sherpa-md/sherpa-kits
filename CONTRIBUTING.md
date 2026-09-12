@@ -46,6 +46,12 @@ You do not need to change the canonical Sherpa Kit to share something you built 
 
 Community projects are credited implementations, not endorsements. They stay separate from `kits/`, and they cannot silently replace a canonical Sherpa file.
 
+## Rate a Sherpa
+
+Use the [Rate a Sherpa issue form](https://github.com/sherpa-md/sherpa-kits/issues/new?template=rate-sherpa.yml) to submit a 1–5 star rating for the exact Sherpa version you tried. Include what you attempted, what happened, and sanitized public evidence when available.
+
+Ratings describe community usefulness. They do not change `status`, `verification_state`, or `last_verified`, and they cannot promote draft or unverified material. Maintainers review valid, non-duplicate submissions before updating the version-bound snapshot in `portable-site/data/ratings.json` through a pull request.
+
 ---
 
 ## Style Guidelines

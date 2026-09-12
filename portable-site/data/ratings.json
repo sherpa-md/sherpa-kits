@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
   "generated_at": null,
-  "submit_url": null,
+  "submit_url": "https://github.com/sherpa-md/sherpa-kits/issues/new?template=rate-sherpa.yml",
   "ratings": {}
 }

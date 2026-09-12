@@ -32,7 +32,7 @@ The **Listen** action uses the browser's Web Speech API to read public Sherpa na
 {
   "schema_version": "1",
   "generated_at": "2026-09-06T12:00:00Z",
-  "submit_url": null,
+  "submit_url": "https://github.com/sherpa-md/sherpa-kits/issues/new?template=rate-sherpa.yml",
   "ratings": {
     "kit:token-piggy-bank": {
       "version": "1.0.0",
@@ -43,4 +43,6 @@ The **Listen** action uses the browser's Web Speech API to read public Sherpa na
 }
 ```
 
-Keys are type-qualified stable Sherpa IDs so a handoff and its supporting kit cannot overwrite each other. A rating record must include the rated Sherpa version, average from 1 through 5, and a non-negative count. Portable copies show the snapshot but keep voting disabled unless a host deliberately adds authentication, rate limiting, moderation, and a durable backend. The interface never claims a vote was saved when no backend exists.
+Keys are type-qualified stable Sherpa IDs so a handoff and its supporting kit cannot overwrite each other. A rating record must include the rated Sherpa version, average from 1 through 5, and a non-negative count. Portable copies show the snapshot but keep inline star controls disabled unless a host deliberately adds authentication, rate limiting, moderation, and a durable backend. The interface never claims a vote was saved when no backend exists.
+
+The official snapshot links to the repository's **Rate a Sherpa** issue form. GitHub supplies authentication, durable submissions, and maintainer moderation. The form records the specific Sherpa/version, a 1–5 score, the submitter's hands-on experience, and optional sanitized evidence. Ratings measure community usefulness only; they never alter `status` or `verification_state`. A maintainer must review valid submissions and update this version-bound snapshot through a normal pull request before an aggregate appears on the site.
