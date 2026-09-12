@@ -73,6 +73,9 @@ jobs:
           parent_sha="$(git ls-remote --heads origin "refs/heads/${SNAPSHOT_BRANCH}" | awk '{print $1}')"
 
           if [[ -n "${parent_sha}" ]]; then
+            # checkout is intentionally shallow; fetch the generated branch so
+            # commit-tree can resolve its parent and preserve snapshot history.
+            git fetch --no-tags --depth=1 origin "refs/heads/${SNAPSHOT_BRANCH}"
             commit_sha="$(git commit-tree "${tree_sha}" -p "${parent_sha}" -m "Publish portable site from ${SOURCE_SHA}")"
           else
             commit_sha="$(git commit-tree "${tree_sha}" -m "Publish portable site from ${SOURCE_SHA}")"
