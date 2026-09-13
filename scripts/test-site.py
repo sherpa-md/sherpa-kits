@@ -5,6 +5,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
+import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -60,6 +63,7 @@ def main() -> None:
             "ratings.json",
             "sitemap.xml",
             "REHOSTING.md",
+            "update-rehost.py",
             "assets/site.css",
             "assets/site.js",
             "all-sherpas.zip",
@@ -127,6 +131,32 @@ def main() -> None:
         if f'id="{reader_control}"' not in index_html:
             fail(f"reader control is missing: {reader_control}")
 
+    with tempfile.TemporaryDirectory(prefix="sherpamd-rehost-test-") as temporary:
+        mirror = Path(temporary) / "mirror"
+        updater = DIST / "update-rehost.py"
+        archive = DIST / "sherpamd-portable-site.zip"
+        command = [sys.executable, str(updater), "--archive", str(archive), "--root", str(mirror)]
+        dry_run = subprocess.run(command + ["--dry-run"], capture_output=True, text=True)
+        if dry_run.returncode or "no files changed" not in dry_run.stdout:
+            fail(f"rehost updater dry-run failed: {dry_run.stderr or dry_run.stdout}")
+        install = subprocess.run(command, capture_output=True, text=True)
+        if install.returncode or not (mirror / "current").is_symlink():
+            fail(f"rehost updater install failed: {install.stderr or install.stdout}")
+        current_manifest = json.loads((mirror / "current" / "index.json").read_text(encoding="utf-8"))
+        if current_manifest.get("source_commit") != manifest.get("source_commit"):
+            fail("rehost updater activated the wrong source commit")
+        repeat = subprocess.run(command, capture_output=True, text=True)
+        if repeat.returncode or "already installed" not in repeat.stdout:
+            fail(f"rehost updater repeat run is not idempotent: {repeat.stderr or repeat.stdout}")
+        previous_target = (mirror / "current").readlink()
+        rejected = subprocess.run(
+            command + ["--expect-source-commit", "0" * 40], capture_output=True, text=True
+        )
+        if rejected.returncode == 0 or "expected source commit" not in rejected.stderr:
+            fail("rehost updater did not reject an unexpected source commit")
+        if (mirror / "current").readlink() != previous_target:
+            fail("a rejected rehost update changed the active release")
+
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
@@ -135,6 +165,7 @@ def main() -> None:
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print("[PASS] repository data uses DOM-safe rendering")
+    print("[PASS] rehost updater verifies, installs atomically, reruns idempotently, and fails closed")
 
 
 if __name__ == "__main__":

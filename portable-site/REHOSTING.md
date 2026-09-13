@@ -57,4 +57,20 @@ Ratings are snapshots. A portable copy deliberately disables voting unless the h
 
 ## Update later
 
-Rebuild from the desired `sherpa-md/sherpa-kits` commit, rerun validation, and replace the hosted files as one complete release. Do not hand-edit the generated site or copy individual Markdown files into it; those approaches break source/build parity.
+The archive includes `update-rehost.py`, a standard-library Python 3 updater for Linux and other POSIX hosts. It downloads the permanent GitHub snapshot, rejects unsafe ZIP entries, validates the canonical repository and full source commit, checks every Sherpa SHA-256 and detail route, installs a versioned release, and atomically switches a `current` symlink. A failed download or check leaves the current site untouched.
+
+Point your web server's document root at `/srv/sherpamd/current`, then run:
+
+```bash
+# Prove the candidate without changing the mirror.
+python3 update-rehost.py --root /srv/sherpamd --dry-run
+
+# Install it and switch current only after every check passes.
+python3 update-rehost.py --root /srv/sherpamd
+```
+
+The updater keeps three validated releases by default. Use `--keep 5` to retain more. For a deliberately pinned deployment, use `--expect-source-commit <full-40-character-sha>`; a newer or different snapshot will then be refused.
+
+Run the same command from a system timer after each upstream release, or on a conservative schedule if webhooks are unavailable. The updater serializes overlapping activations with a local lock. It never edits GitHub and never uploads local data.
+
+To update manually instead, rebuild from the desired `sherpa-md/sherpa-kits` commit, rerun validation, and replace the hosted files as one complete release. Do not hand-edit the generated site or copy individual Markdown files into it; those approaches break source/build parity.
