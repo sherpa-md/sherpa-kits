@@ -18,6 +18,8 @@ After validation succeeds on `main`, the same generated output is committed to t
 
 See [REHOSTING.md](REHOSTING.md) for local preview and hosting instructions.
 
+The generated package also includes `update-rehost.py`. A mirror operator can use it to verify the permanent GitHub snapshot and switch a `current` symlink atomically, so a failed or partial update never replaces the last known-good site.
+
 The snapshot publisher does not replace the production site automatically. Production adoption requires a separate reviewed deployment.
 
 The **Use with AI** action tries the modern Clipboard API first and falls back to a temporary text selection for static mirrors that do not provide the secure-context clipboard permission. It reports success only when the browser confirms that one of those methods copied the instruction and Markdown.
