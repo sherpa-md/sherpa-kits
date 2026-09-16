@@ -44,14 +44,21 @@ No server-side rewrite rules are required because each Sherpa detail route conta
 
 ## Verify the copy
 
-After publishing, check:
+After publishing, run the included independent verifier from any machine with Python 3:
 
-1. `/index.json` loads and its `count` matches the number shown by the catalog.
-2. Its `source_commit` identifies the validated `main` commit used for the snapshot.
-3. A Sherpa can be previewed and downloaded.
-4. `/all-sherpas.zip` downloads successfully.
-5. Search and the type and verification filters work on a phone-sized screen.
-6. The verification labels still match `index.json`.
+```bash
+python3 verify-rehost.py --base-url https://your-mirror.example
+```
+
+By default it compares the mirror with the current validated `portable-site` snapshot on GitHub. It then downloads and checks every public Sherpa, detail route, required asset, and both ZIP archives. It fails if the mirror is stale, incomplete, altered, or no longer preserves verification labels. Pin an expected source version during a controlled release with `--expect-source-commit <full-40-character-sha>`.
+
+For a private development server that does not have HTTPS yet, add `--allow-http`. Public mirrors should always use HTTPS. To verify an extracted copy without a web server, use `--site-dir /path/to/site`.
+
+Then smoke-test the browser behavior that cannot be established from file parity alone:
+
+1. A Sherpa can be previewed, listened to, copied for an AI agent, and downloaded.
+2. Search and the type and verification filters work on a phone-sized screen.
+3. Keyboard focus is visible and every control has an accessible name.
 
 Ratings are snapshots. A portable copy deliberately disables voting unless the host adds an authenticated, rate-limited, moderated, and durable ratings service.
 

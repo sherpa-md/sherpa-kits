@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -64,6 +65,7 @@ def main() -> None:
             "sitemap.xml",
             "REHOSTING.md",
             "update-rehost.py",
+            "verify-rehost.py",
             "assets/site.css",
             "assets/site.js",
             "all-sherpas.zip",
@@ -157,6 +159,57 @@ def main() -> None:
         if (mirror / "current").readlink() != previous_target:
             fail("a rejected rehost update changed the active release")
 
+        verifier = DIST / "verify-rehost.py"
+        verify = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(DIST),
+                "--canonical-index",
+                str(DIST / "index.json"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if verify.returncode or f"{len(expected)}/{len(expected)} Sherpa identities" not in verify.stdout:
+            fail(f"rehost verifier rejected the canonical build: {verify.stderr or verify.stdout}")
+        stale = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(DIST),
+                "--canonical-index",
+                str(DIST / "index.json"),
+                "--expect-source-commit",
+                "0" * 40,
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if stale.returncode == 0 or "expected source commit" not in stale.stderr:
+            fail("rehost verifier did not reject an unexpected source commit")
+
+        altered_site = Path(temporary) / "altered-site"
+        shutil.copytree(DIST, altered_site)
+        altered_raw = altered_site / items[0]["raw_url"].lstrip("/")
+        altered_raw.write_bytes(altered_raw.read_bytes() + b"\nchanged\n")
+        altered = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(altered_site),
+                "--canonical-index",
+                str(DIST / "index.json"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if altered.returncode == 0 or "raw file hash mismatch" not in altered.stderr:
+            fail("rehost verifier did not reject altered Sherpa content")
+
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
@@ -166,6 +219,7 @@ def main() -> None:
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print("[PASS] repository data uses DOM-safe rendering")
     print("[PASS] rehost updater verifies, installs atomically, reruns idempotently, and fails closed")
+    print("[PASS] independent rehost verifier proves live parity and rejects stale commits")
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ REQUIRED_FILES = (
     "ratings.json",
     "sitemap.xml",
     "REHOSTING.md",
+    "verify-rehost.py",
     "assets/site.css",
     "assets/site.js",
     "all-sherpas.zip",
