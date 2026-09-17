@@ -42,6 +42,33 @@ def main() -> None:
     if manifest.get("count") != len(expected):
         fail("manifest count does not match public source inventory")
 
+    projects = json.loads((DIST / "projects.json").read_text(encoding="utf-8"))
+    expected_families = sorted(
+        path.name for path in (ROOT / "projects").iterdir() if path.is_dir() and (path / "README.md").is_file()
+    )
+    actual_families = sorted(family["slug"] for family in projects.get("families", []))
+    if actual_families != expected_families or projects.get("family_count") != len(expected_families):
+        fail("community project family discovery mismatch")
+    expected_builds = sorted(
+        (family.name, build.name)
+        for family in (ROOT / "projects").iterdir()
+        if family.is_dir()
+        for build in family.iterdir()
+        if build.is_dir() and (build / "README.md").is_file()
+    )
+    actual_builds = sorted(
+        (family["slug"], build["slug"])
+        for family in projects["families"]
+        for build in family["builds"]
+    )
+    if actual_builds != expected_builds or projects.get("build_count") != len(expected_builds):
+        fail("community project build discovery mismatch")
+    projects_html = (DIST / "projects" / "index.html").read_text(encoding="utf-8")
+    if "Community projects are not official verified releases." not in projects_html:
+        fail("community project page must preserve the verification boundary")
+    if "share-community-project.yml" not in projects_html or "PROJECT_TEMPLATE.md" not in projects_html:
+        fail("community project page must expose both guided and pull-request contribution paths")
+
     for item in items:
         source = ROOT / item["source_path"]
         raw = DIST / item["raw_url"].lstrip("/")
@@ -62,6 +89,8 @@ def main() -> None:
             "index.json",
             "llms.txt",
             "ratings.json",
+            "projects.json",
+            "projects/index.html",
             "sitemap.xml",
             "REHOSTING.md",
             "update-rehost.py",
@@ -217,6 +246,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
+    print(f"[PASS] community project discovery: {len(expected_families)} families / {len(expected_builds)} builds")
     print("[PASS] repository data uses DOM-safe rendering")
     print("[PASS] rehost updater verifies, installs atomically, reruns idempotently, and fails closed")
     print("[PASS] independent rehost verifier proves live parity and rejects stale commits")
