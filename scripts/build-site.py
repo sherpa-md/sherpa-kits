@@ -23,8 +23,13 @@ SOURCE_ROOTS = ("handoffs", "kits", "candidates")
 PORTABLE_ROOT = REPO_ROOT / "portable-site"
 ASSET_ROOT = PORTABLE_ROOT / "src"
 RATINGS_SNAPSHOT = PORTABLE_ROOT / "data" / "ratings.json"
+PROJECT_ROOT = REPO_ROOT / "projects"
 PRODUCTION_ORIGIN = "https://sherpamd.org"
 GITHUB_BLOB = "https://github.com/sherpa-md/sherpa-kits/blob/main"
+GITHUB_TREE = "https://github.com/sherpa-md/sherpa-kits/tree/main"
+PROJECT_SUBMIT_URL = (
+    "https://github.com/sherpa-md/sherpa-kits/issues/new?template=share-community-project.yml"
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -183,6 +188,46 @@ def discover() -> list[dict]:
     return sorted(records, key=lambda item: (item["kind"], item["title"].casefold(), item["source_path"]))
 
 
+def discover_projects() -> list[dict]:
+    families: list[dict] = []
+    slug_pattern = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+    for family_path in sorted(path for path in PROJECT_ROOT.iterdir() if path.is_dir()):
+        if not slug_pattern.fullmatch(family_path.name):
+            raise ValueError(f"unsafe community project family slug: {family_path.name}")
+        readme = family_path / "README.md"
+        if not readme.is_file():
+            continue
+        raw = readme.read_text(encoding="utf-8")
+        builds: list[dict] = []
+        for build_path in sorted(path for path in family_path.iterdir() if path.is_dir()):
+            build_readme = build_path / "README.md"
+            if not build_readme.is_file():
+                continue
+            if not slug_pattern.fullmatch(build_path.name):
+                raise ValueError(f"unsafe community project slug: {build_path.name}")
+            build_raw = build_readme.read_text(encoding="utf-8")
+            builds.append(
+                {
+                    "slug": build_path.name,
+                    "title": first_heading(build_raw, build_path.name),
+                    "summary": first_summary(
+                        build_raw, "Open the project README for implementation and testing details."
+                    ),
+                    "source_url": f"{GITHUB_TREE}/projects/{family_path.name}/{build_path.name}",
+                }
+            )
+        families.append(
+            {
+                "slug": family_path.name,
+                "title": first_heading(raw, family_path.name),
+                "summary": first_summary(raw, "Community implementations and experiments."),
+                "source_url": f"{GITHUB_TREE}/projects/{family_path.name}",
+                "builds": builds,
+            }
+        )
+    return families
+
+
 def safe_json(data: object) -> str:
     return (
         json.dumps(data, ensure_ascii=False, separators=(",", ":"))
@@ -203,17 +248,69 @@ def relative_from(route: str, target: str) -> str:
     return relative
 
 
-def shell(records: list[dict], *, detail: dict | None = None) -> str:
+def project_content(families: list[dict]) -> str:
+    cards: list[str] = []
+    for family in families:
+        builds = family["builds"]
+        build_word = "build" if len(builds) == 1 else "builds"
+        if builds:
+            build_items = "".join(
+                '<li><a href="{url}">{title}</a><span>{summary}</span></li>'.format(
+                    url=html.escape(build["source_url"], quote=True),
+                    title=html.escape(build["title"]),
+                    summary=html.escape(build["summary"]),
+                )
+                for build in builds
+            )
+            builds_html = f'<ul class="project-builds">{build_items}</ul>'
+        else:
+            builds_html = (
+                '<p class="project-empty">No community builds are published yet. '
+                "The first accepted version will keep its builder credit and testing notes.</p>"
+            )
+        cards.append(
+            '<article class="project-card"><div class="badges">'
+            '<span class="badge">Open showcase</span>'
+            f'<span class="badge">{len(builds)} {build_word}</span></div>'
+            f'<h2>{html.escape(family["title"])}</h2>'
+            f'<p>{html.escape(family["summary"])}</p>'
+            f'{builds_html}<div class="card-actions"><a class="button" href="{html.escape(family["source_url"], quote=True)}">Browse project family</a>'
+            f'<a class="button button--primary" href="{PROJECT_SUBMIT_URL}">Share a build</a></div></article>'
+        )
+    return f"""<main id="main" class="page">
+  <section class="projects-intro" aria-labelledby="projects-title">
+    <div><p class="eyebrow">Built by the community</p><h1 id="projects-title">Community Projects</h1><p>See working interpretations of Sherpa Kits, credit their builders, and add your own without replacing the canonical instructions.</p></div>
+    <div class="bundle-actions" aria-label="Community project actions">
+      <a class="button button--primary" href="{PROJECT_SUBMIT_URL}">Share a community project</a>
+      <a class="button" href="https://github.com/sherpa-md/sherpa-kits/blob/main/projects/PROJECT_TEMPLATE.md">View the project template</a>
+    </div>
+  </section>
+  <p class="project-notice">Community projects are not official verified releases. Each listing must state what was tested, what remains experimental, and who built it.</p>
+  <section aria-labelledby="project-families-title"><h2 id="project-families-title">Open project families</h2><div class="project-grid">{''.join(cards)}</div></section>
+</main>"""
+
+
+def shell(
+    records: list[dict], *, detail: dict | None = None, projects: list[dict] | None = None
+) -> str:
     payload = [{key: value for key, value in record.items() if key != "raw"} for record in records]
-    detail_title = detail["title"] if detail else "Browse Sherpas"
-    description = detail["summary"] if detail else "Find a guide, give it to your AI, and build something useful."
-    route = detail["route"] if detail else "/"
+    detail_title = (
+        "Community Projects" if projects is not None else detail["title"] if detail else "Browse Sherpas"
+    )
+    description = (
+        "Working community implementations built from Sherpa Kits."
+        if projects is not None
+        else detail["summary"]
+        if detail
+        else "Find a guide, give it to your AI, and build something useful."
+    )
+    route = "/projects/" if projects is not None else detail["route"] if detail else "/"
     asset_prefix = relative_from(route, "/assets/site.css")
     home_prefix = relative_from(route, "/index.html")
-    body_class = "detail-page" if detail else "catalog-page"
+    body_class = "projects-page" if projects is not None else "detail-page" if detail else "catalog-page"
     detail_key = detail["key"] if detail else ""
     canonical = PRODUCTION_ORIGIN + route
-    content = (
+    content = project_content(projects) if projects is not None else (
         '<main id="main" class="page"><section class="detail-shell" id="detail-root" '
         f'data-detail-key="{html.escape(detail_key, quote=True)}"></section></main>'
         if detail
@@ -250,7 +347,7 @@ def shell(records: list[dict], *, detail: dict | None = None) -> str:
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><div class="site-header__inner">
   <a class="brand" href="{home_prefix}" aria-label="SherpaMD home"><span class="brand-mark" aria-hidden="true">SM</span><span>SherpaMD<small>MD = Markdown</small></span></a>
-  <nav aria-label="Primary"><a href="{home_prefix}">Browse</a><a href="https://github.com/sherpa-md/sherpa-kits/tree/main/projects">Projects</a><a href="https://github.com/sherpa-md/sherpa-kits/blob/main/CONTRIBUTING.md">Contribute</a><a href="https://github.com/sherpa-md">GitHub</a></nav>
+  <nav aria-label="Primary"><a href="{home_prefix}">Browse</a><a href="{relative_from(route, '/projects/')}">Projects</a><a href="https://github.com/sherpa-md/sherpa-kits/blob/main/CONTRIBUTING.md">Contribute</a><a href="https://github.com/sherpa-md">GitHub</a></nav>
 </div></header>
 {content}
 <dialog id="preview-dialog" aria-labelledby="preview-title"><div class="dialog-head"><h2 id="preview-title">Sherpa preview</h2><button id="dialog-close" class="icon-button" aria-label="Close preview">×</button></div><pre id="preview-content" tabindex="0"></pre><div class="dialog-actions"><button id="dialog-copy" class="button button--primary">Use with AI</button><a id="dialog-download" class="button" download>Download .md</a></div></dialog>
@@ -296,6 +393,7 @@ def load_ratings(records: list[dict]) -> dict:
 
 def build(output: Path) -> list[dict]:
     records = discover()
+    project_families = discover_projects()
     if not records:
         raise ValueError("no public Sherpa files discovered")
 
@@ -330,6 +428,22 @@ def build(output: Path) -> list[dict]:
     ratings = load_ratings(records)
     (output / "ratings.json").write_text(json.dumps(ratings, indent=2) + "\n", encoding="utf-8")
     (output / "index.html").write_text(shell(records), encoding="utf-8")
+    project_manifest = {
+        "schema_version": "1",
+        "source_repository": "sherpa-md/sherpa-kits",
+        "source_commit": source_sha(),
+        "family_count": len(project_families),
+        "build_count": sum(len(family["builds"]) for family in project_families),
+        "submit_url": PROJECT_SUBMIT_URL,
+        "families": project_families,
+    }
+    (output / "projects.json").write_text(
+        json.dumps(project_manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    (output / "projects").mkdir(exist_ok=True)
+    (output / "projects" / "index.html").write_text(
+        shell(records, projects=project_families), encoding="utf-8"
+    )
 
     llms_lines = ["# SherpaMD", "", f"> {len(records)} public Sherpa files. Markdown is the source of truth.", ""]
     for record in records:
@@ -337,7 +451,7 @@ def build(output: Path) -> list[dict]:
     (output / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
 
     sitemap_root = ET.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
-    for route in ["/"] + [record["route"] for record in records]:
+    for route in ["/", "/projects/"] + [record["route"] for record in records]:
         url = ET.SubElement(sitemap_root, "url")
         ET.SubElement(url, "loc").text = PRODUCTION_ORIGIN + route
     ET.ElementTree(sitemap_root).write(output / "sitemap.xml", encoding="utf-8", xml_declaration=True)

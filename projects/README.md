@@ -16,6 +16,7 @@ Two paths are available:
 - **Guided submission:** Open a **Share a community project** issue and provide the requested links, screenshots, testing notes, and credit.
 
 Each project gets its own folder so its files, screenshots, history, and attribution stay together.
+After the pull request passes review and merges, any project folder containing a `README.md` is discovered automatically by the portable site's Community Projects page. No second site catalog needs to be edited.
 
 ## Ground rules
 

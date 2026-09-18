@@ -25,6 +25,8 @@ REQUIRED_FILES = (
     "index.json",
     "llms.txt",
     "ratings.json",
+    "projects.json",
+    "projects/index.html",
     "sitemap.xml",
     "REHOSTING.md",
     "verify-rehost.py",
