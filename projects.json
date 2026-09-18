@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "source_repository": "sherpa-md/sherpa-kits",
+  "source_commit": "83bcc9229e15777e841819b664afd686ef8fb87f",
+  "family_count": 1,
+  "build_count": 0,
+  "submit_url": "https://github.com/sherpa-md/sherpa-kits/issues/new?template=share-community-project.yml",
+  "families": [
+    {
+      "slug": "token-piggy-bank",
+      "title": "Token Piggy Bank Community Builds",
+      "summary": "Different people will visualize and govern model quotas differently. This showcase keeps those versions together without choosing one winner or replacing the canonical kit.",
+      "source_url": "https://github.com/sherpa-md/sherpa-kits/tree/main/projects/token-piggy-bank",
+      "builds": []
+    }
+  ]
+}
