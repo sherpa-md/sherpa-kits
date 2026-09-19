@@ -5,12 +5,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,6 +44,18 @@ def main() -> None:
         fail("duplicate source paths in index")
     if manifest.get("count") != len(expected):
         fail("manifest count does not match public source inventory")
+
+    all_tags: set[str] = set()
+    for item in items:
+        source_text = (ROOT / item["source_path"]).read_text(encoding="utf-8")
+        frontmatter = re.match(r"^---\s*\n(.*?)\n---\s*\n", source_text, re.DOTALL)
+        metadata = yaml.safe_load(frontmatter.group(1)) if frontmatter else {}
+        expected_tags = sorted(metadata.get("tags", [])) if isinstance(metadata, dict) else []
+        if item.get("tags") != expected_tags:
+            fail(f"tag discovery mismatch for {item['source_path']}")
+        if len(item["tags"]) != len(set(item["tags"])):
+            fail(f"duplicate tags in {item['source_path']}")
+        all_tags.update(item["tags"])
 
     projects = json.loads((DIST / "projects.json").read_text(encoding="utf-8"))
     expected_families = sorted(
@@ -158,6 +173,14 @@ def main() -> None:
         if reader_contract not in script:
             fail(f"reader contract is missing: {reader_contract}")
     index_html = (DIST / "index.html").read_text(encoding="utf-8")
+    if 'id="topic-filter"' not in index_html:
+        fail("topic filter is missing from the catalog")
+    for tag in all_tags:
+        if f'<option value="{tag}">{tag}</option>' not in index_html:
+            fail(f"topic filter is missing tag: {tag}")
+    for topic_contract in ('record.tags.join(" ")', 'record.tags.includes(topic)', '"topic-filter"'):
+        if topic_contract not in script:
+            fail(f"topic discovery contract is missing: {topic_contract}")
     for reader_control in ("reader-player", "reader-toggle", "reader-rate", "reader-stop"):
         if f'id="{reader_control}"' not in index_html:
             fail(f"reader control is missing: {reader_control}")
@@ -246,6 +269,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
+    print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")
     print(f"[PASS] community project discovery: {len(expected_families)} families / {len(expected_builds)} builds")
     print("[PASS] repository data uses DOM-safe rendering")
     print("[PASS] rehost updater verifies, installs atomically, reruns idempotently, and fails closed")
