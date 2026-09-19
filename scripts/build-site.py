@@ -89,6 +89,25 @@ def first_summary(body: str, fallback: str) -> str:
     return fallback
 
 
+def normalize_tags(value: object, source_path: str) -> list[str]:
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError(f"tags must be a list: {source_path}")
+    tags: list[str] = []
+    seen: set[str] = set()
+    for raw_tag in value:
+        if not isinstance(raw_tag, str):
+            raise ValueError(f"tag must be text: {source_path}")
+        tag = raw_tag.strip().lower()
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,62}[a-z0-9]?", tag):
+            raise ValueError(f"unsafe tag {raw_tag!r}: {source_path}")
+        if tag not in seen:
+            seen.add(tag)
+            tags.append(tag)
+    return sorted(tags)
+
+
 def load_catalog() -> tuple[dict[str, dict], dict[str, dict]]:
     catalog = json.loads((REPO_ROOT / "catalog.json").read_text(encoding="utf-8"))
     by_path: dict[str, dict] = {}
@@ -163,6 +182,7 @@ def discover() -> list[dict]:
                 or metadata.get("description")
                 or first_summary(body, f"Open {title} to review the complete Sherpa instructions.")
             )
+            tags = normalize_tags(metadata.get("tags", catalog_item.get("tags")), relative_path)
             raw_url = "/raw/" + relative_path
             route = route_for(relative_path)
             records.append(
@@ -173,6 +193,7 @@ def discover() -> list[dict]:
                     "title": title,
                     "summary": summary,
                     "domain": domain,
+                    "tags": tags,
                     "version": version,
                     "status": status,
                     "verification_state": verification,
@@ -294,6 +315,10 @@ def shell(
     records: list[dict], *, detail: dict | None = None, projects: list[dict] | None = None
 ) -> str:
     payload = [{key: value for key, value in record.items() if key != "raw"} for record in records]
+    topic_options = "".join(
+        f'<option value="{html.escape(tag, quote=True)}">{html.escape(tag)}</option>'
+        for tag in sorted({tag for record in records for tag in record["tags"]})
+    )
     detail_title = (
         "Community Projects" if projects is not None else detail["title"] if detail else "Browse Sherpas"
     )
@@ -314,7 +339,7 @@ def shell(
         '<main id="main" class="page"><section class="detail-shell" id="detail-root" '
         f'data-detail-key="{html.escape(detail_key, quote=True)}"></section></main>'
         if detail
-        else """<main id="main" class="page">
+        else f"""<main id="main" class="page">
   <section class="catalog-intro" aria-labelledby="catalog-title">
     <div><p class="eyebrow">MD means Markdown</p><h1 id="catalog-title">Find a Sherpa. Build the outcome.</h1><p>Portable guides that people can read and capable AI agents can execute.</p></div>
     <div class="bundle-actions" aria-label="Download options">
@@ -326,6 +351,7 @@ def shell(
     <label class="search-field"><span>Search</span><input id="search" type="search" placeholder="Try photos, private data, Discord…" autocomplete="off"></label>
     <label><span>Type</span><select id="kind-filter"><option value="">All types</option><option value="handoff">Handoffs</option><option value="kit">Kits</option><option value="candidate">Candidates</option></select></label>
     <label><span>Verification</span><select id="verification-filter"><option value="">All states</option><option value="verified">Verified</option><option value="unverified">Unverified</option><option value="needs-retest">Needs retest</option></select></label>
+    <label><span>Topic</span><select id="topic-filter"><option value="">All topics</option>{topic_options}</select></label>
   </section>
   <p class="results-summary" id="results-summary" aria-live="polite"></p>
   <section class="card-grid" id="catalog-grid" aria-label="Sherpa catalog"></section>
