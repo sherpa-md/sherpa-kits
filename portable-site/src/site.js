@@ -318,6 +318,30 @@
     return row;
   }
 
+  function tagFragment(record, limit = 4) {
+    if (!record.tags.length) return document.createDocumentFragment();
+    const row = document.createElement("div");
+    row.className = "tag-list";
+    row.setAttribute("aria-label", "Topics");
+    row.setAttribute("role", "list");
+    record.tags.slice(0, limit).forEach((tag) => {
+      const node = document.createElement("span");
+      node.className = "tag";
+      node.setAttribute("role", "listitem");
+      node.textContent = `#${tag}`;
+      row.append(node);
+    });
+    if (record.tags.length > limit) {
+      const more = document.createElement("span");
+      more.className = "tag tag--more";
+      more.setAttribute("role", "listitem");
+      more.textContent = `+${record.tags.length - limit} more`;
+      more.title = record.tags.slice(limit).join(", ");
+      row.append(more);
+    }
+    return row;
+  }
+
   function card(record) {
     const article = document.createElement("article");
     article.className = "sherpa-card";
@@ -332,7 +356,7 @@
     badges.append(badge(record.kind), badge(record.verification_state, `badge--${record.verification_state}`), badge(record.status, `badge--${record.status}`));
     const summary = document.createElement("p");
     summary.textContent = record.summary;
-    article.append(heading, badges, summary, actions(record), ratingFragment(record));
+    article.append(heading, badges, summary, tagFragment(record), actions(record), ratingFragment(record));
     return article;
   }
 
@@ -342,9 +366,10 @@
     const query = byId("search").value.trim().toLocaleLowerCase();
     const kind = byId("kind-filter").value;
     const verification = byId("verification-filter").value;
+    const topic = byId("topic-filter").value;
     const filtered = records.filter((record) => {
-      const haystack = `${record.title} ${record.summary} ${record.domain} ${record.source_path}`.toLocaleLowerCase();
-      return (!query || haystack.includes(query)) && (!kind || record.kind === kind) && (!verification || record.verification_state === verification);
+      const haystack = `${record.title} ${record.summary} ${record.domain} ${record.source_path} ${record.tags.join(" ")}`.toLocaleLowerCase();
+      return (!query || haystack.includes(query)) && (!kind || record.kind === kind) && (!verification || record.verification_state === verification) && (!topic || record.tags.includes(topic));
     });
     grid.replaceChildren(...filtered.map(card));
     byId("results-summary").textContent = `${filtered.length} of ${records.length} Sherpa files`;
@@ -374,7 +399,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, actions(record), ratingFragment(record), path);
+    article.append(eyebrow, title, summary, badges, tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path);
     root.replaceChildren(back, article);
   }
 
@@ -405,7 +430,7 @@
   window.addEventListener("beforeunload", () => speechEngine?.cancel());
 
   if (byId("catalog-grid")) {
-    ["search", "kind-filter", "verification-filter"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
+    ["search", "kind-filter", "verification-filter", "topic-filter"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
     document.addEventListener("ratings-ready", renderCatalog);
     renderCatalog();
   }
