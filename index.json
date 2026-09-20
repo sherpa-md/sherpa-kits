@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source_repository": "sherpa-md/sherpa-kits",
-  "source_commit": "83bcc9229e15777e841819b664afd686ef8fb87f",
+  "source_commit": "d1cfa2dd70e7330940dfaaebcc3a559b4df518aa",
   "count": 24,
   "items": [
     {
@@ -11,6 +11,14 @@
       "title": "Agent Outcome QA Harness — Evidence, Safety, Cost, and Repeatability",
       "summary": "Install a test and production-observation harness that evaluates agents against externally verifiable outcomes, policy compliance, evidence quality, recovery behavior, latency, and cost. It produces comparable scorecards across agent/mod…",
       "domain": "agent-evaluation",
+      "tags": [
+        "agents",
+        "evaluation",
+        "outcomes",
+        "qa",
+        "safety",
+        "telemetry"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -27,6 +35,14 @@
       "title": "Approved Private Data Analyst — Permission-Aware Company Intelligence",
       "summary": "Install a governed analysis layer that can answer cross-source business questions, calculate metrics, surface contradictions, and draft decision briefs while preserving the requesting user's existing permissions.",
       "domain": "enterprise-ai-governance",
+      "tags": [
+        "audit",
+        "citations",
+        "copilot",
+        "permissions",
+        "private-data",
+        "rag"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -43,6 +59,13 @@
       "title": "Approved-Model Routing Gateway — Policy-Bound AI Execution",
       "summary": "Install a deterministic gateway between users/agents and AI providers. The gateway classifies the requested task and declared data, resolves an approved route, minimizes the payload, issues scoped capabilities, validates outputs, and rec…",
       "domain": "ai-control-plane",
+      "tags": [
+        "approved-models",
+        "data-boundary",
+        "least-privilege",
+        "policy",
+        "routing"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -59,6 +82,13 @@
       "title": "Estimate-vs-Actuals Analyst — Calibrated Forecast Learning",
       "summary": "Install a governed learning loop that compares historical estimates with actual cost, time, quantity, labor, or outcome data; explains systematic error; recommends bounded adjustment factors; and measures whether later estimates improve.",
       "domain": "forecast-intelligence",
+      "tags": [
+        "actuals",
+        "calibration",
+        "estimates",
+        "forecasting",
+        "private-data"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -75,6 +105,13 @@
       "title": "Evidence-Bound Decision Engine — Cited Options, Uncertainty, and Approval",
       "summary": "Install a decision workflow that turns a decision question and authorized evidence into a reviewable packet: decision frame, constraints, options, claim ledger, scored tradeoffs, sensitivity analysis, dissent, recommendation, approval, a…",
       "domain": "decision-intelligence",
+      "tags": [
+        "approval",
+        "decisions",
+        "evidence",
+        "provenance",
+        "uncertainty"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -91,6 +128,13 @@
       "title": "Human-Verified Document Automation — Typed Extraction and Controlled Filing",
       "summary": "Install a document workflow that turns approved inbound documents into structured records and controlled downstream drafts. It supports invoices, receipts, forms, reports, certificates, contracts, applications, and correspondence without…",
       "domain": "document-operations",
+      "tags": [
+        "documents",
+        "extraction",
+        "filing",
+        "human-review",
+        "workflow"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -107,6 +151,13 @@
       "title": "Incident Replay and Root-Cause Builder — Evidence-Preserving Investigation",
       "summary": "Install an investigation system that ingests authorized logs, traces, tickets, chat excerpts, deployment records, sensor events, and operator notes; normalizes them into an immutable event graph; proposes and tests root-cause hypotheses;…",
       "domain": "incident-analysis",
+      "tags": [
+        "corrective-actions",
+        "incident",
+        "root-cause",
+        "telemetry",
+        "timeline"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -123,6 +174,13 @@
       "title": "Institutional Memory Builder — Permission-Aware Living Knowledge",
       "summary": "Install a living memory system that discovers authoritative artifacts, extracts atomic knowledge, links decisions to their evidence and owners, detects contradictions, expires stale claims, and answers questions within the requester's pe…",
       "domain": "knowledge-governance",
+      "tags": [
+        "freshness",
+        "knowledge",
+        "memory",
+        "permissions",
+        "provenance"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -139,6 +197,14 @@
       "title": "Picture-to-Structured-Work — Multimodal Evidence and Transformation Pipeline",
       "summary": "Install a pipeline that accepts an image and a declared job, then produces inspectable evidence plus a domain-specific work product. Examples:",
       "domain": "multimodal-automation",
+      "tags": [
+        "human-review",
+        "images",
+        "ocr",
+        "provenance",
+        "structured-data",
+        "vision"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -155,6 +221,14 @@
       "title": "Planned-vs-Actual Reconciler — Explainable Variance and Change Ledger",
       "summary": "Install an evidence-preserving reconciliation engine for projects, productions, deployments, logistics, construction, or other time-bound operations. It normalizes the baseline plan, records authorized revisions, aligns actual events, ca…",
       "domain": "operational-intelligence",
+      "tags": [
+        "actual",
+        "operations",
+        "plan",
+        "provenance",
+        "timeline",
+        "variance"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -171,6 +245,17 @@
       "title": "Discord Bot Fleet & SillyTavern Voice Bridge — Safe Multi-Agent Text and Voice",
       "summary": "Build or hand off a Discord fleet in which several AI bots can share a server without answering for each other, forming acknowledgement loops, exposing credentials, or falsely claiming that voice-chat conversation performed computer work…",
       "domain": "conversational-agent-operations",
+      "tags": [
+        "dave-e2ee",
+        "discord",
+        "incident-response",
+        "loop-guard",
+        "multi-agent",
+        "sillytavern",
+        "speech-to-text",
+        "text-to-speech",
+        "voice-bots"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -187,6 +272,7 @@
       "title": "Living Forward Deployed Engineering Learning Track",
       "summary": "Give this file to the agent responsible for learn.BeeRad.buzz, SherpaMD learning content, or any worker researching Forward Deployed Engineering. The goal is not to reproduce or pirate any paid curriculum. The goal is to build a continua…",
       "domain": "general",
+      "tags": [],
       "version": "unversioned",
       "status": "draft",
       "verification_state": "unverified",
@@ -203,6 +289,7 @@
       "title": "Portable Agent Handoff",
       "summary": "Give this entire file to your coding agent. Replace the marked placeholders with your own values. Do not paste credentials into this file.",
       "domain": "agent-onboarding",
+      "tags": [],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -219,6 +306,7 @@
       "title": "Raspberry Pi 4 + Ox Alpha",
       "summary": "This installs OpenCode on a 64-bit Raspberry Pi 4 and sets its default model to OpenCode Zen's free Ox Alpha model. The Pi supplies the files and tools; the AI model runs in the cloud.",
       "domain": "general",
+      "tags": [],
       "version": "unversioned",
       "status": "draft",
       "verification_state": "unverified",
@@ -235,6 +323,7 @@
       "title": "Token Piggy Bank — Sherpa",
       "summary": "Install a Token Piggy Bank: a vendor-neutral quota, budget, routing, and value governor for one or more LLM providers.",
       "domain": "fleet-operations",
+      "tags": [],
       "version": "1.0.0",
       "status": "active",
       "verification_state": "verified",
@@ -251,6 +340,13 @@
       "title": "AI-to-AI Bus — Inter-Agent Coordination & Durable Event Routing",
       "summary": "The AI-to-AI Bus provides an asynchronous, durable coordination backbone and message exchange layer for multi-agent autonomous fleets.",
       "domain": "fleet-coordination",
+      "tags": [
+        "durable-messaging",
+        "event-routing",
+        "inter-agent-bus",
+        "lifecycle-tracking",
+        "watchdog"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -267,6 +363,14 @@
       "title": "Bounded Agent Control Plane — Safe MCP & API Execution Gateway",
       "summary": "The Bounded Agent Control Plane defines security boundaries, operational guardrails, and implementation patterns for mediating interactions between autonomous Large Language Model LLM agents and local or remote operating environments.",
       "domain": "agent-security",
+      "tags": [
+        "action-auditing",
+        "control-plane",
+        "least-privilege",
+        "mcp",
+        "secret-redaction",
+        "tool-allowlist"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -283,6 +387,14 @@
       "title": "Context Vault & Token Efficiency — Living Knowledge & Model Tiering",
       "summary": "The Context Vault & Token Efficiency kit establishes an anti-rot knowledge architecture and cost-optimized execution framework for autonomous multi-agent systems.",
       "domain": "agent-memory-optimization",
+      "tags": [
+        "anti-rot",
+        "cheapest-adequate-model",
+        "context-efficiency",
+        "knowledge-vault",
+        "outcome-ledger",
+        "token-optimization"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -299,6 +411,11 @@
       "title": "Core Fleet & Multi-Agent Coordination",
       "summary": "Defines the multi-agent node topology, communication mechanisms, and coordination rules for distributed agent operations.",
       "domain": "fleet-ops",
+      "tags": [
+        "coordination",
+        "fleet-ops",
+        "nodes"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -315,6 +432,17 @@
       "title": "Discord Bot Fleet & SillyTavern Voice Bridge — Safe Multi-Agent Text and Voice",
       "summary": "Build or hand off a Discord fleet in which several AI bots can share a server without answering for each other, forming acknowledgement loops, exposing credentials, or falsely claiming that voice-chat conversation performed computer work…",
       "domain": "conversational-agent-operations",
+      "tags": [
+        "dave-e2ee",
+        "discord",
+        "incident-response",
+        "loop-guard",
+        "multi-agent",
+        "sillytavern",
+        "speech-to-text",
+        "text-to-speech",
+        "voice-bots"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -331,6 +459,14 @@
       "title": "Hermes LLM Wiki & Vault Architecture",
       "summary": "This domain kit defines the Hermes Knowledge Vault and Multi-Agent Coordination Architecture across distributed agent topologies:",
       "domain": "fleet-knowledge",
+      "tags": [
+        "anti-rot",
+        "ffb",
+        "fleet-coordination",
+        "hermes",
+        "llm-wiki",
+        "vault"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -347,6 +483,14 @@
       "title": "Multi-LLM Watchdog — Provider Health, Quota Telemetry & Deduplicated Alerts",
       "summary": "The Multi-LLM Watchdog provides continuous health monitoring, quota cadence observation, failure isolation, and deduplicated alerting across heterogeneous LLM provider fleets.",
       "domain": "llm-observability",
+      "tags": [
+        "alert-deduplication",
+        "confidence-labels",
+        "model-watchdog",
+        "provider-health",
+        "quota-telemetry",
+        "read-only-dashboard"
+      ],
       "version": "0.1.0",
       "status": "active",
       "verification_state": "verified",
@@ -363,6 +507,14 @@
       "title": "Portable Agent Handoff & Workspace Bootstrap",
       "summary": "This kit creates a portable, sanitized handoff that another person can give to a coding agent to establish a local workspace, verify GitHub access, and optionally connect to an existing coordination bus.",
       "domain": "agent-onboarding",
+      "tags": [
+        "ai-to-ai-bus",
+        "github",
+        "handoff",
+        "onboarding",
+        "sanitized-sharing",
+        "workspace-bootstrap"
+      ],
       "version": "0.1.0",
       "status": "draft",
       "verification_state": "unverified",
@@ -379,6 +531,13 @@
       "title": "Token Piggy Bank — LLM Quota & Value Governor",
       "summary": "The Token Piggy Bank provides deterministic quota governance, real-time burn pacing, reserve headroom protection, multi-tier routing, and outcome-based token accounting across multi-agent workflows.",
       "domain": "fleet-operations",
+      "tags": [
+        "agent-fleet",
+        "burn-rate",
+        "llm-routing",
+        "quota-management",
+        "token-governance"
+      ],
       "version": "1.0.0",
       "status": "active",
       "verification_state": "verified",
