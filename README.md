@@ -6,6 +6,14 @@
 
 Sherpa files are descriptive Markdown handoffs that a person can read and an AI can follow.
 
+## Quick downloads
+
+- **[Download every Sherpa Markdown file](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-sherpas.zip)** — the latest validated `.sherpa.md` files in one ZIP.
+- **[Download the complete rehostable site](https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip)** — the catalog, detail pages, raw files, search data, archives, updater, and verifier.
+- **[Read the rehosting guide](https://github.com/sherpa-md/sherpa-kits/blob/portable-site/REHOSTING.md)** — preview locally, publish to any static host, verify the mirror, and update it safely.
+
+These stable links follow the generated `portable-site` snapshot, which advances only after `main` passes repository and site-parity validation. GitHub `main` remains the source of truth.
+
 ## Start here
 
 | What you want | Where to go |
@@ -17,7 +25,7 @@ Sherpa files are descriptive Markdown handoffs that a person can read and an AI 
 | Create your own Sherpa file | **[sherpa-kit-template](https://github.com/sherpa-md/sherpa-kit-template)** |
 | Understand the SherpaMD format | **[sherpa-spec](https://github.com/sherpa-md/sherpa-spec)** |
 | Contribute a file or correction | **[CONTRIBUTING.md](./CONTRIBUTING.md)** |
-| Download or rehost the complete catalog | **[portable-site/](./portable-site/)** |
+| Download or rehost the complete catalog | **[Quick downloads](#quick-downloads)** |
 
 ## Available Sherpa files
 
@@ -35,7 +43,7 @@ Shareable files use this naming format:
 | [`DiscordBotFleetSillyTavern.sherpa.md`](./handoffs/DiscordBotFleetSillyTavern.sherpa.md) | Builds a loop-safe Discord text-agent fleet and SillyTavern-compatible multi-character voice bridge | Verified |
 | [`FDELearningTrack.sherpa.md`](./handoffs/FDELearningTrack.sherpa.md) | Guides an agent to build a living, source-linked Forward Deployed Engineering curriculum | Draft; unverified |
 
-Each Sherpa file is available individually. A bundle is created only when somebody specifically requests one.
+Each Sherpa file remains available individually. The validated snapshot also publishes the optional all-Sherpas ZIP linked above.
 
 ## Supporting kits
 
