@@ -152,6 +152,31 @@
     }
   }
 
+  function shareHref(record) {
+    const url = new URL(routeHref(record.route), window.location.href);
+    url.pathname = url.pathname.replace(/index\.html$/, "");
+    return url.toString();
+  }
+
+  async function shareRecord(record) {
+    const url = shareHref(record);
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${record.title} — SherpaMD`,
+          text: record.summary,
+          url,
+        });
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+        // Unsupported or blocked share sheets fall back to copying the stable link.
+      }
+    }
+    const copied = await writeClipboard(url);
+    toast(copied ? "Sherpa link copied." : "Share failed. Copy the page address instead.");
+  }
+
   function speechText(markdown) {
     return markdown
       .replace(/^---\s*\n[\s\S]*?\n---\s*\n/, "")
@@ -303,6 +328,9 @@
     listenButton.addEventListener("click", () => listen(record));
     const copyButton = button("Use with AI", "button button--primary");
     copyButton.addEventListener("click", () => copyForAI(record));
+    const shareButton = button("Share");
+    shareButton.title = "Share this Sherpa or copy its stable link";
+    shareButton.addEventListener("click", () => shareRecord(record));
     const download = document.createElement("a");
     download.className = "button";
     download.href = rawHref(record.raw_url);
@@ -314,7 +342,7 @@
     source.target = "_blank";
     source.rel = "noopener";
     source.textContent = "GitHub";
-    row.append(previewButton, listenButton, copyButton, download, source);
+    row.append(previewButton, listenButton, copyButton, shareButton, download, source);
     return row;
   }
 
