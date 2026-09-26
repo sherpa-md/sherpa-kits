@@ -78,7 +78,7 @@ nav a:hover { background: var(--paper-2); color: var(--ink); }
 .tag { padding: .12rem .42rem; border-radius: 999px; background: var(--paper-2); color: var(--soft-ink); font-size: .74rem; }
 .tag--more { border: 1px dashed var(--line); background: transparent; }
 .card-actions { margin-top: auto; }
-.card-actions .button { min-height: 38px; padding: .38rem .6rem; font-size: .84rem; }
+.card-actions .button { min-height: 44px; padding: .38rem .6rem; font-size: .84rem; }
 .rating-row { color: var(--soft-ink); font-size: .82rem; }
 .stars { letter-spacing: .04em; color: var(--amber); font-size: 1.05rem; }
 .rating-button { border: 0; background: transparent; color: var(--amber); padding: 0; min-width: 34px; min-height: 34px; cursor: pointer; font-size: 1.25rem; }
