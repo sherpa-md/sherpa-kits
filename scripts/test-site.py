@@ -140,6 +140,15 @@ def main() -> None:
         fail("Use with AI must support secure and portable clipboard paths")
     if 'if (!copied) throw new Error("clipboard unavailable")' not in script:
         fail("Use with AI must not report an unconfirmed copy")
+    for share_contract in (
+        "navigator.share",
+        'error?.name === "AbortError"',
+        "writeClipboard(url)",
+        'button("Share")',
+        'url.pathname.replace(/index\\.html$/, "")',
+    ):
+        if share_contract not in script:
+            fail(f"mobile share contract is missing: {share_contract}")
     ratings = json.loads((DIST / "ratings.json").read_text(encoding="utf-8"))
     if ratings.get("submit_url") != "https://github.com/sherpa-md/sherpa-kits/issues/new?template=rate-sherpa.yml":
         fail("official ratings snapshot must use the moderated GitHub issue form")
@@ -163,6 +172,8 @@ def main() -> None:
     stylesheet = (DIST / "assets" / "site.css").read_text(encoding="utf-8")
     if ".rating-link" not in stylesheet or "min-height: 44px" not in stylesheet:
         fail("rating submission link must keep a mobile-safe touch target")
+    if ".card-actions .button { min-height: 44px" not in stylesheet:
+        fail("Sherpa actions must keep mobile-safe touch targets")
     for reader_contract in (
         "SpeechSynthesisUtterance",
         "speechEngine.pause()",
@@ -267,6 +278,7 @@ def main() -> None:
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
+    print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")
