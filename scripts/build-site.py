@@ -335,6 +335,8 @@ def shell(
     body_class = "projects-page" if projects is not None else "detail-page" if detail else "catalog-page"
     detail_key = detail["key"] if detail else ""
     canonical = PRODUCTION_ORIGIN + route
+    page_title = f"{detail_title} — SherpaMD"
+    social_type = "article" if detail else "website"
     content = project_content(projects) if projects is not None else (
         '<main id="main" class="page"><section class="detail-shell" id="detail-root" '
         f'data-detail-key="{html.escape(detail_key, quote=True)}"></section></main>'
@@ -364,8 +366,16 @@ def shell(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>{html.escape(detail_title)} — SherpaMD</title>
+  <title>{html.escape(page_title)}</title>
   <meta name="description" content="{html.escape(description, quote=True)}">
+  <meta property="og:site_name" content="SherpaMD">
+  <meta property="og:type" content="{social_type}">
+  <meta property="og:title" content="{html.escape(page_title, quote=True)}">
+  <meta property="og:description" content="{html.escape(description, quote=True)}">
+  <meta property="og:url" content="{html.escape(canonical, quote=True)}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{html.escape(page_title, quote=True)}">
+  <meta name="twitter:description" content="{html.escape(description, quote=True)}">
   <link rel="canonical" href="{html.escape(canonical, quote=True)}">
   <link rel="stylesheet" href="{asset_prefix}">
 </head>
