@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import json
 import re
 import shutil
@@ -93,6 +94,22 @@ def main() -> None:
         source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
         if source_hash != item["sha256"] or source.read_bytes() != raw.read_bytes():
             fail(f"hash/copy mismatch for {item['source_path']}")
+        detail_html = detail.read_text(encoding="utf-8")
+        social_title = html.escape(f"{item['title']} — SherpaMD", quote=True)
+        social_description = html.escape(item["summary"], quote=True)
+        canonical_url = f"https://sherpamd.org{item['route']}"
+        for social_contract in (
+            '<meta property="og:site_name" content="SherpaMD">',
+            '<meta property="og:type" content="article">',
+            f'<meta property="og:title" content="{social_title}">',
+            f'<meta property="og:description" content="{social_description}">',
+            f'<meta property="og:url" content="{canonical_url}">',
+            '<meta name="twitter:card" content="summary">',
+            f'<meta name="twitter:title" content="{social_title}">',
+            f'<meta name="twitter:description" content="{social_description}">',
+        ):
+            if social_contract not in detail_html:
+                fail(f"social preview metadata mismatch for {item['source_path']}")
 
     with zipfile.ZipFile(DIST / "all-sherpas.zip") as archive:
         if sorted(archive.namelist()) != expected:
@@ -279,6 +296,7 @@ def main() -> None:
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
+    print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")
