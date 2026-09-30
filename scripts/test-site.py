@@ -110,6 +110,15 @@ def main() -> None:
         ):
             if social_contract not in detail_html:
                 fail(f"social preview metadata mismatch for {item['source_path']}")
+        for agent_guide_contract in (
+            '<details class="agent-guide">',
+            "Check its state.",
+            "Select Use with AI.",
+            "approved AI environment",
+            "tests and evidence",
+        ):
+            if agent_guide_contract not in detail_html:
+                fail(f"AI agent usage guide is missing for {item['source_path']}")
 
     with zipfile.ZipFile(DIST / "all-sherpas.zip") as archive:
         if sorted(archive.namelist()) != expected:
@@ -201,6 +210,17 @@ def main() -> None:
         if reader_contract not in script:
             fail(f"reader contract is missing: {reader_contract}")
     index_html = (DIST / "index.html").read_text(encoding="utf-8")
+    for explainer_contract in (
+        'aria-labelledby="how-sherpas-work"',
+        'id="how-sherpas-work"',
+        "A Sherpa is readable Markdown—not an app by itself.",
+        "Choose and check.",
+        "Give it to your AI.",
+        "Build safely and verify.",
+        "approved AI environment",
+    ):
+        if explainer_contract not in index_html:
+            fail(f"Sherpa usage explainer is missing: {explainer_contract}")
     if 'id="topic-filter"' not in index_html:
         fail("topic filter is missing from the catalog")
     for tag in all_tags:
@@ -297,6 +317,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
+    print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")

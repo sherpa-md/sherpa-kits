@@ -337,9 +337,17 @@ def shell(
     canonical = PRODUCTION_ORIGIN + route
     page_title = f"{detail_title} — SherpaMD"
     social_type = "article" if detail else "website"
+    detail_agent_guide = """<details class="agent-guide">
+  <summary>How to use this Sherpa with an AI agent</summary>
+  <ol>
+    <li><strong>Check its state.</strong> Verified means evidence exists; draft or unverified means the outcome still needs proof.</li>
+    <li><strong>Select Use with AI.</strong> Paste the copied execution request and Sherpa into a capable agent that can inspect your environment.</li>
+    <li><strong>Protect the boundary.</strong> Keep private or company data inside an approved AI environment, approve sensitive actions, and require tests and evidence before accepting completion.</li>
+  </ol>
+</details>"""
     content = project_content(projects) if projects is not None else (
-        '<main id="main" class="page"><section class="detail-shell" id="detail-root" '
-        f'data-detail-key="{html.escape(detail_key, quote=True)}"></section></main>'
+        '<main id="main" class="page"><div class="detail-shell"><section id="detail-root" '
+        f'data-detail-key="{html.escape(detail_key, quote=True)}"></section>{detail_agent_guide}</div></main>'
         if detail
         else f"""<main id="main" class="page">
   <section class="catalog-intro" aria-labelledby="catalog-title">
@@ -348,6 +356,14 @@ def shell(
       <a class="button button--primary" href="all-sherpas.zip" download>Download all Sherpas</a>
       <a class="button" href="sherpamd-portable-site.zip" download>Download this site</a>
     </div>
+  </section>
+  <section class="how-it-works" aria-labelledby="how-sherpas-work">
+    <div class="how-it-works__heading"><p class="eyebrow">Portable build guides</p><h2 id="how-sherpas-work">How SherpaMD works</h2><p>A Sherpa is readable Markdown—not an app by itself. A capable AI agent uses it as a bounded build and validation plan.</p></div>
+    <ol class="how-it-works__steps">
+      <li><strong>Choose and check.</strong><span>Pick the outcome you want and read its verification badges. Draft and unverified work still needs proof.</span></li>
+      <li><strong>Give it to your AI.</strong><span>Select <b>Use with AI</b>, then paste the copied request into an agent that can inspect your environment and build software.</span></li>
+      <li><strong>Build safely and verify.</strong><span>Keep private data in an approved AI environment, approve sensitive actions, and require tests and evidence before accepting completion.</span></li>
+    </ol>
   </section>
   <section class="catalog-tools" aria-label="Find Sherpas">
     <label class="search-field"><span>Search</span><input id="search" type="search" placeholder="Try photos, private data, Discord…" autocomplete="off"></label>
