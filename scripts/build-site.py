@@ -370,6 +370,7 @@ def shell(
     <label><span>Type</span><select id="kind-filter"><option value="">All types</option><option value="handoff">Handoffs</option><option value="kit">Kits</option><option value="candidate">Candidates</option></select></label>
     <label><span>Verification</span><select id="verification-filter"><option value="">All states</option><option value="verified">Verified</option><option value="unverified">Unverified</option><option value="needs-retest">Needs retest</option></select></label>
     <label><span>Topic</span><select id="topic-filter"><option value="">All topics</option>{topic_options}</select></label>
+    <label><span>Sort</span><select id="sort-order"><option value="verified-first">Verified first</option><option value="newest">Newest files</option><option value="title">Title A–Z</option></select></label>
   </section>
   <p class="results-summary" id="results-summary" aria-live="polite"></p>
   <section class="card-grid" id="catalog-grid" aria-label="Sherpa catalog"></section>
