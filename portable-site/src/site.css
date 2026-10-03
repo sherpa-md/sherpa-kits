@@ -67,7 +67,7 @@ nav a:hover { background: var(--paper-2); color: var(--ink); }
 .how-it-works__steps li::before { content: counter(sherpa-step); display: grid; place-items: center; width: 1.65rem; height: 1.65rem; margin-bottom: .45rem; border-radius: 50%; background: var(--peak); color: var(--snow); font-size: .78rem; font-weight: 800; }
 .how-it-works__steps strong, .how-it-works__steps span { display: block; }
 .how-it-works__steps span { margin-top: .25rem; color: var(--soft-ink); font-size: .9rem; }
-.catalog-tools { display: grid; grid-template-columns: minmax(240px, 2fr) repeat(3, minmax(145px, 1fr)); gap: .75rem; padding: .9rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: 0 2px 7px rgba(20, 33, 61, .04); }
+.catalog-tools { display: grid; grid-template-columns: minmax(220px, 2fr) repeat(4, minmax(125px, 1fr)); gap: .75rem; padding: .9rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: 0 2px 7px rgba(20, 33, 61, .04); }
 .catalog-tools label { display: grid; gap: .3rem; color: var(--soft-ink); font-size: .87rem; font-weight: 700; }
 .catalog-tools input, .catalog-tools select { width: 100%; min-height: 46px; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); }
 .results-summary { min-height: 1.5rem; margin: .85rem 0 .4rem; color: var(--soft-ink); }

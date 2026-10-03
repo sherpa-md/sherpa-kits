@@ -229,6 +229,21 @@ def main() -> None:
     for topic_contract in ('record.tags.join(" ")', 'record.tags.includes(topic)', '"topic-filter"'):
         if topic_contract not in script:
             fail(f"topic discovery contract is missing: {topic_contract}")
+    for sort_option in (
+        '<option value="verified-first">Verified first</option>',
+        '<option value="newest">Newest files</option>',
+        '<option value="title">Title A–Z</option>',
+    ):
+        if sort_option not in index_html:
+            fail(f"catalog sort option is missing: {sort_option}")
+    for sort_contract in (
+        "function compareRecords(",
+        'right.verification_state === "verified"',
+        "right.date.localeCompare(left.date)",
+        '"sort-order"',
+    ):
+        if sort_contract not in script:
+            fail(f"catalog sorting contract is missing: {sort_contract}")
     for reader_control in ("reader-player", "reader-toggle", "reader-rate", "reader-stop"):
         if f'id="{reader_control}"' not in index_html:
             fail(f"reader control is missing: {reader_control}")

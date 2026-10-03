@@ -388,6 +388,14 @@
     return article;
   }
 
+  function compareRecords(left, right, order) {
+    const byTitle = left.title.localeCompare(right.title, undefined, { sensitivity: "base" });
+    if (order === "title") return byTitle;
+    if (order === "newest") return right.date.localeCompare(left.date) || byTitle;
+    const verifiedDifference = Number(right.verification_state === "verified") - Number(left.verification_state === "verified");
+    return verifiedDifference || byTitle;
+  }
+
   function renderCatalog() {
     const grid = byId("catalog-grid");
     if (!grid) return;
@@ -395,10 +403,11 @@
     const kind = byId("kind-filter").value;
     const verification = byId("verification-filter").value;
     const topic = byId("topic-filter").value;
+    const sortOrder = byId("sort-order").value;
     const filtered = records.filter((record) => {
       const haystack = `${record.title} ${record.summary} ${record.domain} ${record.source_path} ${record.tags.join(" ")}`.toLocaleLowerCase();
       return (!query || haystack.includes(query)) && (!kind || record.kind === kind) && (!verification || record.verification_state === verification) && (!topic || record.tags.includes(topic));
-    });
+    }).sort((left, right) => compareRecords(left, right, sortOrder));
     grid.replaceChildren(...filtered.map(card));
     byId("results-summary").textContent = `${filtered.length} of ${records.length} Sherpa files`;
     byId("empty-state").hidden = filtered.length !== 0;
@@ -458,7 +467,7 @@
   window.addEventListener("beforeunload", () => speechEngine?.cancel());
 
   if (byId("catalog-grid")) {
-    ["search", "kind-filter", "verification-filter", "topic-filter"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
+    ["search", "kind-filter", "verification-filter", "topic-filter", "sort-order"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
     document.addEventListener("ratings-ready", renderCatalog);
     renderCatalog();
   }
