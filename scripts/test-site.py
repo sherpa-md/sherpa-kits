@@ -54,6 +54,9 @@ def main() -> None:
         expected_tags = sorted(metadata.get("tags", [])) if isinstance(metadata, dict) else []
         if item.get("tags") != expected_tags:
             fail(f"tag discovery mismatch for {item['source_path']}")
+        expected_last_verified = metadata.get("last_verified") if isinstance(metadata, dict) else None
+        if item.get("last_verified") != expected_last_verified:
+            fail(f"assessment date mismatch for {item['source_path']}")
         if len(item["tags"]) != len(set(item["tags"])):
             fail(f"duplicate tags in {item['source_path']}")
         all_tags.update(item["tags"])
@@ -231,7 +234,7 @@ def main() -> None:
             fail(f"topic discovery contract is missing: {topic_contract}")
     for sort_option in (
         '<option value="verified-first">Verified first</option>',
-        '<option value="newest">Newest files</option>',
+        '<option value="assessed">Recently assessed</option>',
         '<option value="title">Title A–Z</option>',
     ):
         if sort_option not in index_html:
@@ -239,11 +242,19 @@ def main() -> None:
     for sort_contract in (
         "function compareRecords(",
         'right.verification_state === "verified"',
-        "right.date.localeCompare(left.date)",
+        '(right.last_verified || "").localeCompare(left.last_verified || "")',
         '"sort-order"',
     ):
         if sort_contract not in script:
             fail(f"catalog sorting contract is missing: {sort_contract}")
+    for assessment_contract in (
+        "function assessmentFragment(",
+        'row.append("Last assessed: ")',
+        'row.append("not recorded")',
+        "assessmentFragment(record)",
+    ):
+        if assessment_contract not in script:
+            fail(f"assessment date contract is missing: {assessment_contract}")
     for reader_control in ("reader-player", "reader-toggle", "reader-rate", "reader-stop"):
         if f'id="{reader_control}"' not in index_html:
             fail(f"reader control is missing: {reader_control}")

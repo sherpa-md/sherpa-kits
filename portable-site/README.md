@@ -26,7 +26,9 @@ The generated `/projects/` page discovers community project families and contrib
 
 The catalog discovers each public Sherpa's front-matter `tags`, includes them in `index.json`, and exposes them through keyword search and the generated Topic filter. Contributors do not maintain a second website taxonomy.
 
-Visitors can sort the filtered catalog by verification state, source date, or title. **Verified first** is the default and only groups files by their existing `verification_state`; it does not calculate a hidden quality score or promote draft and unverified work.
+Visitors can sort the filtered catalog by verification state, assessment date, or title. **Verified first** is the default and only groups files by their existing `verification_state`; it does not calculate a hidden quality score or promote draft and unverified work. **Recently assessed** uses the existing `last_verified` timestamp and places Sherpas without a recorded assessment last.
+
+Catalog cards and detail pages display that assessment date as **Last assessed**, including an honest **not recorded** state. The date is recency context only; it never changes `verification_state` or claims that unverified work passed testing.
 
 The **Use with AI** action tries the modern Clipboard API first and falls back to a temporary text selection for static mirrors that do not provide the secure-context clipboard permission. It reports success only when the browser confirms that one of those methods copied the instruction and Markdown.
 
