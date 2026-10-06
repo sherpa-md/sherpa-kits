@@ -370,6 +370,24 @@
     return row;
   }
 
+  function assessmentFragment(record) {
+    const row = document.createElement("p");
+    row.className = "assessment-date";
+    row.append("Last assessed: ");
+    if (!record.last_verified) {
+      row.append("not recorded");
+      return row;
+    }
+    const assessedAt = new Date(record.last_verified);
+    const time = document.createElement("time");
+    time.dateTime = record.last_verified;
+    time.textContent = Number.isNaN(assessedAt.valueOf())
+      ? record.last_verified
+      : new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }).format(assessedAt);
+    row.append(time);
+    return row;
+  }
+
   function card(record) {
     const article = document.createElement("article");
     article.className = "sherpa-card";
@@ -384,14 +402,14 @@
     badges.append(badge(record.kind), badge(record.verification_state, `badge--${record.verification_state}`), badge(record.status, `badge--${record.status}`));
     const summary = document.createElement("p");
     summary.textContent = record.summary;
-    article.append(heading, badges, summary, tagFragment(record), actions(record), ratingFragment(record));
+    article.append(heading, badges, assessmentFragment(record), summary, tagFragment(record), actions(record), ratingFragment(record));
     return article;
   }
 
   function compareRecords(left, right, order) {
     const byTitle = left.title.localeCompare(right.title, undefined, { sensitivity: "base" });
     if (order === "title") return byTitle;
-    if (order === "newest") return right.date.localeCompare(left.date) || byTitle;
+    if (order === "assessed") return (right.last_verified || "").localeCompare(left.last_verified || "") || byTitle;
     const verifiedDifference = Number(right.verification_state === "verified") - Number(left.verification_state === "verified");
     return verifiedDifference || byTitle;
   }
@@ -436,7 +454,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path);
+    article.append(eyebrow, title, summary, badges, assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path);
     root.replaceChildren(back, article);
   }
 
