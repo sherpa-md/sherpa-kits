@@ -375,7 +375,13 @@ def shell(
     <label><span>Topic</span><select id="topic-filter"><option value="">All topics</option>{topic_options}</select></label>
     <label><span>Sort</span><select id="sort-order"><option value="verified-first">Verified first</option><option value="assessed">Recently assessed</option><option value="title">Title A–Z</option></select></label>
   </section>
-  <p class="results-summary" id="results-summary" aria-live="polite"></p>
+  <div class="catalog-status">
+    <p class="results-summary" id="results-summary" aria-live="polite"></p>
+    <div class="catalog-view-actions" aria-label="Catalog view actions">
+      <button class="button" id="copy-view-link" type="button">Copy view link</button>
+      <button class="button" id="clear-filters" type="button">Reset filters</button>
+    </div>
+  </div>
   <section class="card-grid" id="catalog-grid" aria-label="Sherpa catalog"></section>
   <section class="empty-state" id="empty-state" hidden><h2>No Sherpas match</h2><p>Clear a filter or try a broader search.</p></section>
 </main>"""
