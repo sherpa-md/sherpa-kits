@@ -247,6 +247,18 @@ def main() -> None:
     ):
         if sort_contract not in script:
             fail(f"catalog sorting contract is missing: {sort_contract}")
+    for view_contract in (
+        'id="copy-view-link"',
+        'id="clear-filters"',
+        'function restoreCatalogView()',
+        'function saveCatalogView()',
+        'function resetCatalogView()',
+        'url.searchParams.set(key, value)',
+        'window.history.replaceState(null, "", url.toString())',
+        'writeClipboard(window.location.href)',
+    ):
+        if view_contract not in index_html and view_contract not in script:
+            fail(f"shareable catalog view contract is missing: {view_contract}")
     for assessment_contract in (
         "function assessmentFragment(",
         'row.append("Last assessed: ")',
