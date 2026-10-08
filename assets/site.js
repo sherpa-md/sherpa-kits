@@ -414,6 +414,59 @@
     return verifiedDifference || byTitle;
   }
 
+  function setCatalogControl(id, value, fallback = "") {
+    const control = byId(id);
+    if (!control) return;
+    if (control.tagName === "SELECT") {
+      const allowed = Array.from(control.options).some((option) => option.value === value);
+      control.value = allowed ? value : fallback;
+      return;
+    }
+    control.value = value;
+  }
+
+  function restoreCatalogView() {
+    const params = new URL(window.location.href).searchParams;
+    setCatalogControl("search", params.get("q") || "");
+    setCatalogControl("kind-filter", params.get("kind") || "");
+    setCatalogControl("verification-filter", params.get("verification") || "");
+    setCatalogControl("topic-filter", params.get("topic") || "");
+    setCatalogControl("sort-order", params.get("sort") || "verified-first", "verified-first");
+  }
+
+  function saveCatalogView() {
+    const url = new URL(window.location.href);
+    const values = {
+      q: byId("search").value.trim(),
+      kind: byId("kind-filter").value,
+      verification: byId("verification-filter").value,
+      topic: byId("topic-filter").value,
+      sort: byId("sort-order").value === "verified-first" ? "" : byId("sort-order").value,
+    };
+    Object.entries(values).forEach(([key, value]) => {
+      if (value) url.searchParams.set(key, value);
+      else url.searchParams.delete(key);
+    });
+    window.history.replaceState(null, "", url.toString());
+  }
+
+  function resetCatalogView() {
+    setCatalogControl("search", "");
+    setCatalogControl("kind-filter", "");
+    setCatalogControl("verification-filter", "");
+    setCatalogControl("topic-filter", "");
+    setCatalogControl("sort-order", "verified-first", "verified-first");
+    renderCatalog();
+    byId("search").focus();
+    toast("Catalog filters reset.");
+  }
+
+  async function copyCatalogView() {
+    saveCatalogView();
+    const copied = await writeClipboard(window.location.href);
+    toast(copied ? "Catalog view link copied." : "Copy failed. Copy the page address instead.");
+  }
+
   function renderCatalog() {
     const grid = byId("catalog-grid");
     if (!grid) return;
@@ -429,6 +482,7 @@
     grid.replaceChildren(...filtered.map(card));
     byId("results-summary").textContent = `${filtered.length} of ${records.length} Sherpa files`;
     byId("empty-state").hidden = filtered.length !== 0;
+    saveCatalogView();
   }
 
   function renderDetail(record) {
@@ -485,7 +539,10 @@
   window.addEventListener("beforeunload", () => speechEngine?.cancel());
 
   if (byId("catalog-grid")) {
+    restoreCatalogView();
     ["search", "kind-filter", "verification-filter", "topic-filter", "sort-order"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
+    byId("clear-filters").addEventListener("click", resetCatalogView);
+    byId("copy-view-link").addEventListener("click", copyCatalogView);
     document.addEventListener("ratings-ready", renderCatalog);
     renderCatalog();
   }
