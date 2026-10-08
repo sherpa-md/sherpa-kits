@@ -112,7 +112,7 @@ Run:
 
 GitHub Actions runs the same validation on pushes and pull requests.
 
-The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths, and creates both a complete site archive and an all-Sherpas archive. After a successful `main` build, GitHub publishes the same output to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site), which can be downloaded or cloned for rehosting without relying on an expiring artifact.
+The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths, and creates both a complete site archive and an all-Sherpas archive. Search, filter, topic, verification, and sort choices are stored in the page URL so a useful catalog view can be bookmarked or shared without a backend. After a successful `main` build, GitHub publishes the same output to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site), which can be downloaded or cloned for rehosting without relying on an expiring artifact.
 
 ## License
 
