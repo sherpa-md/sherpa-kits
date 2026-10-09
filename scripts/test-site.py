@@ -232,6 +232,16 @@ def main() -> None:
     for topic_contract in ('record.tags.join(" ")', 'record.tags.includes(topic)', '"topic-filter"'):
         if topic_contract not in script:
             fail(f"topic discovery contract is missing: {topic_contract}")
+    for topic_link_contract in (
+        "function topicHref(tag)",
+        'url.searchParams.set("topic", tag)',
+        'node.className = "tag tag--link"',
+        "Browse Sherpas about ${tag}",
+    ):
+        if topic_link_contract not in script:
+            fail(f"clickable topic discovery contract is missing: {topic_link_contract}")
+    if ".tag--link" not in stylesheet or "min-height: 44px" not in stylesheet:
+        fail("clickable topic labels must keep a mobile-safe touch target")
     for sort_option in (
         '<option value="verified-first">Verified first</option>',
         '<option value="assessed">Recently assessed</option>',
