@@ -89,6 +89,8 @@ nav a:hover { background: var(--paper-2); color: var(--ink); }
 .assessment-date time { font-weight: 700; }
 .tag-list { display: flex; flex-wrap: wrap; gap: .3rem; align-items: center; }
 .tag { padding: .12rem .42rem; border-radius: 999px; background: var(--paper-2); color: var(--soft-ink); font-size: .74rem; }
+.tag--link { display: inline-flex; min-height: 44px; align-items: center; padding: .3rem .55rem; text-decoration: none; font-weight: 700; }
+.tag--link:hover { color: var(--ink); text-decoration: underline; }
 .tag--more { border: 1px dashed var(--line); background: transparent; }
 .card-actions { margin-top: auto; }
 .card-actions .button { min-height: 44px; padding: .38rem .6rem; font-size: .84rem; }

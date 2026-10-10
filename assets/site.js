@@ -158,6 +158,12 @@
     return url.toString();
   }
 
+  function topicHref(tag) {
+    const url = new URL(routeHref("/"), window.location.href);
+    url.searchParams.set("topic", tag);
+    return url.toString();
+  }
+
   async function shareRecord(record) {
     const url = shareHref(record);
     if (navigator.share) {
@@ -353,9 +359,11 @@
     row.setAttribute("aria-label", "Topics");
     row.setAttribute("role", "list");
     record.tags.slice(0, limit).forEach((tag) => {
-      const node = document.createElement("span");
-      node.className = "tag";
+      const node = document.createElement("a");
+      node.className = "tag tag--link";
       node.setAttribute("role", "listitem");
+      node.setAttribute("aria-label", `Browse Sherpas about ${tag}`);
+      node.href = topicHref(tag);
       node.textContent = `#${tag}`;
       row.append(node);
     });
