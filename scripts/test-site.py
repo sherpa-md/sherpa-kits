@@ -277,6 +277,20 @@ def main() -> None:
     ):
         if assessment_contract not in script:
             fail(f"assessment date contract is missing: {assessment_contract}")
+    for related_contract in (
+        "function relatedRecords(record, limit = 3)",
+        "candidate.key !== record.key",
+        "right.sharedTopics.length - left.sharedTopics.length",
+        'right.candidate.verification_state === "verified"',
+        "function relatedFragment(record)",
+        "Related by public topics and domain—not verification or endorsement.",
+        "relatedFragment(record)",
+    ):
+        if related_contract not in script:
+            fail(f"related Sherpa discovery contract is missing: {related_contract}")
+    for related_style in (".related-sherpas", ".related-list", ".related-card"):
+        if related_style not in stylesheet:
+            fail(f"related Sherpa layout is missing: {related_style}")
     for reader_control in ("reader-player", "reader-toggle", "reader-rate", "reader-stop"):
         if f'id="{reader_control}"' not in index_html:
             fail(f"reader control is missing: {reader_control}")
