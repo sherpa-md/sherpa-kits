@@ -396,6 +396,58 @@
     return row;
   }
 
+  function relatedRecords(record, limit = 3) {
+    return records
+      .filter((candidate) => candidate.key !== record.key)
+      .map((candidate) => {
+        const sharedTopics = candidate.tags.filter((tag) => record.tags.includes(tag));
+        const sameDomain = candidate.domain === record.domain;
+        return { candidate, sharedTopics, sameDomain };
+      })
+      .filter((match) => match.sharedTopics.length || match.sameDomain)
+      .sort((left, right) =>
+        right.sharedTopics.length - left.sharedTopics.length
+        || Number(right.sameDomain) - Number(left.sameDomain)
+        || Number(right.candidate.verification_state === "verified") - Number(left.candidate.verification_state === "verified")
+        || left.candidate.title.localeCompare(right.candidate.title, undefined, { sensitivity: "base" })
+      )
+      .slice(0, limit);
+  }
+
+  function relatedFragment(record) {
+    const matches = relatedRecords(record);
+    if (!matches.length) return document.createDocumentFragment();
+    const section = document.createElement("section");
+    section.className = "related-sherpas";
+    section.setAttribute("aria-labelledby", "related-sherpas-title");
+    const heading = document.createElement("h2");
+    heading.id = "related-sherpas-title";
+    heading.textContent = "Related Sherpas";
+    const note = document.createElement("p");
+    note.className = "related-note";
+    note.textContent = "Related by public topics and domain—not verification or endorsement.";
+    const list = document.createElement("ul");
+    list.className = "related-list";
+    matches.forEach(({ candidate, sharedTopics }) => {
+      const item = document.createElement("li");
+      item.className = "related-card";
+      const link = document.createElement("a");
+      link.href = routeHref(candidate.route);
+      link.textContent = candidate.title;
+      const reason = document.createElement("p");
+      reason.textContent = sharedTopics.length
+        ? `Shared topic${sharedTopics.length === 1 ? "" : "s"}: ${sharedTopics.join(", ")}`
+        : `Same domain: ${candidate.domain}`;
+      const badges = document.createElement("div");
+      badges.className = "badges";
+      badges.append(badge(candidate.kind), badge(candidate.verification_state, `badge--${candidate.verification_state}`));
+      item.append(link, reason, badges);
+      list.append(item);
+    });
+    section.append(heading, note, list);
+    return section;
+  }
+
   function card(record) {
     const article = document.createElement("article");
     article.className = "sherpa-card";
@@ -516,7 +568,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path);
+    article.append(eyebrow, title, summary, badges, assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, relatedFragment(record));
     root.replaceChildren(back, article);
   }
 
