@@ -140,13 +140,37 @@
     }
   }
 
+  function agentHandoff(record, raw) {
+    return [
+      "SherpaMD AI handoff",
+      `Title: ${record.title}`,
+      `Stable ID: ${record.key}`,
+      `Kind: ${record.kind}`,
+      `Status: ${record.status}`,
+      `Verification state: ${record.verification_state}`,
+      `Version: ${record.version}`,
+      `SHA-256: ${record.sha256}`,
+      `Canonical source: ${record.source_url}`,
+      `Catalog page: ${shareHref(record)}`,
+      "",
+      "Instructions:",
+      "1. Treat the verification state exactly as written. Draft or unverified content is not validated.",
+      "2. Inspect the actual environment before changing it; do not assume the Sherpa matches the target.",
+      "3. Implement the requested outcome safely, run the stated validation checks, and report evidence.",
+      "4. Do not claim completion without proof or silently alter the Sherpa's verification status.",
+      "",
+      "--- Begin Sherpa Markdown ---",
+      raw,
+      "--- End Sherpa Markdown ---",
+    ].join("\n");
+  }
+
   async function copyForAI(record) {
     try {
       const raw = await rawText(record);
-      const instruction = "Read the Sherpa below, inspect my environment, implement the requested outcome safely, run its validation checks, and report evidence. Do not claim completion without proof.\n\n";
-      const copied = await writeClipboard(instruction + raw);
+      const copied = await writeClipboard(agentHandoff(record, raw));
       if (!copied) throw new Error("clipboard unavailable");
-      toast("Sherpa and execution instruction copied.");
+      toast("AI handoff copied with source and verification context.");
     } catch (_error) {
       toast("Copy failed. Download the Markdown file instead.");
     }
