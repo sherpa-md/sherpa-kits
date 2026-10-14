@@ -169,6 +169,20 @@ def main() -> None:
         fail("Use with AI must support secure and portable clipboard paths")
     if 'if (!copied) throw new Error("clipboard unavailable")' not in script:
         fail("Use with AI must not report an unconfirmed copy")
+    for handoff_contract in (
+        "function agentHandoff(record, raw)",
+        "Stable ID: ${record.key}",
+        "Verification state: ${record.verification_state}",
+        "Status: ${record.status}",
+        "Version: ${record.version}",
+        "SHA-256: ${record.sha256}",
+        "Canonical source: ${record.source_url}",
+        "Treat the verification state exactly as written.",
+        "Draft or unverified content is not validated.",
+        "agentHandoff(record, raw)",
+    ):
+        if handoff_contract not in script:
+            fail(f"traceable AI handoff contract is missing: {handoff_contract}")
     for share_contract in (
         "navigator.share",
         'error?.name === "AbortError"',
@@ -377,6 +391,7 @@ def main() -> None:
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
+    print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
     print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
