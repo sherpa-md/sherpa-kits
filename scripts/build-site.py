@@ -368,6 +368,7 @@ def shell(
       <li><strong>Build safely and verify.</strong><span>Keep private data in an approved AI environment, approve sensitive actions, and require tests and evidence before accepting completion.</span></li>
     </ol>
   </section>
+  <div id="catalog-label-guide"></div>
   <section class="catalog-tools" aria-label="Find Sherpas">
     <label class="search-field"><span>Search</span><input id="search" type="search" placeholder="Try photos, private data, Discord…" autocomplete="off"></label>
     <label><span>Type</span><select id="kind-filter"><option value="">All types</option><option value="handoff">Handoffs</option><option value="kit">Kits</option><option value="candidate">Candidates</option></select></label>
