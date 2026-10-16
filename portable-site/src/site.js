@@ -95,6 +95,37 @@
     return node;
   }
 
+  function labelGuide() {
+    const details = document.createElement("details");
+    details.className = "label-guide";
+    const summary = document.createElement("summary");
+    summary.textContent = "What the labels mean";
+    const list = document.createElement("dl");
+    list.className = "label-guide__list";
+    const definitions = [
+      ["verified", "Validation evidence exists for the stated scope. It is not a guarantee for every environment."],
+      ["unverified", "No completed validation claim is recorded. Inspect and test before relying on it."],
+      ["needs-retest", "Earlier evidence exists, but the current version or environment still needs validation."],
+      ["active", "Maintained and intended for use; this status does not itself mean verified."],
+      ["draft", "Incomplete or awaiting testing; do not treat it as production-ready."],
+    ];
+    definitions.forEach(([label, meaning]) => {
+      const item = document.createElement("div");
+      item.className = "label-guide__item";
+      const term = document.createElement("dt");
+      term.append(badge(label, `badge--${label}`));
+      const description = document.createElement("dd");
+      description.textContent = meaning;
+      item.append(term, description);
+      list.append(item);
+    });
+    const note = document.createElement("p");
+    note.className = "label-guide__note";
+    note.textContent = "Labels describe repository evidence—not approval for your environment. Inspect the target, protect private data, and require tests.";
+    details.append(summary, list, note);
+    return details;
+  }
+
   function button(label, className = "button") {
     const node = document.createElement("button");
     node.type = "button";
@@ -592,7 +623,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, relatedFragment(record));
+    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, relatedFragment(record));
     root.replaceChildren(back, article);
   }
 
@@ -623,6 +654,7 @@
   window.addEventListener("beforeunload", () => speechEngine?.cancel());
 
   if (byId("catalog-grid")) {
+    byId("catalog-label-guide")?.replaceChildren(labelGuide());
     restoreCatalogView();
     ["search", "kind-filter", "verification-filter", "topic-filter", "sort-order"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
     byId("clear-filters").addEventListener("click", resetCatalogView);

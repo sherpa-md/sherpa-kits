@@ -283,6 +283,25 @@ def main() -> None:
     ):
         if view_contract not in index_html and view_contract not in script:
             fail(f"shareable catalog view contract is missing: {view_contract}")
+    if 'id="catalog-label-guide"' not in index_html:
+        fail("catalog verification label guide mount is missing")
+    for label_guide_contract in (
+        "function labelGuide()",
+        "What the labels mean",
+        "Validation evidence exists for the stated scope.",
+        "No completed validation claim is recorded.",
+        "Earlier evidence exists, but the current version or environment still needs validation.",
+        "this status does not itself mean verified.",
+        "do not treat it as production-ready.",
+        "Labels describe repository evidence—not approval for your environment.",
+        'byId("catalog-label-guide")?.replaceChildren(labelGuide())',
+        "badges, labelGuide(), assessmentFragment(record)",
+    ):
+        if label_guide_contract not in script:
+            fail(f"verification label guide contract is missing: {label_guide_contract}")
+    for label_guide_style in (".label-guide", ".label-guide summary", ".label-guide__list", ".label-guide__item"):
+        if label_guide_style not in stylesheet:
+            fail(f"verification label guide style is missing: {label_guide_style}")
     for assessment_contract in (
         "function assessmentFragment(",
         'row.append("Last assessed: ")',
@@ -392,6 +411,7 @@ def main() -> None:
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
+    print("[PASS] catalog and detail routes explain verification and lifecycle labels")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
     print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
