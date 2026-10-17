@@ -128,6 +128,10 @@ nav a:hover { background: var(--paper-2); color: var(--ink); }
 .label-guide__item { display: grid; grid-template-columns: minmax(110px, auto) 1fr; gap: .75rem; align-items: start; }
 .label-guide__item dt, .label-guide__item dd { margin: 0; }
 .label-guide__note { margin: .75rem 0 .15rem; color: var(--soft-ink); font-size: .9rem; }
+.inline-reader { margin: 1rem 0 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.inline-reader summary { min-height: 44px; padding: .65rem .9rem; display: flex; align-items: center; cursor: pointer; color: var(--ink); font-weight: 800; }
+.inline-reader__content { margin: 0; padding: 1rem; border-top: 1px solid var(--line); background: var(--paper-2); color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2; font: .9rem/1.55 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+
 .agent-guide { margin-top: 1rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
 .agent-guide summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--ink); font-weight: 800; }
 .agent-guide ol { margin: .65rem 0 .2rem; padding-left: 1.35rem; }
