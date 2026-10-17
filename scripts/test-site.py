@@ -302,6 +302,21 @@ def main() -> None:
     for label_guide_style in (".label-guide", ".label-guide summary", ".label-guide__list", ".label-guide__item"):
         if label_guide_style not in stylesheet:
             fail(f"verification label guide style is missing: {label_guide_style}")
+    for inline_reader_contract in (
+        "function inlineReader(record)",
+        'summary.textContent = "Read full Sherpa Markdown"',
+        'content.setAttribute("aria-label", `Full Markdown for ${record.title}`)',
+        'content.textContent = "Loading Markdown…"',
+        "content.textContent = await rawText(record)",
+        'content.textContent = "Markdown unavailable. Use Download .md or GitHub instead."',
+        "details.dataset.loaded",
+        "path, inlineReader(record), relatedFragment(record)",
+    ):
+        if inline_reader_contract not in script:
+            fail(f"inline Sherpa reader contract is missing: {inline_reader_contract}")
+    for inline_reader_style in (".inline-reader", ".inline-reader summary", ".inline-reader__content", "white-space: pre-wrap"):
+        if inline_reader_style not in stylesheet:
+            fail(f"inline Sherpa reader style is missing: {inline_reader_style}")
     for assessment_contract in (
         "function assessmentFragment(",
         'row.append("Last assessed: ")',
@@ -412,6 +427,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
     print("[PASS] catalog and detail routes explain verification and lifecycle labels")
+    print("[PASS] detail routes safely expose complete Sherpa Markdown inline")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
     print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
