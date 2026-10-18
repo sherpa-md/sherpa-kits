@@ -433,6 +433,33 @@
     return row;
   }
 
+  function inlineReader(record) {
+    const details = document.createElement("details");
+    details.className = "inline-reader";
+    const summary = document.createElement("summary");
+    summary.textContent = "Read full Sherpa Markdown";
+    const content = document.createElement("pre");
+    content.className = "inline-reader__content";
+    content.tabIndex = 0;
+    content.setAttribute("aria-label", `Full Markdown for ${record.title}`);
+    content.textContent = "Open this section to load the Markdown.";
+    details.addEventListener("toggle", async () => {
+      if (!details.open || details.dataset.loaded) return;
+      details.dataset.loaded = "loading";
+      content.textContent = "Loading Markdown…";
+      try {
+        content.textContent = await rawText(record);
+        details.dataset.loaded = "true";
+      } catch (_error) {
+        delete details.dataset.loaded;
+        content.textContent = "Markdown unavailable. Use Download .md or GitHub instead.";
+        toast("Full Markdown could not be loaded.");
+      }
+    });
+    details.append(summary, content);
+    return details;
+  }
+
   function assessmentFragment(record) {
     const row = document.createElement("p");
     row.className = "assessment-date";
@@ -623,7 +650,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, relatedFragment(record));
+    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, inlineReader(record), relatedFragment(record));
     root.replaceChildren(back, article);
   }
 
