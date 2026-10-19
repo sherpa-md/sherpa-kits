@@ -302,6 +302,24 @@ def main() -> None:
     for label_guide_style in (".label-guide", ".label-guide summary", ".label-guide__list", ".label-guide__item"):
         if label_guide_style not in stylesheet:
             fail(f"verification label guide style is missing: {label_guide_style}")
+    for integrity_contract in (
+        "function integrityFragment(record)",
+        'section.setAttribute("aria-labelledby", "file-integrity-title")',
+        'heading.textContent = "File integrity"',
+        '["Stable ID", record.key]',
+        '["Version", record.version]',
+        '["SHA-256", record.sha256]',
+        'button("Copy SHA-256")',
+        "writeClipboard(record.sha256)",
+        'toast(copied ? "SHA-256 copied."',
+        "it does not make the Sherpa verified for your environment.",
+        "integrityFragment(record)",
+    ):
+        if integrity_contract not in script:
+            fail(f"download integrity contract is missing: {integrity_contract}")
+    for integrity_style in (".integrity-panel", ".integrity-panel__facts", ".integrity-panel__note", "overflow-wrap: anywhere"):
+        if integrity_style not in stylesheet:
+            fail(f"download integrity style is missing: {integrity_style}")
     for inline_reader_contract in (
         "function inlineReader(record)",
         'summary.textContent = "Read full Sherpa Markdown"',
@@ -426,6 +444,7 @@ def main() -> None:
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
+    print("[PASS] detail routes expose copyable SHA-256 integrity metadata without changing verification")
     print("[PASS] catalog and detail routes explain verification and lifecycle labels")
     print("[PASS] detail routes safely expose complete Sherpa Markdown inline")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
