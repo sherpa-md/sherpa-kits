@@ -328,7 +328,7 @@ def main() -> None:
         "content.textContent = await rawText(record)",
         'content.textContent = "Markdown unavailable. Use Download .md or GitHub instead."',
         "details.dataset.loaded",
-        "path, inlineReader(record), relatedFragment(record)",
+        "integrityFragment(record), inlineReader(record), relatedFragment(record)",
     ):
         if inline_reader_contract not in script:
             fail(f"inline Sherpa reader contract is missing: {inline_reader_contract}")
