@@ -433,6 +433,40 @@
     return row;
   }
 
+  function integrityFragment(record) {
+    const section = document.createElement("section");
+    section.className = "integrity-panel";
+    section.setAttribute("aria-labelledby", "file-integrity-title");
+    const heading = document.createElement("h2");
+    heading.id = "file-integrity-title";
+    heading.textContent = "File integrity";
+    const facts = document.createElement("dl");
+    facts.className = "integrity-panel__facts";
+    [
+      ["Stable ID", record.key],
+      ["Version", record.version],
+      ["SHA-256", record.sha256],
+    ].forEach(([label, value]) => {
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const description = document.createElement("dd");
+      const code = document.createElement("code");
+      code.textContent = value;
+      description.append(code);
+      facts.append(term, description);
+    });
+    const copyButton = button("Copy SHA-256");
+    copyButton.addEventListener("click", async () => {
+      const copied = await writeClipboard(record.sha256);
+      toast(copied ? "SHA-256 copied." : "Copy failed. Select the checksum instead.");
+    });
+    const note = document.createElement("p");
+    note.className = "integrity-panel__note";
+    note.textContent = "The checksum confirms downloaded bytes match this catalog record; it does not make the Sherpa verified for your environment.";
+    section.append(heading, facts, copyButton, note);
+    return section;
+  }
+
   function inlineReader(record) {
     const details = document.createElement("details");
     details.className = "inline-reader";
@@ -650,7 +684,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, inlineReader(record), relatedFragment(record));
+    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, integrityFragment(record), inlineReader(record), relatedFragment(record));
     root.replaceChildren(back, article);
   }
 
