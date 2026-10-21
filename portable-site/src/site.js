@@ -472,17 +472,42 @@
     details.className = "inline-reader";
     const summary = document.createElement("summary");
     summary.textContent = "Read full Sherpa Markdown";
+    const actions = document.createElement("div");
+    actions.className = "inline-reader__actions";
+    const copyButton = button("Copy full Markdown");
     const content = document.createElement("pre");
     content.className = "inline-reader__content";
     content.tabIndex = 0;
     content.setAttribute("aria-label", `Full Markdown for ${record.title}`);
     content.textContent = "Open this section to load the Markdown.";
+    let markdownPromise = null;
+    const loadMarkdown = () => {
+      if (!markdownPromise) {
+        markdownPromise = rawText(record).catch((error) => {
+          markdownPromise = null;
+          throw error;
+        });
+      }
+      return markdownPromise;
+    };
+    copyButton.addEventListener("click", async () => {
+      copyButton.disabled = true;
+      try {
+        const copied = await writeClipboard(await loadMarkdown());
+        toast(copied ? "Full Markdown copied." : "Copy failed. Use Download .md instead.");
+      } catch (_error) {
+        toast("Full Markdown could not be loaded. Use Download .md instead.");
+      } finally {
+        copyButton.disabled = false;
+      }
+    });
+    actions.append(copyButton);
     details.addEventListener("toggle", async () => {
       if (!details.open || details.dataset.loaded) return;
       details.dataset.loaded = "loading";
       content.textContent = "Loading Markdown…";
       try {
-        content.textContent = await rawText(record);
+        content.textContent = await loadMarkdown();
         details.dataset.loaded = "true";
       } catch (_error) {
         delete details.dataset.loaded;
@@ -490,7 +515,7 @@
         toast("Full Markdown could not be loaded.");
       }
     });
-    details.append(summary, content);
+    details.append(summary, actions, content);
     return details;
   }
 
