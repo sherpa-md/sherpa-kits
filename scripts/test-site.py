@@ -88,6 +88,34 @@ def main() -> None:
     if "share-community-project.yml" not in projects_html or "PROJECT_TEMPLATE.md" not in projects_html:
         fail("community project page must expose both guided and pull-request contribution paths")
 
+    llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
+    if not llms_text.startswith(
+        f"# SherpaMD\n\n> {len(items)} public Sherpa files. GitHub Markdown is the source of truth.\n"
+    ):
+        fail("llms.txt must identify the complete GitHub-sourced catalog")
+    for boundary in (
+        "Use each lifecycle and verification label exactly as written.",
+        "not a guarantee for every environment",
+        "protect private data",
+        "require tests",
+    ):
+        if boundary not in llms_text:
+            fail(f"llms.txt safety boundary is missing: {boundary}")
+    expected_states = sorted({item["verification_state"] for item in items})
+    actual_states = re.findall(r"^## Verification state: (.+)$", llms_text, re.MULTILINE)
+    if actual_states != expected_states:
+        fail("llms.txt verification-state sections do not match the manifest")
+    for item in items:
+        assessed = item["last_verified"] or "not recorded"
+        expected_entry = (
+            f"- [{item['title']}]({item['raw_url']}): "
+            f"Stable ID `{item['key']}`; version `{item['version']}`; "
+            f"lifecycle `{item['status']}`; last assessed `{assessed}`; "
+            f"SHA-256 `{item['sha256']}`. {item['summary']}"
+        )
+        if llms_text.count(expected_entry) != 1:
+            fail(f"llms.txt agent metadata mismatch for {item['source_path']}")
+
     for item in items:
         source = ROOT / item["source_path"]
         raw = DIST / item["raw_url"].lstrip("/")
