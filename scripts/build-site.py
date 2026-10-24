@@ -508,9 +508,25 @@ def build(output: Path) -> list[dict]:
         shell(records, projects=project_families), encoding="utf-8"
     )
 
-    llms_lines = ["# SherpaMD", "", f"> {len(records)} public Sherpa files. Markdown is the source of truth.", ""]
-    for record in records:
-        llms_lines.append(f"- [{record['title']}]({record['raw_url']}): {record['summary']}")
+    llms_lines = [
+        "# SherpaMD",
+        "",
+        f"> {len(records)} public Sherpa files. GitHub Markdown is the source of truth.",
+        "",
+        "Use each lifecycle and verification label exactly as written. A verified Sherpa has evidence for its stated scope, not a guarantee for every environment. Inspect the target, protect private data, and require tests before relying on any Sherpa.",
+    ]
+    for verification_state in sorted({record["verification_state"] for record in records}):
+        llms_lines.extend(["", f"## Verification state: {verification_state}", ""])
+        for record in (item for item in records if item["verification_state"] == verification_state):
+            assessed = record["last_verified"] or "not recorded"
+            metadata = (
+                f"Stable ID `{record['key']}`; version `{record['version']}`; "
+                f"lifecycle `{record['status']}`; last assessed `{assessed}`; "
+                f"SHA-256 `{record['sha256']}`."
+            )
+            llms_lines.append(
+                f"- [{record['title']}]({record['raw_url']}): {metadata} {record['summary']}"
+            )
     (output / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
 
     sitemap_root = ET.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
