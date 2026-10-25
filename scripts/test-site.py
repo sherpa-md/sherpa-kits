@@ -26,6 +26,21 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
+def json_ld(document: str, label: str) -> dict:
+    matches = re.findall(
+        r'<script type="application/ld\+json">(.*?)</script>', document, re.DOTALL
+    )
+    if len(matches) != 1:
+        fail(f"{label} must contain exactly one JSON-LD block")
+    try:
+        parsed = json.loads(matches[0])
+    except json.JSONDecodeError as error:
+        fail(f"{label} contains invalid JSON-LD: {error}")
+    if not isinstance(parsed, dict):
+        fail(f"{label} JSON-LD must be an object")
+    return parsed
+
+
 def main() -> None:
     manifest_path = DIST / "index.json"
     if not manifest_path.exists():
@@ -87,6 +102,56 @@ def main() -> None:
         fail("community project page must preserve the verification boundary")
     if "share-community-project.yml" not in projects_html or "PROJECT_TEMPLATE.md" not in projects_html:
         fail("community project page must expose both guided and pull-request contribution paths")
+    expected_project_entries = [
+        {
+            "@type": "ListItem",
+            "position": position,
+            "url": family["source_url"],
+            "name": family["title"],
+        }
+        for position, family in enumerate(projects["families"], start=1)
+    ]
+    expected_projects_schema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://sherpamd.org/projects/",
+        "url": "https://sherpamd.org/projects/",
+        "name": "Community Projects — SherpaMD",
+        "description": "Working community implementations built from Sherpa Kits.",
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(expected_project_entries),
+            "itemListElement": expected_project_entries,
+        },
+    }
+    if json_ld(projects_html, "community projects page") != expected_projects_schema:
+        fail("community project JSON-LD does not match public project metadata")
+
+    catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
+    expected_catalog_entries = [
+        {
+            "@type": "ListItem",
+            "position": position,
+            "url": f"https://sherpamd.org{item['route']}",
+            "name": item["title"],
+        }
+        for position, item in enumerate(items, start=1)
+    ]
+    expected_catalog_schema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://sherpamd.org/",
+        "url": "https://sherpamd.org/",
+        "name": "Browse Sherpas — SherpaMD",
+        "description": "Find a guide, give it to your AI, and build something useful.",
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(expected_catalog_entries),
+            "itemListElement": expected_catalog_entries,
+        },
+    }
+    if json_ld(catalog_html, "catalog page") != expected_catalog_schema:
+        fail("catalog JSON-LD does not match the complete Sherpa manifest")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -141,6 +206,38 @@ def main() -> None:
         ):
             if social_contract not in detail_html:
                 fail(f"social preview metadata mismatch for {item['source_path']}")
+        expected_detail_schema = {
+            "@context": "https://schema.org",
+            "@type": "Guide",
+            "@id": canonical_url,
+            "url": canonical_url,
+            "name": item["title"],
+            "description": item["summary"],
+            "identifier": item["key"],
+            "version": item["version"],
+            "creativeWorkStatus": item["status"],
+            "keywords": item["tags"],
+            "isBasedOn": item["source_url"],
+            "mainEntityOfPage": canonical_url,
+            "about": {
+                "@type": "DefinedTerm",
+                "name": item["verification_state"],
+                "termCode": item["verification_state"],
+                "inDefinedTermSet": {
+                    "@type": "DefinedTermSet",
+                    "name": "SherpaMD verification states",
+                    "url": "https://github.com/sherpa-md/sherpa-kits/blob/main/CONTRIBUTING.md",
+                },
+            },
+            "encoding": {
+                "@type": "MediaObject",
+                "contentUrl": f"https://sherpamd.org{item['raw_url']}",
+                "encodingFormat": "text/markdown",
+                "sha256": item["sha256"],
+            },
+        }
+        if json_ld(detail_html, item["source_path"]) != expected_detail_schema:
+            fail(f"structured discovery metadata mismatch for {item['source_path']}")
         for agent_guide_contract in (
             '<details class="agent-guide">',
             "Check its state.",
@@ -483,6 +580,7 @@ def main() -> None:
     print("[PASS] detail routes safely expose complete Sherpa Markdown inline")
     print("[PASS] mobile sharing uses a native share sheet with a confirmed stable-link fallback")
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
+    print("[PASS] Schema.org JSON-LD matches the catalog, projects, and all Sherpa metadata")
     print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
