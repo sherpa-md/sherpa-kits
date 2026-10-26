@@ -314,6 +314,85 @@ def project_content(families: list[dict]) -> str:
 </main>"""
 
 
+def page_schema(
+    records: list[dict], *, detail: dict | None = None, projects: list[dict] | None = None
+) -> dict:
+    """Return conservative JSON-LD derived only from public repository metadata."""
+    if detail:
+        canonical = PRODUCTION_ORIGIN + detail["route"]
+        return {
+            "@context": "https://schema.org",
+            "@type": "Guide",
+            "@id": canonical,
+            "url": canonical,
+            "name": detail["title"],
+            "description": detail["summary"],
+            "identifier": detail["key"],
+            "version": detail["version"],
+            "creativeWorkStatus": detail["status"],
+            "keywords": detail["tags"],
+            "isBasedOn": detail["source_url"],
+            "mainEntityOfPage": canonical,
+            "about": {
+                "@type": "DefinedTerm",
+                "name": detail["verification_state"],
+                "termCode": detail["verification_state"],
+                "inDefinedTermSet": {
+                    "@type": "DefinedTermSet",
+                    "name": "SherpaMD verification states",
+                    "url": "https://github.com/sherpa-md/sherpa-kits/blob/main/CONTRIBUTING.md",
+                },
+            },
+            "encoding": {
+                "@type": "MediaObject",
+                "contentUrl": PRODUCTION_ORIGIN + detail["raw_url"],
+                "encodingFormat": "text/markdown",
+                "sha256": detail["sha256"],
+            },
+        }
+
+    if projects is not None:
+        canonical = PRODUCTION_ORIGIN + "/projects/"
+        name = "Community Projects — SherpaMD"
+        description = "Working community implementations built from Sherpa Kits."
+        entries = [
+            {
+                "@type": "ListItem",
+                "position": position,
+                "url": family["source_url"],
+                "name": family["title"],
+            }
+            for position, family in enumerate(projects, start=1)
+        ]
+    else:
+        canonical = PRODUCTION_ORIGIN + "/"
+        name = "Browse Sherpas — SherpaMD"
+        description = "Find a guide, give it to your AI, and build something useful."
+        entries = [
+            {
+                "@type": "ListItem",
+                "position": position,
+                "url": PRODUCTION_ORIGIN + record["route"],
+                "name": record["title"],
+            }
+            for position, record in enumerate(records, start=1)
+        ]
+
+    return {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": canonical,
+        "url": canonical,
+        "name": name,
+        "description": description,
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(entries),
+            "itemListElement": entries,
+        },
+    }
+
+
 def shell(
     records: list[dict], *, detail: dict | None = None, projects: list[dict] | None = None
 ) -> str:
@@ -338,6 +417,7 @@ def shell(
     body_class = "projects-page" if projects is not None else "detail-page" if detail else "catalog-page"
     detail_key = detail["key"] if detail else ""
     canonical = PRODUCTION_ORIGIN + route
+    structured_data = page_schema(records, detail=detail, projects=projects)
     page_title = f"{detail_title} — SherpaMD"
     social_type = "article" if detail else "website"
     detail_agent_guide = """<details class="agent-guide">
@@ -405,6 +485,7 @@ def shell(
   <meta name="twitter:description" content="{html.escape(description, quote=True)}">
   <link rel="canonical" href="{html.escape(canonical, quote=True)}">
   <link rel="stylesheet" href="{asset_prefix}">
+  <script type="application/ld+json">{safe_json(structured_data)}</script>
 </head>
 <body class="{body_class}">
 <a class="skip-link" href="#main">Skip to content</a>
