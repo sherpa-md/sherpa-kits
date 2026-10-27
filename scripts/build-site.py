@@ -610,6 +610,13 @@ def build(output: Path) -> list[dict]:
             )
     (output / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
 
+    (output / "robots.txt").write_text(
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {PRODUCTION_ORIGIN}/sitemap.xml\n",
+        encoding="utf-8",
+    )
+
     sitemap_root = ET.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
     for route in ["/", "/projects/"] + [record["route"] for record in records]:
         url = ET.SubElement(sitemap_root, "url")
