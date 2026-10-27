@@ -181,6 +181,14 @@ def main() -> None:
         if llms_text.count(expected_entry) != 1:
             fail(f"llms.txt agent metadata mismatch for {item['source_path']}")
 
+    robots_text = (DIST / "robots.txt").read_text(encoding="utf-8")
+    if robots_text != (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Sitemap: https://sherpamd.org/sitemap.xml\n"
+    ):
+        fail("robots.txt must allow the public catalog and identify the canonical sitemap")
+
     for item in items:
         source = ROOT / item["source_path"]
         raw = DIST / item["raw_url"].lstrip("/")
@@ -260,6 +268,7 @@ def main() -> None:
             "ratings.json",
             "projects.json",
             "projects/index.html",
+            "robots.txt",
             "sitemap.xml",
             "REHOSTING.md",
             "update-rehost.py",
@@ -568,6 +577,50 @@ def main() -> None:
         )
         if altered.returncode == 0 or "raw file hash mismatch" not in altered.stderr:
             fail("rehost verifier did not reject altered Sherpa content")
+
+        missing_discovery = Path(temporary) / "missing-discovery"
+        shutil.copytree(DIST, missing_discovery)
+        (missing_discovery / "robots.txt").unlink()
+        missing_discovery_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(missing_discovery),
+                "--canonical-index",
+                str(DIST / "index.json"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            missing_discovery_check.returncode == 0
+            or "robots.txt" not in missing_discovery_check.stderr
+        ):
+            fail("rehost verifier did not reject a mirror missing robots.txt")
+
+        missing_discovery_archive = Path(temporary) / "missing-discovery.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            missing_discovery_archive, "w", zipfile.ZIP_DEFLATED
+        ) as incomplete_archive:
+            for name in source_archive.namelist():
+                if name != "robots.txt":
+                    incomplete_archive.writestr(name, source_archive.read(name))
+        incomplete_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(missing_discovery_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if incomplete_update.returncode == 0 or "robots.txt" not in incomplete_update.stderr:
+            fail("rehost updater did not reject a snapshot missing robots.txt")
 
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
