@@ -27,6 +27,7 @@ REQUIRED_FILES = (
     "ratings.json",
     "projects.json",
     "projects/index.html",
+    "robots.txt",
     "sitemap.xml",
     "REHOSTING.md",
     "verify-rehost.py",
