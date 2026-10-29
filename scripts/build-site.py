@@ -420,6 +420,14 @@ def shell(
     structured_data = page_schema(records, detail=detail, projects=projects)
     page_title = f"{detail_title} — SherpaMD"
     social_type = "article" if detail else "website"
+    agent_discovery_links = (
+        f'  <link rel="describedby" href="{html.escape(relative_from(route, "/llms.txt"), quote=True)}">\n'
+    )
+    if detail:
+        markdown_href = html.escape(relative_from(route, detail["raw_url"]), quote=True)
+        agent_discovery_links += (
+            f'  <link rel="alternate" type="text/markdown" href="{markdown_href}">\n'
+        )
     detail_agent_guide = """<details class="agent-guide">
   <summary>How to use this Sherpa with an AI agent</summary>
   <ol>
@@ -483,7 +491,7 @@ def shell(
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{html.escape(page_title, quote=True)}">
   <meta name="twitter:description" content="{html.escape(description, quote=True)}">
-  <link rel="canonical" href="{html.escape(canonical, quote=True)}">
+{agent_discovery_links}  <link rel="canonical" href="{html.escape(canonical, quote=True)}">
   <link rel="stylesheet" href="{asset_prefix}">
   <script type="application/ld+json">{safe_json(structured_data)}</script>
 </head>
