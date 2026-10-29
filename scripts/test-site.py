@@ -126,6 +126,10 @@ def main() -> None:
     }
     if json_ld(projects_html, "community projects page") != expected_projects_schema:
         fail("community project JSON-LD does not match public project metadata")
+    if '<link rel="describedby" href="../llms.txt">' not in projects_html:
+        fail("community project page must identify its covering llms.txt")
+    if '<link rel="alternate" type="text/markdown"' in projects_html:
+        fail("community project page must not claim a nonexistent Markdown twin")
 
     catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
     expected_catalog_entries = [
@@ -152,6 +156,10 @@ def main() -> None:
     }
     if json_ld(catalog_html, "catalog page") != expected_catalog_schema:
         fail("catalog JSON-LD does not match the complete Sherpa manifest")
+    if '<link rel="describedby" href="llms.txt">' not in catalog_html:
+        fail("catalog page must identify its covering llms.txt")
+    if '<link rel="alternate" type="text/markdown"' in catalog_html:
+        fail("catalog page must not claim a nonexistent Markdown twin")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -214,6 +222,15 @@ def main() -> None:
         ):
             if social_contract not in detail_html:
                 fail(f"social preview metadata mismatch for {item['source_path']}")
+        route_depth = len(item["route"].strip("/").split("/"))
+        relative_root = "../" * route_depth
+        for agent_discovery_contract in (
+            f'<link rel="describedby" href="{relative_root}llms.txt">',
+            '<link rel="alternate" type="text/markdown" '
+            f'href="{relative_root}{item["raw_url"].lstrip("/")}">',
+        ):
+            if agent_discovery_contract not in detail_html:
+                fail(f"agent discovery link mismatch for {item['source_path']}")
         expected_detail_schema = {
             "@context": "https://schema.org",
             "@type": "Guide",
