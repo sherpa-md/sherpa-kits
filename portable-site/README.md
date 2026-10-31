@@ -10,7 +10,7 @@ python3 scripts/build-site.py
 python3 scripts/test-site.py
 ```
 
-Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog, and `dist/all-sherpas.zip` contains every public `.sherpa.md` source file with its repository-relative path preserved.
+Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog and the repository's MIT license, and `dist/all-sherpas.zip` contains every public `.sherpa.md` source file with its repository-relative path preserved.
 
 Every successful GitHub Actions run also publishes both ZIPs as a 90-day `sherpamd-portable-<commit>` artifact. Open the run, download the artifact, then follow `REHOSTING.md` inside the site ZIP. The workflow checks that the archive contains every generated detail page and raw Markdown download before publishing it.
 
