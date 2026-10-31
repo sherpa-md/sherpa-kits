@@ -30,6 +30,7 @@ REQUIRED_FILES = (
     "projects/index.html",
     "robots.txt",
     "sitemap.xml",
+    "LICENSE",
     "REHOSTING.md",
     "update-rehost.py",
     "verify-rehost.py",
