@@ -29,6 +29,7 @@ REQUIRED_FILES = (
     "projects/index.html",
     "robots.txt",
     "sitemap.xml",
+    "LICENSE",
     "REHOSTING.md",
     "verify-rehost.py",
     "assets/site.css",
