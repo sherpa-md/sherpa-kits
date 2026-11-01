@@ -130,6 +130,8 @@ def main() -> None:
         fail("community project page must identify its covering llms.txt")
     if '<link rel="alternate" type="text/markdown"' in projects_html:
         fail("community project page must not claim a nonexistent Markdown twin")
+    if '<a href="../LICENSE">MIT license</a>' not in projects_html:
+        fail("community project page must link to the portable license")
 
     catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
     expected_catalog_entries = [
@@ -160,6 +162,8 @@ def main() -> None:
         fail("catalog page must identify its covering llms.txt")
     if '<link rel="alternate" type="text/markdown"' in catalog_html:
         fail("catalog page must not claim a nonexistent Markdown twin")
+    if '<a href="LICENSE">MIT license</a>' not in catalog_html:
+        fail("catalog page must link to the portable license")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -231,6 +235,8 @@ def main() -> None:
         ):
             if agent_discovery_contract not in detail_html:
                 fail(f"agent discovery link mismatch for {item['source_path']}")
+        if f'<a href="{relative_root}LICENSE">MIT license</a>' not in detail_html:
+            fail(f"portable license link mismatch for {item['source_path']}")
         expected_detail_schema = {
             "@context": "https://schema.org",
             "@type": "Guide",
@@ -276,6 +282,8 @@ def main() -> None:
     with zipfile.ZipFile(DIST / "all-sherpas.zip") as archive:
         if sorted(archive.namelist()) != expected:
             fail("all-sherpas.zip inventory mismatch")
+    if (DIST / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
+        fail("portable site must preserve the repository license exactly")
     with zipfile.ZipFile(DIST / "sherpamd-portable-site.zip") as archive:
         names = set(archive.namelist())
         required = (
@@ -287,6 +295,7 @@ def main() -> None:
             "projects/index.html",
             "robots.txt",
             "sitemap.xml",
+            "LICENSE",
             "REHOSTING.md",
             "update-rehost.py",
             "verify-rehost.py",
@@ -639,9 +648,51 @@ def main() -> None:
         if incomplete_update.returncode == 0 or "robots.txt" not in incomplete_update.stderr:
             fail("rehost updater did not reject a snapshot missing robots.txt")
 
+        missing_license = Path(temporary) / "missing-license"
+        shutil.copytree(DIST, missing_license)
+        (missing_license / "LICENSE").unlink()
+        missing_license_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(missing_license),
+                "--canonical-index",
+                str(DIST / "index.json"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if missing_license_check.returncode == 0 or "LICENSE" not in missing_license_check.stderr:
+            fail("rehost verifier did not reject a mirror missing the license")
+
+        missing_license_archive = Path(temporary) / "missing-license.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            missing_license_archive, "w", zipfile.ZIP_DEFLATED
+        ) as incomplete_archive:
+            for name in source_archive.namelist():
+                if name != "LICENSE":
+                    incomplete_archive.writestr(name, source_archive.read(name))
+        incomplete_license_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(missing_license_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if incomplete_license_update.returncode == 0 or "LICENSE" not in incomplete_license_update.stderr:
+            fail("rehost updater did not reject a snapshot missing the license")
+
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
+    print("[PASS] portable site preserves the exact repository license")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
