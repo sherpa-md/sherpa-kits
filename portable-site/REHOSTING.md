@@ -19,6 +19,8 @@ The same artifact includes `all-sherpas.zip` if you only want the Markdown files
 
 Keep the included `LICENSE` file with every public mirror. It is copied byte-for-byte from the source repository and linked from each generated page.
 
+Keep `SHA256SUMS` with the mirror too. It records the SHA-256 of every generated HTML page, raw Sherpa, metadata file, asset, support script, license, and the all-Sherpas archive. Every generated page links to it.
+
 The `portable-site` branch is updated only after the repository validator and site parity tests succeed on `main`. It is an auditable generated snapshot, not a second source of truth. Submit changes to `main`; do not edit the snapshot branch by hand.
 
 ## Check locally
@@ -52,7 +54,7 @@ After publishing, run the included independent verifier from any machine with Py
 python3 verify-rehost.py --base-url https://your-mirror.example
 ```
 
-By default it compares the mirror with the current validated `portable-site` snapshot on GitHub. It then downloads and checks every public Sherpa, detail route, required asset, the repository license, and both ZIP archives. It fails if the mirror is stale, incomplete, altered, or no longer preserves verification labels. Pin an expected source version during a controlled release with `--expect-source-commit <full-40-character-sha>`.
+By default it compares the mirror's `index.json` and `SHA256SUMS` with the current validated `portable-site` snapshot on GitHub. It then verifies every checksummed file, every public Sherpa and detail route, the repository license, and both ZIP archives. It fails if the mirror is stale, incomplete, altered, or no longer preserves verification labels. Pin an expected source version during a controlled release with `--expect-source-commit <full-40-character-sha>`.
 
 For a private development server that does not have HTTPS yet, add `--allow-http`. Public mirrors should always use HTTPS. To verify an extracted copy without a web server, use `--site-dir /path/to/site`.
 
@@ -66,7 +68,7 @@ Ratings are snapshots. A portable copy deliberately disables voting unless the h
 
 ## Update later
 
-The archive includes `update-rehost.py`, a standard-library Python 3 updater for Linux and other POSIX hosts. It downloads the permanent GitHub snapshot, rejects unsafe ZIP entries, validates the canonical repository and full source commit, checks every Sherpa SHA-256 and detail route, installs a versioned release, and atomically switches a `current` symlink. A failed download or check leaves the current site untouched.
+The archive includes `update-rehost.py`, a standard-library Python 3 updater for Linux and other POSIX hosts. It downloads the permanent GitHub snapshot, rejects unsafe ZIP entries, validates the canonical repository and full source commit, checks every file against `SHA256SUMS`, checks every Sherpa and detail route, installs a versioned release, and atomically switches a `current` symlink. A failed download or check leaves the current site untouched.
 
 Point your web server's document root at `/srv/sherpamd/current`, then run:
 
