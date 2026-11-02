@@ -10,7 +10,7 @@ python3 scripts/build-site.py
 python3 scripts/test-site.py
 ```
 
-Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog and the repository's MIT license, and `dist/all-sherpas.zip` contains every public `.sherpa.md` source file with its repository-relative path preserved.
+Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog, the repository's MIT license, and `SHA256SUMS` for every generated file; `dist/all-sherpas.zip` contains every public `.sherpa.md` source file with its repository-relative path preserved.
 
 Every successful GitHub Actions run also publishes both ZIPs as a 90-day `sherpamd-portable-<commit>` artifact. Open the run, download the artifact, then follow `REHOSTING.md` inside the site ZIP. The workflow checks that the archive contains every generated detail page and raw Markdown download before publishing it.
 
@@ -18,7 +18,7 @@ After validation succeeds on `main`, the same generated output is committed to t
 
 See [REHOSTING.md](REHOSTING.md) for local preview and hosting instructions.
 
-The generated package also includes `update-rehost.py`. A mirror operator can use it to verify the permanent GitHub snapshot and switch a `current` symlink atomically, so a failed or partial update never replaces the last known-good site.
+The generated package also includes `update-rehost.py`. A mirror operator can use it to verify every file against `SHA256SUMS`, validate the permanent GitHub snapshot, and switch a `current` symlink atomically, so a failed, altered, or partial update never replaces the last known-good site.
 
 The snapshot publisher does not replace the production site automatically. Production adoption requires a separate reviewed deployment.
 
