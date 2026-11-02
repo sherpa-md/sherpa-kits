@@ -48,6 +48,27 @@ def main() -> None:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     items = manifest.get("items", [])
     source_paths = [item["source_path"] for item in items]
+    checksum_path = DIST / "SHA256SUMS"
+    if not checksum_path.is_file():
+        fail("dist/SHA256SUMS is missing")
+    checksums: dict[str, str] = {}
+    for line in checksum_path.read_text(encoding="utf-8").splitlines():
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        if not match or match.group(2) in checksums:
+            fail("SHA256SUMS contains an invalid or duplicate entry")
+        checksums[match.group(2)] = match.group(1)
+    checksum_exclusions = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
+    checksum_files = {
+        path.relative_to(DIST).as_posix()
+        for path in DIST.rglob("*")
+        if path.is_file()
+        and path.relative_to(DIST).as_posix() not in checksum_exclusions
+    }
+    if set(checksums) != checksum_files:
+        fail("SHA256SUMS inventory does not exactly match generated files")
+    for relative, expected_hash in checksums.items():
+        if hashlib.sha256((DIST / relative).read_bytes()).hexdigest() != expected_hash:
+            fail(f"SHA256SUMS mismatch for {relative}")
 
     expected = sorted(
         path.relative_to(ROOT).as_posix()
@@ -132,6 +153,8 @@ def main() -> None:
         fail("community project page must not claim a nonexistent Markdown twin")
     if '<a href="../LICENSE">MIT license</a>' not in projects_html:
         fail("community project page must link to the portable license")
+    if '<a href="../SHA256SUMS">checksums</a>' not in projects_html:
+        fail("community project page must link to portable checksums")
 
     catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
     expected_catalog_entries = [
@@ -164,6 +187,8 @@ def main() -> None:
         fail("catalog page must not claim a nonexistent Markdown twin")
     if '<a href="LICENSE">MIT license</a>' not in catalog_html:
         fail("catalog page must link to the portable license")
+    if '<a href="SHA256SUMS">checksums</a>' not in catalog_html:
+        fail("catalog page must link to portable checksums")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -237,6 +262,8 @@ def main() -> None:
                 fail(f"agent discovery link mismatch for {item['source_path']}")
         if f'<a href="{relative_root}LICENSE">MIT license</a>' not in detail_html:
             fail(f"portable license link mismatch for {item['source_path']}")
+        if f'<a href="{relative_root}SHA256SUMS">checksums</a>' not in detail_html:
+            fail(f"portable checksum link mismatch for {item['source_path']}")
         expected_detail_schema = {
             "@context": "https://schema.org",
             "@type": "Guide",
@@ -295,6 +322,7 @@ def main() -> None:
             "projects/index.html",
             "robots.txt",
             "sitemap.xml",
+            "SHA256SUMS",
             "LICENSE",
             "REHOSTING.md",
             "update-rehost.py",
@@ -601,8 +629,58 @@ def main() -> None:
             capture_output=True,
             text=True,
         )
-        if altered.returncode == 0 or "raw file hash mismatch" not in altered.stderr:
+        if altered.returncode == 0 or "SHA256SUMS mismatch" not in altered.stderr:
             fail("rehost verifier did not reject altered Sherpa content")
+
+        altered_asset = Path(temporary) / "altered-asset"
+        shutil.copytree(DIST, altered_asset)
+        asset = altered_asset / "assets" / "site.js"
+        asset.write_bytes(asset.read_bytes() + b"\n// changed\n")
+        altered_asset_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(altered_asset),
+                "--canonical-index",
+                str(DIST / "index.json"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            altered_asset_check.returncode == 0
+            or "SHA256SUMS mismatch for assets/site.js" not in altered_asset_check.stderr
+        ):
+            fail("rehost verifier did not reject an altered generated asset")
+
+        altered_asset_archive = Path(temporary) / "altered-asset.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            altered_asset_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                data = source_archive.read(name)
+                if name == "assets/site.js":
+                    data += b"\n// changed\n"
+                changed_archive.writestr(name, data)
+        altered_asset_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(altered_asset_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            altered_asset_update.returncode == 0
+            or "SHA256SUMS mismatch for assets/site.js" not in altered_asset_update.stderr
+        ):
+            fail("rehost updater did not reject an altered generated asset")
 
         missing_discovery = Path(temporary) / "missing-discovery"
         shutil.copytree(DIST, missing_discovery)
@@ -693,6 +771,7 @@ def main() -> None:
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] portable site preserves the exact repository license")
+    print(f"[PASS] canonical SHA256SUMS covers all {len(checksums)} generated files")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
