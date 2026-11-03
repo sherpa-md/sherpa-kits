@@ -21,6 +21,7 @@ DEFAULT_CANONICAL_INDEX = (
 EXPECTED_REPOSITORY = "sherpa-md/sherpa-kits"
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 HASH_RE = re.compile(r"^[0-9a-f]{64}$")
+CHECKSUM_EXCLUSIONS = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
 REQUIRED_FILES = (
     "index.html",
     "index.json",
@@ -30,6 +31,7 @@ REQUIRED_FILES = (
     "projects/index.html",
     "robots.txt",
     "sitemap.xml",
+    "SHA256SUMS",
     "LICENSE",
     "REHOSTING.md",
     "update-rehost.py",
@@ -61,6 +63,10 @@ def parse_args() -> argparse.Namespace:
         "--canonical-index",
         default=DEFAULT_CANONICAL_INDEX,
         help="Canonical index.json URL or local file (default: portable-site branch)",
+    )
+    parser.add_argument(
+        "--canonical-checksums",
+        help="Canonical SHA256SUMS URL or local file (default: beside canonical index.json)",
     )
     parser.add_argument(
         "--expect-source-commit",
@@ -102,17 +108,51 @@ def read_url(url: str) -> bytes:
     return data
 
 
-def read_locator(locator: str) -> bytes:
+def read_locator(locator: str, label: str) -> bytes:
     parsed = urllib.parse.urlparse(locator)
     if parsed.scheme in {"http", "https"}:
         return read_url(locator)
     if parsed.scheme:
-        raise VerificationError(f"unsupported canonical index scheme: {parsed.scheme}")
+        raise VerificationError(f"unsupported {label} scheme: {parsed.scheme}")
     path = Path(locator).expanduser()
     try:
         return path.read_bytes()
     except OSError as exc:
-        raise VerificationError(f"could not read canonical index {path}: {exc}") from exc
+        raise VerificationError(f"could not read {label} {path}: {exc}") from exc
+
+
+def sibling_locator(locator: str, filename: str) -> str:
+    parsed = urllib.parse.urlparse(locator)
+    if parsed.scheme in {"http", "https"}:
+        return urllib.parse.urljoin(locator, filename)
+    if parsed.scheme:
+        raise VerificationError(f"unsupported canonical index scheme: {parsed.scheme}")
+    return str(Path(locator).expanduser().parent / filename)
+
+
+def parse_checksums(data: bytes, label: str) -> dict[str, str]:
+    try:
+        lines = data.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise VerificationError(f"{label} is not valid UTF-8") from exc
+    checksums: dict[str, str] = {}
+    for line in lines:
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        if not match:
+            raise VerificationError(f"{label} contains an invalid entry")
+        digest, relative = match.groups()
+        if (
+            not safe_relative(relative)
+            or relative in CHECKSUM_EXCLUSIONS
+            or not HASH_RE.fullmatch(digest)
+        ):
+            raise VerificationError(f"{label} contains an unsafe entry: {relative!r}")
+        if relative in checksums:
+            raise VerificationError(f"{label} contains a duplicate entry: {relative}")
+        checksums[relative] = digest
+    if not checksums:
+        raise VerificationError(f"{label} must contain at least one file")
+    return checksums
 
 
 class SiteReader:
@@ -215,13 +255,13 @@ def verify_archive(data: bytes, items: list[dict], source_paths: list[str]) -> N
         raise VerificationError("all-sherpas.zip is not a valid ZIP archive") from exc
 
 
-def verify_site_archive(data: bytes, required_routes: set[str]) -> None:
+def verify_site_archive(data: bytes, expected_files: set[str]) -> None:
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as archive:
             names = set(archive.namelist())
     except zipfile.BadZipFile as exc:
         raise VerificationError("sherpamd-portable-site.zip is not a valid ZIP archive") from exc
-    expected = required_routes - {"sherpamd-portable-site.zip"}
+    expected = expected_files | {"SHA256SUMS"}
     if names != expected:
         missing = sorted(expected - names)
         extra = sorted(names - expected)
@@ -238,7 +278,19 @@ def main() -> int:
             "--expect-source-commit must be a lowercase 40-character SHA"
         )
 
-    canonical = parse_manifest(read_locator(args.canonical_index), "canonical index.json")
+    canonical = parse_manifest(
+        read_locator(args.canonical_index, "canonical index.json"),
+        "canonical index.json",
+    )
+    canonical_checksums_locator = args.canonical_checksums or sibling_locator(
+        args.canonical_index, "SHA256SUMS"
+    )
+    canonical_checksums_data = read_locator(
+        canonical_checksums_locator, "canonical SHA256SUMS"
+    )
+    canonical_checksums = parse_checksums(
+        canonical_checksums_data, "canonical SHA256SUMS"
+    )
     reader = SiteReader(args.base_url, args.site_dir, args.allow_http)
     deployed = parse_manifest(reader.read("index.json"), "deployed index.json")
     if deployed != canonical:
@@ -255,20 +307,37 @@ def main() -> int:
         )
 
     items, source_paths, required_routes = validate_items(deployed)
+    deployed_checksums_data = reader.read("SHA256SUMS")
+    if deployed_checksums_data != canonical_checksums_data:
+        raise VerificationError("deployed SHA256SUMS differs from the canonical snapshot")
+    deployed_checksums = parse_checksums(deployed_checksums_data, "deployed SHA256SUMS")
+    if deployed_checksums != canonical_checksums:
+        raise VerificationError("deployed checksum inventory differs from the canonical snapshot")
+    missing_checksums = (required_routes - CHECKSUM_EXCLUSIONS) - set(deployed_checksums)
+    if missing_checksums:
+        raise VerificationError(
+            f"SHA256SUMS is missing required file {sorted(missing_checksums)[0]}"
+        )
     for relative in sorted(required_routes):
         data = reader.read(relative)
         if not data:
             raise VerificationError(f"mirror returned an empty file: {relative}")
+    for relative, expected_hash in deployed_checksums.items():
+        if sha256(reader.read(relative)) != expected_hash:
+            raise VerificationError(f"SHA256SUMS mismatch for {relative}")
     for item in items:
         raw = reader.read(item["raw_url"].lstrip("/"))
         if sha256(raw) != item["sha256"]:
             raise VerificationError(f"raw file hash mismatch for {item['source_path']}")
 
     verify_archive(reader.read("all-sherpas.zip"), items, source_paths)
-    verify_site_archive(reader.read("sherpamd-portable-site.zip"), required_routes)
+    verify_site_archive(
+        reader.read("sherpamd-portable-site.zip"), set(deployed_checksums)
+    )
 
     print(f"[PASS] mirror matches canonical source commit {commit}")
     print(f"[PASS] {len(items)}/{len(items)} Sherpa identities, routes, and SHA-256 hashes")
+    print(f"[PASS] {len(deployed_checksums)} generated files match canonical SHA256SUMS")
     print("[PASS] required assets and both download archives are complete")
     return 0
 

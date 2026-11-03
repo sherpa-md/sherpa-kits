@@ -20,6 +20,8 @@ from pathlib import Path, PurePosixPath
 DEFAULT_SOURCE = "https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip"
 EXPECTED_REPOSITORY = "sherpa-md/sherpa-kits"
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+HASH_RE = re.compile(r"^[0-9a-f]{64}$")
+CHECKSUM_EXCLUSIONS = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
 REQUIRED_FILES = (
     "index.html",
     "index.json",
@@ -29,6 +31,7 @@ REQUIRED_FILES = (
     "projects/index.html",
     "robots.txt",
     "sitemap.xml",
+    "SHA256SUMS",
     "LICENSE",
     "REHOSTING.md",
     "verify-rehost.py",
@@ -117,10 +120,56 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def parse_checksums(data: bytes) -> dict[str, str]:
+    try:
+        lines = data.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise UpdateError("SHA256SUMS is not valid UTF-8") from exc
+    checksums: dict[str, str] = {}
+    for line in lines:
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        if not match:
+            raise UpdateError("SHA256SUMS contains an invalid entry")
+        digest, relative = match.groups()
+        if (
+            not safe_member(relative)
+            or relative in CHECKSUM_EXCLUSIONS
+            or not HASH_RE.fullmatch(digest)
+        ):
+            raise UpdateError(f"SHA256SUMS contains an unsafe entry: {relative!r}")
+        if relative in checksums:
+            raise UpdateError(f"SHA256SUMS contains a duplicate entry: {relative}")
+        checksums[relative] = digest
+    if not checksums:
+        raise UpdateError("SHA256SUMS must contain at least one file")
+    return checksums
+
+
+def validate_checksums(root: Path) -> None:
+    checksums = parse_checksums((root / "SHA256SUMS").read_bytes())
+    actual = {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file()
+        and path.relative_to(root).as_posix() not in CHECKSUM_EXCLUSIONS
+    }
+    expected = set(checksums)
+    if actual != expected:
+        missing = sorted(actual - expected)
+        extra = sorted(expected - actual)
+        detail = f"unlisted {missing[0]}" if missing else f"missing {extra[0]}"
+        raise UpdateError(f"SHA256SUMS inventory mismatch: {detail}")
+    for relative, expected_hash in checksums.items():
+        if sha256(root / relative) != expected_hash:
+            raise UpdateError(f"SHA256SUMS mismatch for {relative}")
+
+
 def validate_payload(root: Path, expected_commit: str | None = None) -> str:
     for relative in REQUIRED_FILES:
         if not (root / relative).is_file():
             raise UpdateError(f"snapshot is missing {relative}")
+
+    validate_checksums(root)
 
     try:
         manifest = json.loads((root / "index.json").read_text(encoding="utf-8"))
@@ -163,7 +212,7 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
         if not raw.is_file() or not route.is_file():
             raise UpdateError(f"snapshot is missing a route or raw file for {identity[0]}:{identity[1]}")
         expected_hash = item.get("sha256")
-        if not isinstance(expected_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+        if not isinstance(expected_hash, str) or not HASH_RE.fullmatch(expected_hash):
             raise UpdateError(f"invalid SHA-256 for {identity[0]}:{identity[1]}")
         if sha256(raw) != expected_hash:
             raise UpdateError(f"raw file hash mismatch for {identity[0]}:{identity[1]}")
