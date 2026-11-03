@@ -30,12 +30,34 @@ GITHUB_TREE = "https://github.com/sherpa-md/sherpa-kits/tree/main"
 PROJECT_SUBMIT_URL = (
     "https://github.com/sherpa-md/sherpa-kits/issues/new?template=share-community-project.yml"
 )
+CHECKSUM_EXCLUSIONS = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "dist")
     return parser.parse_args()
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def write_checksums(output: Path) -> None:
+    files = sorted(
+        path
+        for path in output.rglob("*")
+        if path.is_file() and path.relative_to(output).as_posix() not in CHECKSUM_EXCLUSIONS
+    )
+    lines = [
+        f"{file_sha256(path)}  {path.relative_to(output).as_posix()}"
+        for path in files
+    ]
+    (output / "SHA256SUMS").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def frontmatter(text: str) -> tuple[dict, str]:
@@ -512,7 +534,7 @@ def shell(
     <button id="reader-stop" class="button" type="button">Stop</button>
   </div>
 </aside>
-<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
+<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
 <script id="sherpa-data" type="application/json">{safe_json(payload)}</script>
 <script>window.SHERPA_DETAIL_KEY={safe_json(detail_key)};window.SHERPA_ASSET_PREFIX={safe_json(relative_from(route, '/'))};</script>
 <script src="{relative_from(route, '/assets/site.js')}" defer></script>
@@ -635,6 +657,8 @@ def build(output: Path) -> list[dict]:
     with zipfile.ZipFile(output / "all-sherpas.zip", "w", zipfile.ZIP_DEFLATED) as archive:
         for record in records:
             archive.write(REPO_ROOT / record["source_path"], record["source_path"])
+
+    write_checksums(output)
 
     with zipfile.ZipFile(output / "sherpamd-portable-site.zip", "w", zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(output.rglob("*")):
