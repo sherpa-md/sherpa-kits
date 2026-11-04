@@ -534,7 +534,7 @@ def shell(
     <button id="reader-stop" class="button" type="button">Stop</button>
   </div>
 </aside>
-<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
+<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/CONTRIBUTING.md')}">contribute</a><a href="{relative_from(route, '/SECURITY.md')}">report security privately</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
 <script id="sherpa-data" type="application/json">{safe_json(payload)}</script>
 <script>window.SHERPA_DETAIL_KEY={safe_json(detail_key)};window.SHERPA_ASSET_PREFIX={safe_json(relative_from(route, '/'))};</script>
 <script src="{relative_from(route, '/assets/site.js')}" defer></script>
@@ -580,6 +580,8 @@ def build(output: Path) -> list[dict]:
     shutil.copy2(ASSET_ROOT / "site.css", output / "assets" / "site.css")
     shutil.copy2(ASSET_ROOT / "site.js", output / "assets" / "site.js")
     shutil.copy2(REPO_ROOT / "LICENSE", output / "LICENSE")
+    shutil.copy2(REPO_ROOT / "CONTRIBUTING.md", output / "CONTRIBUTING.md")
+    shutil.copy2(REPO_ROOT / "SECURITY.md", output / "SECURITY.md")
     shutil.copy2(PORTABLE_ROOT / "REHOSTING.md", output / "REHOSTING.md")
     shutil.copy2(PORTABLE_ROOT / "update-rehost.py", output / "update-rehost.py")
     shutil.copy2(PORTABLE_ROOT / "verify-rehost.py", output / "verify-rehost.py")
