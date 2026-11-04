@@ -33,6 +33,8 @@ REQUIRED_FILES = (
     "sitemap.xml",
     "SHA256SUMS",
     "LICENSE",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
     "REHOSTING.md",
     "verify-rehost.py",
     "assets/site.css",
