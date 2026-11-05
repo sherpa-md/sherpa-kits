@@ -155,6 +155,10 @@ def main() -> None:
         fail("community project page must link to the portable license")
     if '<a href="../SHA256SUMS">checksums</a>' not in projects_html:
         fail("community project page must link to portable checksums")
+    if '<a href="../CONTRIBUTING.md">contribute</a>' not in projects_html:
+        fail("community project page must link to portable contribution guidance")
+    if '<a href="../SECURITY.md">report security privately</a>' not in projects_html:
+        fail("community project page must link to private security reporting guidance")
 
     catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
     expected_catalog_entries = [
@@ -189,6 +193,10 @@ def main() -> None:
         fail("catalog page must link to the portable license")
     if '<a href="SHA256SUMS">checksums</a>' not in catalog_html:
         fail("catalog page must link to portable checksums")
+    if '<a href="CONTRIBUTING.md">contribute</a>' not in catalog_html:
+        fail("catalog page must link to portable contribution guidance")
+    if '<a href="SECURITY.md">report security privately</a>' not in catalog_html:
+        fail("catalog page must link to private security reporting guidance")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -264,6 +272,10 @@ def main() -> None:
             fail(f"portable license link mismatch for {item['source_path']}")
         if f'<a href="{relative_root}SHA256SUMS">checksums</a>' not in detail_html:
             fail(f"portable checksum link mismatch for {item['source_path']}")
+        if f'<a href="{relative_root}CONTRIBUTING.md">contribute</a>' not in detail_html:
+            fail(f"portable contribution link mismatch for {item['source_path']}")
+        if f'<a href="{relative_root}SECURITY.md">report security privately</a>' not in detail_html:
+            fail(f"portable security-reporting link mismatch for {item['source_path']}")
         expected_detail_schema = {
             "@context": "https://schema.org",
             "@type": "Guide",
@@ -311,6 +323,10 @@ def main() -> None:
             fail("all-sherpas.zip inventory mismatch")
     if (DIST / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
         fail("portable site must preserve the repository license exactly")
+    if (DIST / "CONTRIBUTING.md").read_bytes() != (ROOT / "CONTRIBUTING.md").read_bytes():
+        fail("portable site must preserve the contribution guide exactly")
+    if (DIST / "SECURITY.md").read_bytes() != (ROOT / "SECURITY.md").read_bytes():
+        fail("portable site must preserve the security policy exactly")
     with zipfile.ZipFile(DIST / "sherpamd-portable-site.zip") as archive:
         names = set(archive.namelist())
         required = (
@@ -324,6 +340,8 @@ def main() -> None:
             "sitemap.xml",
             "SHA256SUMS",
             "LICENSE",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
             "REHOSTING.md",
             "update-rehost.py",
             "verify-rehost.py",
@@ -771,6 +789,7 @@ def main() -> None:
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
     print("[PASS] complete site and all-Sherpas archives")
     print("[PASS] portable site preserves the exact repository license")
+    print("[PASS] portable site preserves exact contribution and private-reporting guidance")
     print(f"[PASS] canonical SHA256SUMS covers all {len(checksums)} generated files")
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
