@@ -19,6 +19,8 @@ The same artifact includes `all-sherpas.zip` if you only want the Markdown files
 
 Keep the included `LICENSE` file with every public mirror. It is copied byte-for-byte from the source repository and linked from each generated page.
 
+Keep `CONTRIBUTING.md` and `SECURITY.md` with the mirror too. They are copied byte-for-byte from GitHub `main` so contributors and AI agents can follow the same naming, validation, privacy, and private-reporting rules even from an offline or independently hosted snapshot. Every generated page links to both files; GitHub remains the place to submit changes and private security reports.
+
 Keep `SHA256SUMS` with the mirror too. It records the SHA-256 of every generated HTML page, raw Sherpa, metadata file, asset, support script, license, and the all-Sherpas archive. Every generated page links to it.
 
 The `portable-site` branch is updated only after the repository validator and site parity tests succeed on `main`. It is an auditable generated snapshot, not a second source of truth. Submit changes to `main`; do not edit the snapshot branch by hand.
@@ -54,7 +56,7 @@ After publishing, run the included independent verifier from any machine with Py
 python3 verify-rehost.py --base-url https://your-mirror.example
 ```
 
-By default it compares the mirror's `index.json` and `SHA256SUMS` with the current validated `portable-site` snapshot on GitHub. It then verifies every checksummed file, every public Sherpa and detail route, the repository license, and both ZIP archives. It fails if the mirror is stale, incomplete, altered, or no longer preserves verification labels. Pin an expected source version during a controlled release with `--expect-source-commit <full-40-character-sha>`.
+By default it compares the mirror's `index.json` and `SHA256SUMS` with the current validated `portable-site` snapshot on GitHub. It then verifies every checksummed file, every public Sherpa and detail route, the repository license, contribution guide, security policy, and both ZIP archives. It fails if the mirror is stale, incomplete, altered, or no longer preserves verification labels. Pin an expected source version during a controlled release with `--expect-source-commit <full-40-character-sha>`.
 
 For a private development server that does not have HTTPS yet, add `--allow-http`. Public mirrors should always use HTTPS. To verify an extracted copy without a web server, use `--site-dir /path/to/site`.
 
