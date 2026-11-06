@@ -63,8 +63,9 @@ For a private development server that does not have HTTPS yet, add `--allow-http
 Then smoke-test the browser behavior that cannot be established from file parity alone:
 
 1. A Sherpa can be previewed, listened to, copied for an AI agent, and downloaded.
-2. Search and the type and verification filters work on a phone-sized screen.
-3. Keyboard focus is visible and every control has an accessible name.
+2. With JavaScript disabled, the catalog still lists every Sherpa and every detail route links to the exact Markdown and canonical GitHub source.
+3. Search and the type and verification filters work on a phone-sized screen.
+4. Keyboard focus is visible and every control has an accessible name.
 
 Ratings are snapshots. A portable copy deliberately disables voting unless the host adds an authenticated, rate-limited, moderated, and durable ratings service.
 
