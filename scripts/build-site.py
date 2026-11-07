@@ -415,6 +415,47 @@ def page_schema(
     }
 
 
+def no_script_catalog(records: list[dict]) -> str:
+    """Return an escaped, static catalog when browser JavaScript is unavailable."""
+    items = []
+    for record in records:
+        metadata = " · ".join(
+            (
+                record["kind"],
+                record["verification_state"],
+                record["status"],
+            )
+        )
+        items.append(
+            '<li class="no-script-item">'
+            f'<a href="{html.escape(record["raw_url"].lstrip("/"), quote=True)}">'
+            f'{html.escape(record["title"])}</a>'
+            f'<span>{html.escape(metadata)}</span>'
+            f'<p>{html.escape(record["summary"])}</p></li>'
+        )
+    return (
+        '<noscript><section class="no-script-panel" aria-labelledby="no-script-title">'
+        '<h2 id="no-script-title">Browse Sherpas without JavaScript</h2>'
+        '<p>The interactive filters need JavaScript, but every exact Markdown file remains '
+        'available directly from this portable site.</p>'
+        f'<ul class="no-script-list">{"".join(items)}</ul></section></noscript>'
+    )
+
+
+def no_script_detail(detail: dict, route: str) -> str:
+    """Return an escaped, static detail view linked to canonical Markdown."""
+    raw_href = html.escape(relative_from(route, detail["raw_url"]), quote=True)
+    source_href = html.escape(detail["source_url"], quote=True)
+    home_href = html.escape(relative_from(route, "/index.html"), quote=True)
+    return f'''<noscript><section class="no-script-panel no-script-detail" aria-labelledby="no-script-detail-title">
+  <a href="{home_href}">← Browse all Sherpas</a>
+  <h1 id="no-script-detail-title">{html.escape(detail["title"])}</h1>
+  <p>{html.escape(detail["summary"])}</p>
+  <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd></dl>
+  <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{source_href}">View GitHub source</a></p>
+</section></noscript>'''
+
+
 def shell(
     records: list[dict], *, detail: dict | None = None, projects: list[dict] | None = None
 ) -> str:
@@ -460,7 +501,8 @@ def shell(
 </details>"""
     content = project_content(projects) if projects is not None else (
         '<main id="main" class="page"><div class="detail-shell"><section id="detail-root" '
-        f'data-detail-key="{html.escape(detail_key, quote=True)}"></section>{detail_agent_guide}</div></main>'
+        f'data-detail-key="{html.escape(detail_key, quote=True)}"></section>'
+        f'{no_script_detail(detail, route)}{detail_agent_guide}</div></main>'
         if detail
         else f"""<main id="main" class="page">
   <section class="catalog-intro" aria-labelledby="catalog-title">
@@ -478,6 +520,7 @@ def shell(
       <li><strong>Build safely and verify.</strong><span>Keep private data in an approved AI environment, approve sensitive actions, and require tests and evidence before accepting completion.</span></li>
     </ol>
   </section>
+  {no_script_catalog(records)}
   <div id="catalog-label-guide"></div>
   <section class="catalog-tools" aria-label="Find Sherpas">
     <label class="search-field"><span>Search</span><input id="search" type="search" placeholder="Try photos, private data, Discord…" autocomplete="off"></label>

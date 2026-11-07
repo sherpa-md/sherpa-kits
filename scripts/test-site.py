@@ -197,6 +197,17 @@ def main() -> None:
         fail("catalog page must link to portable contribution guidance")
     if '<a href="SECURITY.md">report security privately</a>' not in catalog_html:
         fail("catalog page must link to private security reporting guidance")
+    if '<noscript><section class="no-script-panel" aria-labelledby="no-script-title">' not in catalog_html:
+        fail("catalog page must provide a static no-JavaScript fallback")
+    if catalog_html.count('class="no-script-item"') != len(items):
+        fail("static catalog fallback must contain every public Sherpa exactly once")
+    for item in items:
+        fallback_entry = (
+            f'<a href="{item["raw_url"].lstrip("/")}">{html.escape(item["title"])}</a>'
+            f'<span>{item["kind"]} · {item["verification_state"]} · {item["status"]}</span>'
+        )
+        if fallback_entry not in catalog_html:
+            fail(f"static catalog fallback mismatch for {item['source_path']}")
 
     llms_text = (DIST / "llms.txt").read_text(encoding="utf-8")
     if not llms_text.startswith(
@@ -317,6 +328,16 @@ def main() -> None:
         ):
             if agent_guide_contract not in detail_html:
                 fail(f"AI agent usage guide is missing for {item['source_path']}")
+        for no_script_contract in (
+            '<noscript><section class="no-script-panel no-script-detail"',
+            f'<h1 id="no-script-detail-title">{html.escape(item["title"])}</h1>',
+            f'<dt>Verification</dt><dd>{html.escape(item["verification_state"])}</dd>',
+            f'<dt>Lifecycle</dt><dd>{html.escape(item["status"])}</dd>',
+            f'<a class="button button--primary" href="{relative_root}{item["raw_url"].lstrip("/")}" download>Read or download exact Markdown</a>',
+            f'<a class="button" href="{html.escape(item["source_url"], quote=True)}">View GitHub source</a>',
+        ):
+            if no_script_contract not in detail_html:
+                fail(f"static detail fallback mismatch for {item['source_path']}")
 
     with zipfile.ZipFile(DIST / "all-sherpas.zip") as archive:
         if sorted(archive.namelist()) != expected:
@@ -801,6 +822,7 @@ def main() -> None:
     print("[PASS] every Sherpa detail route has escaped Open Graph and social-card metadata")
     print("[PASS] Schema.org JSON-LD matches the catalog, projects, and all Sherpa metadata")
     print("[PASS] catalog and detail routes explain safe, evidence-bound AI agent use")
+    print("[PASS] catalog and detail routes expose exact Markdown without JavaScript")
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")
