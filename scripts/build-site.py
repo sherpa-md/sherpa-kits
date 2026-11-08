@@ -30,6 +30,9 @@ GITHUB_TREE = "https://github.com/sherpa-md/sherpa-kits/tree/main"
 PROJECT_SUBMIT_URL = (
     "https://github.com/sherpa-md/sherpa-kits/issues/new?template=share-community-project.yml"
 )
+SHERPA_SUGGEST_URL = (
+    "https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml"
+)
 CHECKSUM_EXCLUSIONS = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
 
 
@@ -510,6 +513,7 @@ def shell(
     <div class="bundle-actions" aria-label="Download options">
       <a class="button button--primary" href="all-sherpas.zip" download>Download all Sherpas</a>
       <a class="button" href="sherpamd-portable-site.zip" download>Download this site</a>
+      <a class="button" href="{SHERPA_SUGGEST_URL}">Suggest a Sherpa or correction</a>
     </div>
   </section>
   <section class="how-it-works" aria-labelledby="how-sherpas-work">

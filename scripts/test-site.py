@@ -439,6 +439,30 @@ def main() -> None:
     ):
         if template_contract not in rating_template:
             fail(f"rating issue form contract is missing: {template_contract}")
+    suggestion_url = "https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml"
+    catalog_html = (DIST / "index.html").read_text(encoding="utf-8")
+    if suggestion_url not in catalog_html:
+        fail("catalog must expose the guided Sherpa suggestion path")
+    suggestion_template = (
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "suggest-sherpa.yml"
+    ).read_text(encoding="utf-8")
+    for suggestion_contract in (
+        "New Sherpa outcome",
+        "Correction to an existing Sherpa",
+        "Accessibility or usability problem",
+        "does not change any verification label",
+        "private URLs, personal data, customer data, and employer data",
+    ):
+        if suggestion_contract not in suggestion_template:
+            fail(f"Sherpa suggestion form contract is missing: {suggestion_contract}")
+    contribution_guide = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+    for contribution_contract in (
+        suggestion_url,
+        "A suggestion is a public proposal, not a verified release.",
+        "Never put credentials, private URLs, personal information, customer or employer data",
+    ):
+        if contribution_contract not in contribution_guide:
+            fail(f"guided contribution contract is missing: {contribution_contract}")
     stylesheet = (DIST / "assets" / "site.css").read_text(encoding="utf-8")
     if ".rating-link" not in stylesheet or "min-height: 44px" not in stylesheet:
         fail("rating submission link must keep a mobile-safe touch target")

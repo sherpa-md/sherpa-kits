@@ -1,0 +1,64 @@
+name: Suggest a Sherpa or correction
+description: Propose a public Sherpa outcome or report a specific gap without claiming verification.
+title: "[Sherpa suggestion]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when you have a useful Sherpa idea or found something that should be corrected, but you are not ready to open a pull request.
+
+        Suggestions are public proposals. They do not change a Sherpa's `status`, `verification_state`, or `last_verified` value. Do not include credentials, private URLs, personal information, customer or employer data, internal infrastructure details, or unredacted screenshots.
+  - type: dropdown
+    id: suggestion_type
+    attributes:
+      label: Suggestion type
+      options:
+        - New Sherpa outcome
+        - Correction to an existing Sherpa
+        - Missing or outdated public source
+        - Accessibility or usability problem
+    validations:
+      required: true
+  - type: input
+    id: sherpa
+    attributes:
+      label: Sherpa or proposed outcome
+      description: For an existing Sherpa, paste its descriptive filename, stable ID, or public URL. For a new one, give the outcome a person should achieve.
+      placeholder: TokenPiggyBank.sherpa.md or "Set up a private local photo workflow"
+    validations:
+      required: true
+  - type: textarea
+    id: observed_gap
+    attributes:
+      label: What is missing, unclear, or incorrect?
+      description: Describe the current problem and who it affects. For a new Sherpa, explain why the outcome is reusable.
+    validations:
+      required: true
+  - type: textarea
+    id: desired_outcome
+    attributes:
+      label: What should a successful Sherpa help someone do?
+      description: State the observable result and any important safety, privacy, or approval boundaries.
+    validations:
+      required: true
+  - type: textarea
+    id: public_evidence
+    attributes:
+      label: Public evidence or sources
+      description: Optional public documentation, reproducible test output, or source links. Remove all private information first.
+  - type: textarea
+    id: testing
+    attributes:
+      label: What have you already tried?
+      description: Optional environment, tools, results, and failures. Clearly separate observed facts from ideas.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I removed secrets, private infrastructure details, private URLs, personal data, customer data, and employer data.
+          required: true
+        - label: I understand this public suggestion is not a verified Sherpa and does not change any verification label.
+          required: true
+        - label: I am willing for maintainers and contributors to discuss and adapt this suggestion in public.
+          required: true
