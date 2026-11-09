@@ -34,6 +34,12 @@ Each kit lives in `kits/<kit-id>/` and consists of:
 6. **Security Check**: Verify zero hardcoded local paths, zero private keys/tokens, and zero private network addresses.
 7. **Submit Pull Request**: Open a pull request describing the domain scope, sources, and verification evidence.
 
+## Suggest a Sherpa or correction without opening a pull request
+
+If Git or the full template workflow is unfamiliar, use the [Suggest a Sherpa or correction issue form](https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml). Name the reusable outcome, identify the existing Sherpa when applicable, describe the gap, and link only public, sanitized evidence.
+
+A suggestion is a public proposal, not a verified release. It cannot change `status`, `verification_state`, or `last_verified`; those fields change only through reviewed evidence and a validated repository update. Never put credentials, private URLs, personal information, customer or employer data, internal infrastructure details, or unredacted screenshots in an issue.
+
 ## Share a working project or alternate implementation
 
 You do not need to change the canonical Sherpa Kit to share something you built from it.
