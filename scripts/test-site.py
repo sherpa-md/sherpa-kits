@@ -13,6 +13,7 @@ import sys
 import tempfile
 import zipfile
 from pathlib import Path
+from urllib.parse import urlencode
 
 import yaml
 
@@ -455,6 +456,36 @@ def main() -> None:
     ):
         if suggestion_contract not in suggestion_template:
             fail(f"Sherpa suggestion form contract is missing: {suggestion_contract}")
+    for contextual_suggestion_contract in (
+        'const sherpaSuggestUrl = "https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml"',
+        "function suggestionHref(record)",
+        "[Sherpa suggestion]: ${record.title} (${record.key}, v${record.version})",
+        'suggest.textContent = "Suggest correction"',
+        'suggest.setAttribute("aria-label", `Suggest a correction to ${record.title} on GitHub`)',
+        "suggestionHref(record)",
+    ):
+        if contextual_suggestion_contract not in script:
+            fail(f"contextual Sherpa suggestion contract is missing: {contextual_suggestion_contract}")
+    for item in items:
+        detail_html = (DIST / item["route"].strip("/") / "index.html").read_text(
+            encoding="utf-8"
+        )
+        expected_suggestion = html.escape(
+            f"{suggestion_url}&"
+            + urlencode(
+                {
+                    "title": (
+                        f'[Sherpa suggestion]: {item["title"]} '
+                        f'({item["key"]}, v{item["version"]})'
+                    )
+                }
+            ),
+            quote=True,
+        )
+        if "Suggest correction" not in detail_html:
+            fail(f"detail page lacks a no-JavaScript suggestion path: {item['route']}")
+        if expected_suggestion not in detail_html:
+            fail(f"detail suggestion lacks Sherpa identity context: {item['route']}")
     contribution_guide = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
     for contribution_contract in (
         suggestion_url,

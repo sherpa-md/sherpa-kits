@@ -5,6 +5,7 @@
   const prefix = window.SHERPA_ASSET_PREFIX || "./";
   const ratings = new Map();
   const speechEngine = window.speechSynthesis || null;
+  const sherpaSuggestUrl = "https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml";
   const speechAvailable = Boolean(speechEngine && window.SpeechSynthesisUtterance);
   const reader = { record: null, chunks: [], index: 0, utterance: null, paused: false, token: 0 };
   let activeRecord = null;
@@ -14,6 +15,12 @@
   const byId = (id) => document.getElementById(id);
   const routeHref = (route) => prefix + route.replace(/^\//, "") + "index.html";
   const rawHref = (rawUrl) => prefix + rawUrl.replace(/^\//, "");
+
+  function suggestionHref(record) {
+    const url = new URL(sherpaSuggestUrl);
+    url.searchParams.set("title", `[Sherpa suggestion]: ${record.title} (${record.key}, v${record.version})`);
+    return url.toString();
+  }
 
   function toast(message) {
     const node = byId("toast");
@@ -403,7 +410,14 @@
     source.target = "_blank";
     source.rel = "noopener";
     source.textContent = "GitHub";
-    row.append(previewButton, listenButton, copyButton, shareButton, download, source);
+    const suggest = document.createElement("a");
+    suggest.className = "button";
+    suggest.href = suggestionHref(record);
+    suggest.target = "_blank";
+    suggest.rel = "noopener";
+    suggest.textContent = "Suggest correction";
+    suggest.setAttribute("aria-label", `Suggest a correction to ${record.title} on GitHub`);
+    row.append(previewButton, listenButton, copyButton, shareButton, download, source, suggest);
     return row;
   }
 
