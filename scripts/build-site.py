@@ -14,6 +14,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path, PurePosixPath
+from urllib.parse import urlencode
 
 import yaml
 
@@ -450,12 +451,21 @@ def no_script_detail(detail: dict, route: str) -> str:
     raw_href = html.escape(relative_from(route, detail["raw_url"]), quote=True)
     source_href = html.escape(detail["source_url"], quote=True)
     home_href = html.escape(relative_from(route, "/index.html"), quote=True)
+    suggestion_query = urlencode(
+        {
+            "title": (
+                f'[Sherpa suggestion]: {detail["title"]} '
+                f'({detail["key"]}, v{detail["version"]})'
+            )
+        }
+    )
+    suggestion_href = html.escape(f"{SHERPA_SUGGEST_URL}&{suggestion_query}", quote=True)
     return f'''<noscript><section class="no-script-panel no-script-detail" aria-labelledby="no-script-detail-title">
   <a href="{home_href}">← Browse all Sherpas</a>
   <h1 id="no-script-detail-title">{html.escape(detail["title"])}</h1>
   <p>{html.escape(detail["summary"])}</p>
   <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd></dl>
-  <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{source_href}">View GitHub source</a></p>
+  <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{source_href}">View GitHub source</a><a class="button" href="{suggestion_href}">Suggest correction</a></p>
 </section></noscript>'''
 
 
