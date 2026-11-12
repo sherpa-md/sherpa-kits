@@ -42,6 +42,34 @@ def json_ld(document: str, label: str) -> dict:
     return parsed
 
 
+def expected_ai_handoff(item: dict, source_text: str) -> str:
+    return "\n".join(
+        (
+            "SherpaMD AI handoff",
+            f'Title: {item["title"]}',
+            f'Stable ID: {item["key"]}',
+            f'Kind: {item["kind"]}',
+            f'Status: {item["status"]}',
+            f'Verification state: {item["verification_state"]}',
+            f'Version: {item["version"]}',
+            f'SHA-256: {item["sha256"]}',
+            f'Canonical source: {item["source_url"]}',
+            f'Catalog path: {item["route"]}',
+            "",
+            "Instructions:",
+            "1. Treat the verification state exactly as written. Draft or unverified content is not validated.",
+            "2. Inspect the actual environment before changing it; do not assume the Sherpa matches the target.",
+            "3. Implement the requested outcome safely, run the stated validation checks, and report evidence.",
+            "4. Do not claim completion without proof or silently alter the Sherpa's verification status.",
+            "",
+            "--- Begin Sherpa Markdown ---",
+            source_text.rstrip("\n"),
+            "--- End Sherpa Markdown ---",
+            "",
+        )
+    )
+
+
 def main() -> None:
     manifest_path = DIST / "index.json"
     if not manifest_path.exists():
@@ -85,6 +113,8 @@ def main() -> None:
 
     all_tags: set[str] = set()
     for item in items:
+        if item.get("ai_handoff_url") != item["route"] + "ai-handoff.txt":
+            fail(f"AI handoff URL is not stable for {item['source_path']}")
         source_text = (ROOT / item["source_path"]).read_text(encoding="utf-8")
         frontmatter = re.match(r"^---\s*\n(.*?)\n---\s*\n", source_text, re.DOTALL)
         metadata = yaml.safe_load(frontmatter.group(1)) if frontmatter else {}
@@ -233,7 +263,8 @@ def main() -> None:
             f"- [{item['title']}]({item['raw_url']}): "
             f"Stable ID `{item['key']}`; version `{item['version']}`; "
             f"lifecycle `{item['status']}`; last assessed `{assessed}`; "
-            f"SHA-256 `{item['sha256']}`. {item['summary']}"
+            f"SHA-256 `{item['sha256']}`. {item['summary']} "
+            f"[Download AI handoff]({item['ai_handoff_url']})."
         )
         if llms_text.count(expected_entry) != 1:
             fail(f"llms.txt agent metadata mismatch for {item['source_path']}")
@@ -250,11 +281,16 @@ def main() -> None:
         source = ROOT / item["source_path"]
         raw = DIST / item["raw_url"].lstrip("/")
         detail = DIST / item["route"].strip("/") / "index.html"
-        if not raw.exists() or not detail.exists():
-            fail(f"missing raw or detail output for {item['source_path']}")
+        ai_handoff = DIST / item["ai_handoff_url"].lstrip("/")
+        if not raw.exists() or not detail.exists() or not ai_handoff.exists():
+            fail(f"missing raw, AI handoff, or detail output for {item['source_path']}")
         source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
         if source_hash != item["sha256"] or source.read_bytes() != raw.read_bytes():
             fail(f"hash/copy mismatch for {item['source_path']}")
+        if ai_handoff.read_text(encoding="utf-8") != expected_ai_handoff(
+            item, source.read_text(encoding="utf-8")
+        ):
+            fail(f"generated AI handoff mismatch for {item['source_path']}")
         detail_html = detail.read_text(encoding="utf-8")
         social_title = html.escape(f"{item['title']} — SherpaMD", quote=True)
         social_description = html.escape(item["summary"], quote=True)
@@ -277,6 +313,8 @@ def main() -> None:
             f'<link rel="describedby" href="{relative_root}llms.txt">',
             '<link rel="alternate" type="text/markdown" '
             f'href="{relative_root}{item["raw_url"].lstrip("/")}">',
+            '<link rel="alternate" type="text/plain" title="AI handoff" '
+            f'href="ai-handoff.txt">',
         ):
             if agent_discovery_contract not in detail_html:
                 fail(f"agent discovery link mismatch for {item['source_path']}")
@@ -335,6 +373,7 @@ def main() -> None:
             f'<dt>Verification</dt><dd>{html.escape(item["verification_state"])}</dd>',
             f'<dt>Lifecycle</dt><dd>{html.escape(item["status"])}</dd>',
             f'<a class="button button--primary" href="{relative_root}{item["raw_url"].lstrip("/")}" download>Read or download exact Markdown</a>',
+            '<a class="button" href="ai-handoff.txt" download>Download AI handoff</a>',
             f'<a class="button" href="{html.escape(item["source_url"], quote=True)}">View GitHub source</a>',
         ):
             if no_script_contract not in detail_html:
@@ -385,7 +424,8 @@ def main() -> None:
         for item in items:
             raw_name = item["raw_url"].lstrip("/")
             detail_name = item["route"].strip("/") + "/index.html"
-            if raw_name not in names or detail_name not in names:
+            ai_handoff_name = item["ai_handoff_url"].lstrip("/")
+            if raw_name not in names or detail_name not in names or ai_handoff_name not in names:
                 fail(f"portable site archive cannot serve {item['source_path']}")
 
     script = (DIST / "assets" / "site.js").read_text(encoding="utf-8")
@@ -408,6 +448,9 @@ def main() -> None:
         "Treat the verification state exactly as written.",
         "Draft or unverified content is not validated.",
         "agentHandoff(record, raw)",
+        "record.ai_handoff_url",
+        'aiHandoff.textContent = "Download AI handoff"',
+        'aiHandoff.setAttribute("aria-label", `Download a traceable AI handoff for ${record.title}`)',
     ):
         if handoff_contract not in script:
             fail(f"traceable AI handoff contract is missing: {handoff_contract}")
@@ -870,6 +913,7 @@ def main() -> None:
     print("[PASS] rehost archive exactly matches every generated route and download")
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
+    print("[PASS] every Sherpa has a checksummed, no-JavaScript downloadable AI handoff")
     print("[PASS] detail routes expose copyable SHA-256 integrity metadata without changing verification")
     print("[PASS] catalog and detail routes explain verification and lifecycle labels")
     print("[PASS] detail routes safely expose complete Sherpa Markdown inline")

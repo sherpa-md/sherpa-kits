@@ -404,6 +404,12 @@
     download.href = rawHref(record.raw_url);
     download.download = "";
     download.textContent = "Download .md";
+    const aiHandoff = document.createElement("a");
+    aiHandoff.className = "button";
+    aiHandoff.href = rawHref(record.ai_handoff_url);
+    aiHandoff.download = "";
+    aiHandoff.textContent = "Download AI handoff";
+    aiHandoff.setAttribute("aria-label", `Download a traceable AI handoff for ${record.title}`);
     const source = document.createElement("a");
     source.className = "button";
     source.href = record.source_url;
@@ -417,7 +423,7 @@
     suggest.rel = "noopener";
     suggest.textContent = "Suggest correction";
     suggest.setAttribute("aria-label", `Suggest a correction to ${record.title} on GitHub`);
-    row.append(previewButton, listenButton, copyButton, shareButton, download, source, suggest);
+    row.append(previewButton, listenButton, copyButton, shareButton, download, aiHandoff, source, suggest);
     return row;
   }
 
