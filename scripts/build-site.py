@@ -213,6 +213,7 @@ def discover() -> list[dict]:
             tags = normalize_tags(metadata.get("tags", catalog_item.get("tags")), relative_path)
             raw_url = "/raw/" + relative_path
             route = route_for(relative_path)
+            ai_handoff_url = route + "ai-handoff.txt"
             records.append(
                 {
                     "key": key,
@@ -229,6 +230,7 @@ def discover() -> list[dict]:
                     "source_path": relative_path,
                     "source_url": f"{GITHUB_BLOB}/{relative_path}",
                     "raw_url": raw_url,
+                    "ai_handoff_url": ai_handoff_url,
                     "route": route,
                     "sha256": hashlib.sha256(raw.encode("utf-8")).hexdigest(),
                     "raw": raw,
@@ -236,6 +238,35 @@ def discover() -> list[dict]:
             )
 
     return sorted(records, key=lambda item: (item["kind"], item["title"].casefold(), item["source_path"]))
+
+
+def ai_handoff(record: dict) -> str:
+    """Return a traceable, portable execution request followed by exact Markdown."""
+    return "\n".join(
+        (
+            "SherpaMD AI handoff",
+            f'Title: {record["title"]}',
+            f'Stable ID: {record["key"]}',
+            f'Kind: {record["kind"]}',
+            f'Status: {record["status"]}',
+            f'Verification state: {record["verification_state"]}',
+            f'Version: {record["version"]}',
+            f'SHA-256: {record["sha256"]}',
+            f'Canonical source: {record["source_url"]}',
+            f'Catalog path: {record["route"]}',
+            "",
+            "Instructions:",
+            "1. Treat the verification state exactly as written. Draft or unverified content is not validated.",
+            "2. Inspect the actual environment before changing it; do not assume the Sherpa matches the target.",
+            "3. Implement the requested outcome safely, run the stated validation checks, and report evidence.",
+            "4. Do not claim completion without proof or silently alter the Sherpa's verification status.",
+            "",
+            "--- Begin Sherpa Markdown ---",
+            record["raw"].rstrip("\n"),
+            "--- End Sherpa Markdown ---",
+            "",
+        )
+    )
 
 
 def discover_projects() -> list[dict]:
@@ -449,6 +480,9 @@ def no_script_catalog(records: list[dict]) -> str:
 def no_script_detail(detail: dict, route: str) -> str:
     """Return an escaped, static detail view linked to canonical Markdown."""
     raw_href = html.escape(relative_from(route, detail["raw_url"]), quote=True)
+    ai_handoff_href = html.escape(
+        relative_from(route, detail["ai_handoff_url"]), quote=True
+    )
     source_href = html.escape(detail["source_url"], quote=True)
     home_href = html.escape(relative_from(route, "/index.html"), quote=True)
     suggestion_query = urlencode(
@@ -465,7 +499,7 @@ def no_script_detail(detail: dict, route: str) -> str:
   <h1 id="no-script-detail-title">{html.escape(detail["title"])}</h1>
   <p>{html.escape(detail["summary"])}</p>
   <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd></dl>
-  <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{source_href}">View GitHub source</a><a class="button" href="{suggestion_href}">Suggest correction</a></p>
+  <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{ai_handoff_href}" download>Download AI handoff</a><a class="button" href="{source_href}">View GitHub source</a><a class="button" href="{suggestion_href}">Suggest correction</a></p>
 </section></noscript>'''
 
 
@@ -501,8 +535,12 @@ def shell(
     )
     if detail:
         markdown_href = html.escape(relative_from(route, detail["raw_url"]), quote=True)
+        ai_handoff_href = html.escape(
+            relative_from(route, detail["ai_handoff_url"]), quote=True
+        )
         agent_discovery_links += (
             f'  <link rel="alternate" type="text/markdown" href="{markdown_href}">\n'
+            f'  <link rel="alternate" type="text/plain" title="AI handoff" href="{ai_handoff_href}">\n'
         )
     detail_agent_guide = """<details class="agent-guide">
   <summary>How to use this Sherpa with an AI agent</summary>
@@ -650,6 +688,8 @@ def build(output: Path) -> list[dict]:
         page_destination = output / record["route"].strip("/") / "index.html"
         page_destination.parent.mkdir(parents=True, exist_ok=True)
         page_destination.write_text(shell(records, detail=record), encoding="utf-8")
+        ai_handoff_destination = output / record["ai_handoff_url"].lstrip("/")
+        ai_handoff_destination.write_text(ai_handoff(record), encoding="utf-8")
 
     manifest = {
         "schema_version": "1",
@@ -696,7 +736,8 @@ def build(output: Path) -> list[dict]:
                 f"SHA-256 `{record['sha256']}`."
             )
             llms_lines.append(
-                f"- [{record['title']}]({record['raw_url']}): {metadata} {record['summary']}"
+                f"- [{record['title']}]({record['raw_url']}): {metadata} {record['summary']} "
+                f"[Download AI handoff]({record['ai_handoff_url']})."
             )
     (output / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
 
