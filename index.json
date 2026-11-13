@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source_repository": "sherpa-md/sherpa-kits",
-  "source_commit": "48d89f1130ba747df2704a4430d67a324a712d3c",
+  "source_commit": "f6aad88b8f9e94843ef5f8ea301d6aa1d9332998",
   "count": 24,
   "items": [
     {
@@ -26,6 +26,7 @@
       "source_path": "candidates/agent-outcome-qa-harness/AgentOutcomeQAHarness.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/agent-outcome-qa-harness/AgentOutcomeQAHarness.sherpa.md",
       "raw_url": "/raw/candidates/agent-outcome-qa-harness/AgentOutcomeQAHarness.sherpa.md",
+      "ai_handoff_url": "/candidates/agent-outcome-qa-harness/ai-handoff.txt",
       "route": "/candidates/agent-outcome-qa-harness/",
       "sha256": "e8fed0ed231b38fd48bff3b82573f6907fb62000e640d84db29f74c0b019a457"
     },
@@ -51,6 +52,7 @@
       "source_path": "candidates/approved-private-data-analyst/ApprovedPrivateDataAnalyst.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/approved-private-data-analyst/ApprovedPrivateDataAnalyst.sherpa.md",
       "raw_url": "/raw/candidates/approved-private-data-analyst/ApprovedPrivateDataAnalyst.sherpa.md",
+      "ai_handoff_url": "/candidates/approved-private-data-analyst/ai-handoff.txt",
       "route": "/candidates/approved-private-data-analyst/",
       "sha256": "5ac131bcf81271e628ecf8eef0ddf8e6d95593a1df867001530f6cda62462e3f"
     },
@@ -75,6 +77,7 @@
       "source_path": "candidates/approved-model-routing-gateway/ApprovedModelRoutingGateway.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/approved-model-routing-gateway/ApprovedModelRoutingGateway.sherpa.md",
       "raw_url": "/raw/candidates/approved-model-routing-gateway/ApprovedModelRoutingGateway.sherpa.md",
+      "ai_handoff_url": "/candidates/approved-model-routing-gateway/ai-handoff.txt",
       "route": "/candidates/approved-model-routing-gateway/",
       "sha256": "086654aa0283f7e2176910a4e98b95fbb3dd08924497f843b8b5028e069af787"
     },
@@ -99,6 +102,7 @@
       "source_path": "candidates/estimate-actuals-analyst/EstimateActualsAnalyst.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/estimate-actuals-analyst/EstimateActualsAnalyst.sherpa.md",
       "raw_url": "/raw/candidates/estimate-actuals-analyst/EstimateActualsAnalyst.sherpa.md",
+      "ai_handoff_url": "/candidates/estimate-actuals-analyst/ai-handoff.txt",
       "route": "/candidates/estimate-actuals-analyst/",
       "sha256": "17a0adfc905d276792ce87781996c4b2ec9e4029bddb7fc3c0d78dbdf5c8ed46"
     },
@@ -123,6 +127,7 @@
       "source_path": "candidates/evidence-bound-decision-engine/EvidenceBoundDecisionEngine.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/evidence-bound-decision-engine/EvidenceBoundDecisionEngine.sherpa.md",
       "raw_url": "/raw/candidates/evidence-bound-decision-engine/EvidenceBoundDecisionEngine.sherpa.md",
+      "ai_handoff_url": "/candidates/evidence-bound-decision-engine/ai-handoff.txt",
       "route": "/candidates/evidence-bound-decision-engine/",
       "sha256": "bb18a15d81d600c8ee629e87ad85f680e5294a9e0fff57ce98fb81649527069a"
     },
@@ -147,6 +152,7 @@
       "source_path": "candidates/human-verified-document-automation/HumanVerifiedDocumentAutomation.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/human-verified-document-automation/HumanVerifiedDocumentAutomation.sherpa.md",
       "raw_url": "/raw/candidates/human-verified-document-automation/HumanVerifiedDocumentAutomation.sherpa.md",
+      "ai_handoff_url": "/candidates/human-verified-document-automation/ai-handoff.txt",
       "route": "/candidates/human-verified-document-automation/",
       "sha256": "b23621b74f8e71f24affe780d6465641a77c30ac7ddc2d897a68fd1f1ad5a43b"
     },
@@ -171,6 +177,7 @@
       "source_path": "candidates/incident-replay-root-cause/IncidentReplayRootCause.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/incident-replay-root-cause/IncidentReplayRootCause.sherpa.md",
       "raw_url": "/raw/candidates/incident-replay-root-cause/IncidentReplayRootCause.sherpa.md",
+      "ai_handoff_url": "/candidates/incident-replay-root-cause/ai-handoff.txt",
       "route": "/candidates/incident-replay-root-cause/",
       "sha256": "1cb5d77b872bde376cc4bb102bd06d4e2d2ec7cb4a5785afd52f19dda8e179e2"
     },
@@ -195,6 +202,7 @@
       "source_path": "candidates/institutional-memory-builder/InstitutionalMemoryBuilder.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/institutional-memory-builder/InstitutionalMemoryBuilder.sherpa.md",
       "raw_url": "/raw/candidates/institutional-memory-builder/InstitutionalMemoryBuilder.sherpa.md",
+      "ai_handoff_url": "/candidates/institutional-memory-builder/ai-handoff.txt",
       "route": "/candidates/institutional-memory-builder/",
       "sha256": "6952719801d34d5913c9c2157f6a8408fa1ffd25e2a8e5b21d76707ef09fe0f3"
     },
@@ -220,6 +228,7 @@
       "source_path": "candidates/picture-to-structured-work/PictureToStructuredWork.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/picture-to-structured-work/PictureToStructuredWork.sherpa.md",
       "raw_url": "/raw/candidates/picture-to-structured-work/PictureToStructuredWork.sherpa.md",
+      "ai_handoff_url": "/candidates/picture-to-structured-work/ai-handoff.txt",
       "route": "/candidates/picture-to-structured-work/",
       "sha256": "09cc26b6a959110f70011cdb398955e529a819be40608fd2e887931a82a18915"
     },
@@ -245,6 +254,7 @@
       "source_path": "candidates/planned-actual-reconciler/PlannedActualReconciler.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/candidates/planned-actual-reconciler/PlannedActualReconciler.sherpa.md",
       "raw_url": "/raw/candidates/planned-actual-reconciler/PlannedActualReconciler.sherpa.md",
+      "ai_handoff_url": "/candidates/planned-actual-reconciler/ai-handoff.txt",
       "route": "/candidates/planned-actual-reconciler/",
       "sha256": "58aa913c435fb03b7fa81df33e42e98b94b683155534691c0ac5afac392c4845"
     },
@@ -273,6 +283,7 @@
       "source_path": "handoffs/DiscordBotFleetSillyTavern.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/handoffs/DiscordBotFleetSillyTavern.sherpa.md",
       "raw_url": "/raw/handoffs/DiscordBotFleetSillyTavern.sherpa.md",
+      "ai_handoff_url": "/handoffs/DiscordBotFleetSillyTavern/ai-handoff.txt",
       "route": "/handoffs/DiscordBotFleetSillyTavern/",
       "sha256": "9e9cba9f1872f0a177df87e59939318e204a8746a3b27948d6c6f18890c3e629"
     },
@@ -291,6 +302,7 @@
       "source_path": "handoffs/FDELearningTrack.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/handoffs/FDELearningTrack.sherpa.md",
       "raw_url": "/raw/handoffs/FDELearningTrack.sherpa.md",
+      "ai_handoff_url": "/handoffs/FDELearningTrack/ai-handoff.txt",
       "route": "/handoffs/FDELearningTrack/",
       "sha256": "1372e61aa8581274dbfc72542fa74997a8f4186c7149444cf873c77f541a47ad"
     },
@@ -309,6 +321,7 @@
       "source_path": "handoffs/ComputerGithubSetup.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/handoffs/ComputerGithubSetup.sherpa.md",
       "raw_url": "/raw/handoffs/ComputerGithubSetup.sherpa.md",
+      "ai_handoff_url": "/handoffs/ComputerGithubSetup/ai-handoff.txt",
       "route": "/handoffs/ComputerGithubSetup/",
       "sha256": "39c0864c382a92b433344a1b0059cdf6ce21ab09f5b5980e39a64732d26da7ea"
     },
@@ -327,6 +340,7 @@
       "source_path": "handoffs/RaspberryPi4OxAlpha.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/handoffs/RaspberryPi4OxAlpha.sherpa.md",
       "raw_url": "/raw/handoffs/RaspberryPi4OxAlpha.sherpa.md",
+      "ai_handoff_url": "/handoffs/RaspberryPi4OxAlpha/ai-handoff.txt",
       "route": "/handoffs/RaspberryPi4OxAlpha/",
       "sha256": "a6393cca1d15146747531afc5d5ffbea79d74b9016eb07e152572ee00b5d0a92"
     },
@@ -345,6 +359,7 @@
       "source_path": "handoffs/TokenPiggyBank.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/handoffs/TokenPiggyBank.sherpa.md",
       "raw_url": "/raw/handoffs/TokenPiggyBank.sherpa.md",
+      "ai_handoff_url": "/handoffs/TokenPiggyBank/ai-handoff.txt",
       "route": "/handoffs/TokenPiggyBank/",
       "sha256": "f4cddbd6b9585ed321e37924200992aff6296c6c74267d680e26de3eebdeeb80"
     },
@@ -369,6 +384,7 @@
       "source_path": "kits/ai-to-ai-bus/AItoAIBus.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/ai-to-ai-bus/AItoAIBus.sherpa.md",
       "raw_url": "/raw/kits/ai-to-ai-bus/AItoAIBus.sherpa.md",
+      "ai_handoff_url": "/kits/ai-to-ai-bus/ai-handoff.txt",
       "route": "/kits/ai-to-ai-bus/",
       "sha256": "5112470642dae620a5424e04268c3fb4944fdb680da318ad8b33e49d4af90093"
     },
@@ -394,6 +410,7 @@
       "source_path": "kits/bounded-agent-control-plane/BoundedAgentControlPlane.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/bounded-agent-control-plane/BoundedAgentControlPlane.sherpa.md",
       "raw_url": "/raw/kits/bounded-agent-control-plane/BoundedAgentControlPlane.sherpa.md",
+      "ai_handoff_url": "/kits/bounded-agent-control-plane/ai-handoff.txt",
       "route": "/kits/bounded-agent-control-plane/",
       "sha256": "1f6f628453c65c326b3b1436080b5a01fc2b5976cdf6aba686b27931a5077e1d"
     },
@@ -419,6 +436,7 @@
       "source_path": "kits/context-vault-efficiency/ContextVaultEfficiency.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/context-vault-efficiency/ContextVaultEfficiency.sherpa.md",
       "raw_url": "/raw/kits/context-vault-efficiency/ContextVaultEfficiency.sherpa.md",
+      "ai_handoff_url": "/kits/context-vault-efficiency/ai-handoff.txt",
       "route": "/kits/context-vault-efficiency/",
       "sha256": "7f4f93c81fcc158bfa8188f0f8068eb35892b429adb56b49d8a3295519008858"
     },
@@ -441,6 +459,7 @@
       "source_path": "kits/core-fleet/CoreFleet.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/core-fleet/CoreFleet.sherpa.md",
       "raw_url": "/raw/kits/core-fleet/CoreFleet.sherpa.md",
+      "ai_handoff_url": "/kits/core-fleet/ai-handoff.txt",
       "route": "/kits/core-fleet/",
       "sha256": "20c85ed934baab8501928a6b41fb3c7f2d325987c430828eb1460b791333870f"
     },
@@ -469,6 +488,7 @@
       "source_path": "kits/discord-bot-fleet-sillytavern/DiscordBotFleetSillyTavern.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/discord-bot-fleet-sillytavern/DiscordBotFleetSillyTavern.sherpa.md",
       "raw_url": "/raw/kits/discord-bot-fleet-sillytavern/DiscordBotFleetSillyTavern.sherpa.md",
+      "ai_handoff_url": "/kits/discord-bot-fleet-sillytavern/ai-handoff.txt",
       "route": "/kits/discord-bot-fleet-sillytavern/",
       "sha256": "9e9cba9f1872f0a177df87e59939318e204a8746a3b27948d6c6f18890c3e629"
     },
@@ -494,6 +514,7 @@
       "source_path": "kits/hermes-llm-wiki/HermesLLMWiki.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/hermes-llm-wiki/HermesLLMWiki.sherpa.md",
       "raw_url": "/raw/kits/hermes-llm-wiki/HermesLLMWiki.sherpa.md",
+      "ai_handoff_url": "/kits/hermes-llm-wiki/ai-handoff.txt",
       "route": "/kits/hermes-llm-wiki/",
       "sha256": "961392135f56b5175956225a7a4b01cacb28ec618bc0f20b62aceec0a33be1e5"
     },
@@ -519,6 +540,7 @@
       "source_path": "kits/multi-llm-watchdog/MultiLLMWatchdog.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/multi-llm-watchdog/MultiLLMWatchdog.sherpa.md",
       "raw_url": "/raw/kits/multi-llm-watchdog/MultiLLMWatchdog.sherpa.md",
+      "ai_handoff_url": "/kits/multi-llm-watchdog/ai-handoff.txt",
       "route": "/kits/multi-llm-watchdog/",
       "sha256": "76b6b27a5c04a7728169a45f1541e3f487801f4cd6dcc25789cc16a2ef208161"
     },
@@ -544,6 +566,7 @@
       "source_path": "kits/portable-agent-handoff/PortableAgentHandoff.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/portable-agent-handoff/PortableAgentHandoff.sherpa.md",
       "raw_url": "/raw/kits/portable-agent-handoff/PortableAgentHandoff.sherpa.md",
+      "ai_handoff_url": "/kits/portable-agent-handoff/ai-handoff.txt",
       "route": "/kits/portable-agent-handoff/",
       "sha256": "32ff973a60f11c791a0e080d9976e8f553bbf896eee5fe300355fb378c56fb11"
     },
@@ -568,6 +591,7 @@
       "source_path": "kits/token-piggy-bank/TokenPiggyBank.sherpa.md",
       "source_url": "https://github.com/sherpa-md/sherpa-kits/blob/main/kits/token-piggy-bank/TokenPiggyBank.sherpa.md",
       "raw_url": "/raw/kits/token-piggy-bank/TokenPiggyBank.sherpa.md",
+      "ai_handoff_url": "/kits/token-piggy-bank/ai-handoff.txt",
       "route": "/kits/token-piggy-bank/",
       "sha256": "ba7f6e9b083697d88f2100e10e9ac462008ce8fe46032252ac9bd0ce6ce1d184"
     }
