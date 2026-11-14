@@ -115,6 +115,8 @@ def main() -> None:
     for item in items:
         if item.get("ai_handoff_url") != item["route"] + "ai-handoff.txt":
             fail(f"AI handoff URL is not stable for {item['source_path']}")
+        if not re.fullmatch(r"[0-9a-f]{64}", str(item.get("ai_handoff_sha256", ""))):
+            fail(f"AI handoff SHA-256 is invalid for {item['source_path']}")
         source_text = (ROOT / item["source_path"]).read_text(encoding="utf-8")
         frontmatter = re.match(r"^---\s*\n(.*?)\n---\s*\n", source_text, re.DOTALL)
         metadata = yaml.safe_load(frontmatter.group(1)) if frontmatter else {}
@@ -291,6 +293,13 @@ def main() -> None:
             item, source.read_text(encoding="utf-8")
         ):
             fail(f"generated AI handoff mismatch for {item['source_path']}")
+        ai_handoff_name = item["ai_handoff_url"].lstrip("/")
+        ai_handoff_hash = hashlib.sha256(ai_handoff.read_bytes()).hexdigest()
+        if (
+            ai_handoff_hash != item["ai_handoff_sha256"]
+            or checksums.get(ai_handoff_name) != item["ai_handoff_sha256"]
+        ):
+            fail(f"AI handoff manifest/checksum mismatch for {item['source_path']}")
         detail_html = detail.read_text(encoding="utf-8")
         social_title = html.escape(f"{item['title']} — SherpaMD", quote=True)
         social_description = html.escape(item["summary"], quote=True)
@@ -749,6 +758,75 @@ def main() -> None:
         )
         if stale.returncode == 0 or "expected source commit" not in stale.stderr:
             fail("rehost verifier did not reject an unexpected source commit")
+
+        invalid_handoff_manifest = Path(temporary) / "invalid-handoff-manifest"
+        shutil.copytree(DIST, invalid_handoff_manifest)
+        invalid_manifest_path = invalid_handoff_manifest / "index.json"
+        invalid_manifest = json.loads(invalid_manifest_path.read_text(encoding="utf-8"))
+        invalid_manifest["items"][0]["ai_handoff_sha256"] = "0" * 64
+        invalid_manifest_path.write_text(
+            json.dumps(invalid_manifest, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        invalid_checksums_path = invalid_handoff_manifest / "SHA256SUMS"
+        invalid_checksums = invalid_checksums_path.read_text(encoding="utf-8").splitlines()
+        invalid_index_hash = hashlib.sha256(invalid_manifest_path.read_bytes()).hexdigest()
+        invalid_checksums_path.write_text(
+            "\n".join(
+                f"{invalid_index_hash}  index.json" if line.endswith("  index.json") else line
+                for line in invalid_checksums
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        invalid_handoff_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(invalid_handoff_manifest),
+                "--canonical-index",
+                str(invalid_manifest_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_handoff_check.returncode == 0
+            or "AI handoff checksum mismatch" not in invalid_handoff_check.stderr
+        ):
+            fail("rehost verifier did not reject an invalid AI handoff digest")
+
+        invalid_handoff_archive = Path(temporary) / "invalid-handoff-manifest.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            invalid_handoff_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                if name == "index.json":
+                    data = invalid_manifest_path.read_bytes()
+                elif name == "SHA256SUMS":
+                    data = invalid_checksums_path.read_bytes()
+                else:
+                    data = source_archive.read(name)
+                changed_archive.writestr(name, data)
+        invalid_handoff_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(invalid_handoff_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_handoff_update.returncode == 0
+            or "AI handoff hash mismatch" not in invalid_handoff_update.stderr
+        ):
+            fail("rehost updater did not reject an invalid AI handoff digest")
 
         altered_site = Path(temporary) / "altered-site"
         shutil.copytree(DIST, altered_site)
