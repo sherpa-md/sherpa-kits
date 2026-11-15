@@ -229,6 +229,8 @@ def validate_items(manifest: dict) -> tuple[list[dict], list[str], set[str]]:
         raw_url = item.get("raw_url")
         route = item.get("route")
         expected_hash = item.get("sha256")
+        ai_handoff_url = item.get("ai_handoff_url")
+        ai_handoff_hash = item.get("ai_handoff_sha256")
         if not isinstance(source_path, str) or not safe_relative(source_path):
             raise VerificationError(f"unsafe source_path for {kind}:{item_id}")
         if raw_url != f"/raw/{source_path}":
@@ -237,9 +239,14 @@ def validate_items(manifest: dict) -> tuple[list[dict], list[str], set[str]]:
             raise VerificationError(f"unsafe route for {kind}:{item_id}")
         if not isinstance(expected_hash, str) or not HASH_RE.fullmatch(expected_hash):
             raise VerificationError(f"invalid SHA-256 for {kind}:{item_id}")
+        if ai_handoff_url != route + "ai-handoff.txt":
+            raise VerificationError(f"unstable AI handoff URL for {kind}:{item_id}")
+        if not isinstance(ai_handoff_hash, str) or not HASH_RE.fullmatch(ai_handoff_hash):
+            raise VerificationError(f"invalid AI handoff SHA-256 for {kind}:{item_id}")
         source_paths.append(source_path)
         required_routes.add(raw_url.lstrip("/"))
         required_routes.add(route.strip("/") + "/index.html")
+        required_routes.add(ai_handoff_url.lstrip("/"))
     return items, source_paths, required_routes
 
 
@@ -331,6 +338,11 @@ def main() -> int:
         raw = reader.read(item["raw_url"].lstrip("/"))
         if sha256(raw) != item["sha256"]:
             raise VerificationError(f"raw file hash mismatch for {item['source_path']}")
+        handoff_path = item["ai_handoff_url"].lstrip("/")
+        if deployed_checksums.get(handoff_path) != item["ai_handoff_sha256"]:
+            raise VerificationError(
+                f"AI handoff checksum mismatch for {item['source_path']}"
+            )
 
     verify_archive(reader.read("all-sherpas.zip"), items, source_paths)
     verify_site_archive(
