@@ -209,15 +209,25 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
 
         raw = local_path(root, item.get("raw_url"), "raw_url")
         route = local_path(root, item.get("route"), "route") / "index.html"
+        ai_handoff = local_path(root, item.get("ai_handoff_url"), "ai_handoff_url")
         if item.get("raw_url") != f"/raw/{source_path}":
             raise UpdateError(f"raw URL does not preserve source_path for {identity[0]}:{identity[1]}")
-        if not raw.is_file() or not route.is_file():
-            raise UpdateError(f"snapshot is missing a route or raw file for {identity[0]}:{identity[1]}")
+        if item.get("ai_handoff_url") != item.get("route") + "ai-handoff.txt":
+            raise UpdateError(f"unstable AI handoff URL for {identity[0]}:{identity[1]}")
+        if not raw.is_file() or not route.is_file() or not ai_handoff.is_file():
+            raise UpdateError(
+                f"snapshot is missing a route, raw file, or AI handoff for {identity[0]}:{identity[1]}"
+            )
         expected_hash = item.get("sha256")
         if not isinstance(expected_hash, str) or not HASH_RE.fullmatch(expected_hash):
             raise UpdateError(f"invalid SHA-256 for {identity[0]}:{identity[1]}")
         if sha256(raw) != expected_hash:
             raise UpdateError(f"raw file hash mismatch for {identity[0]}:{identity[1]}")
+        ai_handoff_hash = item.get("ai_handoff_sha256")
+        if not isinstance(ai_handoff_hash, str) or not HASH_RE.fullmatch(ai_handoff_hash):
+            raise UpdateError(f"invalid AI handoff SHA-256 for {identity[0]}:{identity[1]}")
+        if sha256(ai_handoff) != ai_handoff_hash:
+            raise UpdateError(f"AI handoff hash mismatch for {identity[0]}:{identity[1]}")
 
     try:
         with zipfile.ZipFile(root / "all-sherpas.zip") as archive:

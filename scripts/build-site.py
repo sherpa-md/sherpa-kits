@@ -682,6 +682,10 @@ def build(output: Path) -> list[dict]:
     shutil.copy2(PORTABLE_ROOT / "verify-rehost.py", output / "verify-rehost.py")
 
     for record in records:
+        handoff_text = ai_handoff(record)
+        record["ai_handoff_sha256"] = hashlib.sha256(
+            handoff_text.encode("utf-8")
+        ).hexdigest()
         raw_destination = output / "raw" / record["source_path"]
         raw_destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(REPO_ROOT / record["source_path"], raw_destination)
@@ -689,7 +693,7 @@ def build(output: Path) -> list[dict]:
         page_destination.parent.mkdir(parents=True, exist_ok=True)
         page_destination.write_text(shell(records, detail=record), encoding="utf-8")
         ai_handoff_destination = output / record["ai_handoff_url"].lstrip("/")
-        ai_handoff_destination.write_text(ai_handoff(record), encoding="utf-8")
+        ai_handoff_destination.write_text(handoff_text, encoding="utf-8")
 
     manifest = {
         "schema_version": "1",
