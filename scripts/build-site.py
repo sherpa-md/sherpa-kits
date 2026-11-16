@@ -560,6 +560,7 @@ def shell(
     <div><p class="eyebrow">MD means Markdown</p><h1 id="catalog-title">Find a Sherpa. Build the outcome.</h1><p>Portable guides that people can read and capable AI agents can execute.</p></div>
     <div class="bundle-actions" aria-label="Download options">
       <a class="button button--primary" href="all-sherpas.zip" download>Download all Sherpas</a>
+      <a class="button" href="all-ai-handoffs.zip" download>Download AI handoffs</a>
       <a class="button" href="sherpamd-portable-site.zip" download>Download this site</a>
       <a class="button" href="{SHERPA_SUGGEST_URL}">Suggest a Sherpa or correction</a>
     </div>
@@ -629,7 +630,7 @@ def shell(
     <button id="reader-stop" class="button" type="button">Stop</button>
   </div>
 </aside>
-<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/CONTRIBUTING.md')}">contribute</a><a href="{relative_from(route, '/SECURITY.md')}">report security privately</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
+<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/all-ai-handoffs.zip')}">AI handoffs</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/CONTRIBUTING.md')}">contribute</a><a href="{relative_from(route, '/SECURITY.md')}">report security privately</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
 <script id="sherpa-data" type="application/json">{safe_json(payload)}</script>
 <script>window.SHERPA_DETAIL_KEY={safe_json(detail_key)};window.SHERPA_ASSET_PREFIX={safe_json(relative_from(route, '/'))};</script>
 <script src="{relative_from(route, '/assets/site.js')}" defer></script>
@@ -761,6 +762,11 @@ def build(output: Path) -> list[dict]:
     with zipfile.ZipFile(output / "all-sherpas.zip", "w", zipfile.ZIP_DEFLATED) as archive:
         for record in records:
             archive.write(REPO_ROOT / record["source_path"], record["source_path"])
+
+    with zipfile.ZipFile(output / "all-ai-handoffs.zip", "w", zipfile.ZIP_DEFLATED) as archive:
+        for record in records:
+            handoff_path = record["ai_handoff_url"].lstrip("/")
+            archive.write(output / handoff_path, handoff_path)
 
     write_checksums(output)
 

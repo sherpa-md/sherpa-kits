@@ -230,6 +230,8 @@ def main() -> None:
         fail("catalog page must link to portable contribution guidance")
     if '<a href="SECURITY.md">report security privately</a>' not in catalog_html:
         fail("catalog page must link to private security reporting guidance")
+    if '<a class="button" href="all-ai-handoffs.zip" download>Download AI handoffs</a>' not in catalog_html:
+        fail("catalog page must offer the complete AI handoff bundle")
     if '<noscript><section class="no-script-panel" aria-labelledby="no-script-title">' not in catalog_html:
         fail("catalog page must provide a static no-JavaScript fallback")
     if catalog_html.count('class="no-script-item"') != len(items):
@@ -391,6 +393,14 @@ def main() -> None:
     with zipfile.ZipFile(DIST / "all-sherpas.zip") as archive:
         if sorted(archive.namelist()) != expected:
             fail("all-sherpas.zip inventory mismatch")
+    expected_handoffs = sorted(item["ai_handoff_url"].lstrip("/") for item in items)
+    with zipfile.ZipFile(DIST / "all-ai-handoffs.zip") as archive:
+        if sorted(archive.namelist()) != expected_handoffs:
+            fail("all-ai-handoffs.zip inventory mismatch")
+        for item in items:
+            handoff_name = item["ai_handoff_url"].lstrip("/")
+            if archive.read(handoff_name) != (DIST / handoff_name).read_bytes():
+                fail(f"all-ai-handoffs.zip mismatch for {item['source_path']}")
     if (DIST / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
         fail("portable site must preserve the repository license exactly")
     if (DIST / "CONTRIBUTING.md").read_bytes() != (ROOT / "CONTRIBUTING.md").read_bytes():
@@ -418,6 +428,7 @@ def main() -> None:
             "assets/site.css",
             "assets/site.js",
             "all-sherpas.zip",
+            "all-ai-handoffs.zip",
         )
         for name in required:
             if name not in names:
@@ -984,7 +995,7 @@ def main() -> None:
 
     print(f"[PASS] source/build/download parity: {len(expected)}/{len(expected)}")
     print("[PASS] unique repository-relative raw paths and SHA-256 hashes")
-    print("[PASS] complete site and all-Sherpas archives")
+    print("[PASS] complete site, all-Sherpas, and all-AI-handoffs archives")
     print("[PASS] portable site preserves the exact repository license")
     print("[PASS] portable site preserves exact contribution and private-reporting guidance")
     print(f"[PASS] canonical SHA256SUMS covers all {len(checksums)} generated files")
