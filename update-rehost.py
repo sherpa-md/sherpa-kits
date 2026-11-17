@@ -40,6 +40,7 @@ REQUIRED_FILES = (
     "assets/site.css",
     "assets/site.js",
     "all-sherpas.zip",
+    "all-ai-handoffs.zip",
 )
 
 
@@ -239,6 +240,19 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
                     raise UpdateError(f"all-sherpas.zip mismatch for {item['source_path']}")
     except zipfile.BadZipFile as exc:
         raise UpdateError("all-sherpas.zip is invalid") from exc
+
+    handoff_paths = sorted(item["ai_handoff_url"].lstrip("/") for item in items)
+    try:
+        with zipfile.ZipFile(root / "all-ai-handoffs.zip") as archive:
+            if sorted(archive.namelist()) != handoff_paths:
+                raise UpdateError("all-ai-handoffs.zip inventory does not match index.json")
+            for item in items:
+                handoff = local_path(root, item["ai_handoff_url"], "ai_handoff_url")
+                handoff_name = item["ai_handoff_url"].lstrip("/")
+                if archive.read(handoff_name) != handoff.read_bytes():
+                    raise UpdateError(f"all-ai-handoffs.zip mismatch for {item['source_path']}")
+    except zipfile.BadZipFile as exc:
+        raise UpdateError("all-ai-handoffs.zip is invalid") from exc
     return commit
 
 
