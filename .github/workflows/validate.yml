@@ -29,6 +29,7 @@ jobs:
           name: sherpamd-portable-${{ github.sha }}
           path: |
             dist/all-sherpas.zip
+            dist/all-ai-handoffs.zip
             dist/sherpamd-portable-site.zip
             dist/index.json
           if-no-files-found: error

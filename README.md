@@ -9,6 +9,7 @@ Sherpa files are descriptive Markdown handoffs that a person can read and an AI 
 ## Quick downloads
 
 - **[Download every Sherpa Markdown file](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-sherpas.zip)** — the latest validated `.sherpa.md` files in one ZIP.
+- **[Download every AI handoff](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-ai-handoffs.zip)** — one checksummed, execution-ready text handoff per public Sherpa, with stable paths preserved.
 - **[Download the complete rehostable site](https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip)** — the catalog, detail pages, raw files, search data, contribution and security guidance, archives, updater, verifier, MIT license, and whole-site SHA-256 checksums.
 - **[Read the rehosting guide](https://github.com/sherpa-md/sherpa-kits/blob/portable-site/REHOSTING.md)** — preview locally, publish to any static host, verify the mirror, and update it safely.
 
@@ -112,7 +113,7 @@ Run:
 
 GitHub Actions runs the same validation on pushes and pull requests.
 
-The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths and the exact repository license, contribution guide, and security policy, publishes a deterministic `SHA256SUMS` inventory for every generated file, publishes a sitemap with a discoverable `robots.txt` pointer, links each page to the covering `llms.txt`, links every Sherpa page to its exact Markdown twin, exposes the complete catalog and exact Markdown downloads when JavaScript is unavailable, and creates both a complete site archive and an all-Sherpas archive. Search, filter, topic, verification, and sort choices are stored in the page URL so a useful catalog view can be bookmarked or shared without a backend. After a successful `main` build, GitHub publishes the same output to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site), which can be downloaded or cloned for rehosting without relying on an expiring artifact.
+The portable catalog build also proves that every public Sherpa is represented exactly once, preserves repository-relative download paths and the exact repository license, contribution guide, and security policy, publishes a deterministic `SHA256SUMS` inventory for every generated file, publishes a sitemap with a discoverable `robots.txt` pointer, links each page to the covering `llms.txt`, links every Sherpa page to its exact Markdown twin, exposes the complete catalog and exact Markdown downloads when JavaScript is unavailable, and creates complete site, all-Sherpas, and all-AI-handoffs archives. Search, filter, topic, verification, and sort choices are stored in the page URL so a useful catalog view can be bookmarked or shared without a backend. After a successful `main` build, GitHub publishes the same output to the permanent [`portable-site` snapshot branch](https://github.com/sherpa-md/sherpa-kits/tree/portable-site), which can be downloaded or cloned for rehosting without relying on an expiring artifact.
 
 ## License
 

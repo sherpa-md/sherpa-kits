@@ -41,6 +41,7 @@ REQUIRED_FILES = (
     "assets/site.css",
     "assets/site.js",
     "all-sherpas.zip",
+    "all-ai-handoffs.zip",
     "sherpamd-portable-site.zip",
 )
 MAX_DOWNLOAD_BYTES = 100 * 1024 * 1024
@@ -264,6 +265,24 @@ def verify_archive(data: bytes, items: list[dict], source_paths: list[str]) -> N
         raise VerificationError("all-sherpas.zip is not a valid ZIP archive") from exc
 
 
+def verify_handoff_archive(data: bytes, items: list[dict]) -> None:
+    expected_paths = sorted(item["ai_handoff_url"].lstrip("/") for item in items)
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            if sorted(archive.namelist()) != expected_paths:
+                raise VerificationError(
+                    "all-ai-handoffs.zip inventory does not match index.json"
+                )
+            for item in items:
+                handoff_path = item["ai_handoff_url"].lstrip("/")
+                if sha256(archive.read(handoff_path)) != item["ai_handoff_sha256"]:
+                    raise VerificationError(
+                        f"all-ai-handoffs.zip hash mismatch for {item['source_path']}"
+                    )
+    except zipfile.BadZipFile as exc:
+        raise VerificationError("all-ai-handoffs.zip is not a valid ZIP archive") from exc
+
+
 def verify_site_archive(data: bytes, expected_files: set[str]) -> None:
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as archive:
@@ -345,6 +364,7 @@ def main() -> int:
             )
 
     verify_archive(reader.read("all-sherpas.zip"), items, source_paths)
+    verify_handoff_archive(reader.read("all-ai-handoffs.zip"), items)
     verify_site_archive(
         reader.read("sherpamd-portable-site.zip"), set(deployed_checksums)
     )
@@ -352,7 +372,7 @@ def main() -> int:
     print(f"[PASS] mirror matches canonical source commit {commit}")
     print(f"[PASS] {len(items)}/{len(items)} Sherpa identities, routes, and SHA-256 hashes")
     print(f"[PASS] {len(deployed_checksums)} generated files match canonical SHA256SUMS")
-    print("[PASS] required assets and both download archives are complete")
+    print("[PASS] required assets and all three download archives are complete")
     return 0
 
 
