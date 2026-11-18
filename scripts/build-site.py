@@ -35,6 +35,36 @@ SHERPA_SUGGEST_URL = (
     "https://github.com/sherpa-md/sherpa-kits/issues/new?template=suggest-sherpa.yml"
 )
 CHECKSUM_EXCLUSIONS = {".nojekyll", "SHA256SUMS", "sherpamd-portable-site.zip"}
+BULK_DOWNLOADS = [
+    {
+        "id": "source-markdown",
+        "title": "All Sherpa Markdown files",
+        "url": "/all-sherpas.zip",
+        "media_type": "application/zip",
+        "contents": "Exact public .sherpa.md source files with repository paths preserved.",
+    },
+    {
+        "id": "ai-handoffs",
+        "title": "All AI handoffs",
+        "url": "/all-ai-handoffs.zip",
+        "media_type": "application/zip",
+        "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
+    },
+    {
+        "id": "portable-site",
+        "title": "Complete rehostable site",
+        "url": "/sherpamd-portable-site.zip",
+        "media_type": "application/zip",
+        "contents": "The complete static catalog, downloads, policies, and rehosting tools.",
+    },
+    {
+        "id": "checksums",
+        "title": "SHA-256 checksums",
+        "url": "/SHA256SUMS",
+        "media_type": "text/plain",
+        "contents": "SHA-256 inventory for the generated public files.",
+    },
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -701,6 +731,7 @@ def build(output: Path) -> list[dict]:
         "source_repository": "sherpa-md/sherpa-kits",
         "source_commit": source_sha(),
         "count": len(records),
+        "downloads": BULK_DOWNLOADS,
         "items": [{key: value for key, value in record.items() if key != "raw"} for record in records],
     }
     (output / "index.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -730,7 +761,14 @@ def build(output: Path) -> list[dict]:
         f"> {len(records)} public Sherpa files. GitHub Markdown is the source of truth.",
         "",
         "Use each lifecycle and verification label exactly as written. A verified Sherpa has evidence for its stated scope, not a guarantee for every environment. Inspect the target, protect private data, and require tests before relying on any Sherpa.",
+        "",
+        "## Download and rehost",
+        "",
     ]
+    for download in BULK_DOWNLOADS:
+        llms_lines.append(
+            f"- [{download['title']}]({download['url']}): {download['contents']}"
+        )
     for verification_state in sorted({record["verification_state"] for record in records}):
         llms_lines.extend(["", f"## Verification state: {verification_state}", ""])
         for record in (item for item in records if item["verification_state"] == verification_state):
