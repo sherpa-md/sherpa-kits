@@ -4,6 +4,13 @@
 
 Use each lifecycle and verification label exactly as written. A verified Sherpa has evidence for its stated scope, not a guarantee for every environment. Inspect the target, protect private data, and require tests before relying on any Sherpa.
 
+## Download and rehost
+
+- [All Sherpa Markdown files](/all-sherpas.zip): Exact public .sherpa.md source files with repository paths preserved.
+- [All AI handoffs](/all-ai-handoffs.zip): One generated, independently checksummed AI handoff per public Sherpa.
+- [Complete rehostable site](/sherpamd-portable-site.zip): The complete static catalog, downloads, policies, and rehosting tools.
+- [SHA-256 checksums](/SHA256SUMS): SHA-256 inventory for the generated public files.
+
 ## Verification state: unverified
 
 - [Agent Outcome QA Harness — Evidence, Safety, Cost, and Repeatability](/raw/candidates/agent-outcome-qa-harness/AgentOutcomeQAHarness.sherpa.md): Stable ID `candidate:agent-outcome-qa-harness`; version `0.1.0`; lifecycle `draft`; last assessed `2026-08-23T00:00:00Z`; SHA-256 `e8fed0ed231b38fd48bff3b82573f6907fb62000e640d84db29f74c0b019a457`. Install a test and production-observation harness that evaluates agents against externally verifiable outcomes, policy compliance, evidence quality, recovery behavior, latency, and cost. It produces comparable scorecards across agent/mod… [Download AI handoff](/candidates/agent-outcome-qa-harness/ai-handoff.txt).

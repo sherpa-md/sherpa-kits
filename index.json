@@ -1,8 +1,38 @@
 {
   "schema_version": "1",
   "source_repository": "sherpa-md/sherpa-kits",
-  "source_commit": "c5965092269db3a6cf98a8a2bf0cdd0e2cccc4fe",
+  "source_commit": "dea722bf0c26e09cf9949867c147b6eb135c70c4",
   "count": 24,
+  "downloads": [
+    {
+      "id": "source-markdown",
+      "title": "All Sherpa Markdown files",
+      "url": "/all-sherpas.zip",
+      "media_type": "application/zip",
+      "contents": "Exact public .sherpa.md source files with repository paths preserved."
+    },
+    {
+      "id": "ai-handoffs",
+      "title": "All AI handoffs",
+      "url": "/all-ai-handoffs.zip",
+      "media_type": "application/zip",
+      "contents": "One generated, independently checksummed AI handoff per public Sherpa."
+    },
+    {
+      "id": "portable-site",
+      "title": "Complete rehostable site",
+      "url": "/sherpamd-portable-site.zip",
+      "media_type": "application/zip",
+      "contents": "The complete static catalog, downloads, policies, and rehosting tools."
+    },
+    {
+      "id": "checksums",
+      "title": "SHA-256 checksums",
+      "url": "/SHA256SUMS",
+      "media_type": "text/plain",
+      "contents": "SHA-256 inventory for the generated public files."
+    }
+  ],
   "items": [
     {
       "key": "candidate:agent-outcome-qa-harness",
