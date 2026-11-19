@@ -45,6 +45,36 @@ REQUIRED_FILES = (
     "sherpamd-portable-site.zip",
 )
 MAX_DOWNLOAD_BYTES = 100 * 1024 * 1024
+EXPECTED_DOWNLOADS = [
+    {
+        "id": "source-markdown",
+        "title": "All Sherpa Markdown files",
+        "url": "/all-sherpas.zip",
+        "media_type": "application/zip",
+        "contents": "Exact public .sherpa.md source files with repository paths preserved.",
+    },
+    {
+        "id": "ai-handoffs",
+        "title": "All AI handoffs",
+        "url": "/all-ai-handoffs.zip",
+        "media_type": "application/zip",
+        "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
+    },
+    {
+        "id": "portable-site",
+        "title": "Complete rehostable site",
+        "url": "/sherpamd-portable-site.zip",
+        "media_type": "application/zip",
+        "contents": "The complete static catalog, downloads, policies, and rehosting tools.",
+    },
+    {
+        "id": "checksums",
+        "title": "SHA-256 checksums",
+        "url": "/SHA256SUMS",
+        "media_type": "text/plain",
+        "contents": "SHA-256 inventory for the generated public files.",
+    },
+]
 
 
 class VerificationError(RuntimeError):
@@ -201,6 +231,8 @@ def parse_manifest(data: bytes, label: str) -> dict:
         raise VerificationError(f"{label} uses an unsupported schema")
     if manifest.get("source_repository") != EXPECTED_REPOSITORY:
         raise VerificationError(f"{label} does not identify the canonical repository")
+    if manifest.get("downloads") != EXPECTED_DOWNLOADS:
+        raise VerificationError(f"{label} bulk download inventory is missing or altered")
     commit = manifest.get("source_commit")
     if not isinstance(commit, str) or not COMMIT_RE.fullmatch(commit):
         raise VerificationError(f"{label} has an invalid source_commit")

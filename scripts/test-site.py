@@ -20,6 +20,36 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
+EXPECTED_DOWNLOADS = [
+    {
+        "id": "source-markdown",
+        "title": "All Sherpa Markdown files",
+        "url": "/all-sherpas.zip",
+        "media_type": "application/zip",
+        "contents": "Exact public .sherpa.md source files with repository paths preserved.",
+    },
+    {
+        "id": "ai-handoffs",
+        "title": "All AI handoffs",
+        "url": "/all-ai-handoffs.zip",
+        "media_type": "application/zip",
+        "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
+    },
+    {
+        "id": "portable-site",
+        "title": "Complete rehostable site",
+        "url": "/sherpamd-portable-site.zip",
+        "media_type": "application/zip",
+        "contents": "The complete static catalog, downloads, policies, and rehosting tools.",
+    },
+    {
+        "id": "checksums",
+        "title": "SHA-256 checksums",
+        "url": "/SHA256SUMS",
+        "media_type": "text/plain",
+        "contents": "SHA-256 inventory for the generated public files.",
+    },
+]
 
 
 def fail(message: str) -> None:
@@ -76,6 +106,8 @@ def main() -> None:
         fail("dist/index.json is missing; run scripts/build-site.py first")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     items = manifest.get("items", [])
+    if manifest.get("downloads") != EXPECTED_DOWNLOADS:
+        fail("index.json bulk download inventory is missing or altered")
     source_paths = [item["source_path"] for item in items]
     checksum_path = DIST / "SHA256SUMS"
     if not checksum_path.is_file():
@@ -257,6 +289,12 @@ def main() -> None:
     ):
         if boundary not in llms_text:
             fail(f"llms.txt safety boundary is missing: {boundary}")
+    for download in EXPECTED_DOWNLOADS:
+        expected_download = (
+            f"- [{download['title']}]({download['url']}): {download['contents']}"
+        )
+        if llms_text.count(expected_download) != 1:
+            fail(f"llms.txt bulk download mismatch for {download['id']}")
     expected_states = sorted({item["verification_state"] for item in items})
     actual_states = re.findall(r"^## Verification state: (.+)$", llms_text, re.MULTILINE)
     if actual_states != expected_states:
@@ -769,6 +807,83 @@ def main() -> None:
         )
         if stale.returncode == 0 or "expected source commit" not in stale.stderr:
             fail("rehost verifier did not reject an unexpected source commit")
+
+        invalid_download_manifest = Path(temporary) / "invalid-download-manifest"
+        shutil.copytree(DIST, invalid_download_manifest)
+        invalid_download_path = invalid_download_manifest / "index.json"
+        invalid_downloads = json.loads(invalid_download_path.read_text(encoding="utf-8"))
+        invalid_downloads["downloads"] = invalid_downloads["downloads"][:-1]
+        invalid_download_path.write_text(
+            json.dumps(invalid_downloads, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        invalid_download_checksums_path = invalid_download_manifest / "SHA256SUMS"
+        invalid_download_checksums = invalid_download_checksums_path.read_text(
+            encoding="utf-8"
+        ).splitlines()
+        invalid_download_index_hash = hashlib.sha256(
+            invalid_download_path.read_bytes()
+        ).hexdigest()
+        invalid_download_checksums_path.write_text(
+            "\n".join(
+                f"{invalid_download_index_hash}  index.json"
+                if line.endswith("  index.json")
+                else line
+                for line in invalid_download_checksums
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        invalid_download_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(invalid_download_manifest),
+                "--canonical-index",
+                str(invalid_download_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_download_check.returncode == 0
+            or "bulk download inventory is missing or altered"
+            not in invalid_download_check.stderr
+        ):
+            fail("rehost verifier did not reject an altered bulk download inventory")
+
+        invalid_download_archive = Path(temporary) / "invalid-download-manifest.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            invalid_download_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                if name == "index.json":
+                    data = invalid_download_path.read_bytes()
+                elif name == "SHA256SUMS":
+                    data = invalid_download_checksums_path.read_bytes()
+                else:
+                    data = source_archive.read(name)
+                changed_archive.writestr(name, data)
+        invalid_download_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(invalid_download_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_download_update.returncode == 0
+            or "bulk download inventory is missing or altered"
+            not in invalid_download_update.stderr
+        ):
+            fail("rehost updater did not reject an altered bulk download inventory")
 
         invalid_handoff_manifest = Path(temporary) / "invalid-handoff-manifest"
         shutil.copytree(DIST, invalid_handoff_manifest)
