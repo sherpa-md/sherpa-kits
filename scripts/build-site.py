@@ -263,6 +263,7 @@ def discover() -> list[dict]:
                     "ai_handoff_url": ai_handoff_url,
                     "route": route,
                     "sha256": hashlib.sha256(raw.encode("utf-8")).hexdigest(),
+                    "source_bytes": path.stat().st_size,
                     "raw": raw,
                 }
             )
@@ -489,6 +490,8 @@ def no_script_catalog(records: list[dict]) -> str:
                 record["kind"],
                 record["verification_state"],
                 record["status"],
+                f'{record["source_bytes"]:,} B Markdown',
+                f'{record["ai_handoff_bytes"]:,} B AI handoff',
             )
         )
         items.append(
@@ -528,7 +531,7 @@ def no_script_detail(detail: dict, route: str) -> str:
   <a href="{home_href}">← Browse all Sherpas</a>
   <h1 id="no-script-detail-title">{html.escape(detail["title"])}</h1>
   <p>{html.escape(detail["summary"])}</p>
-  <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd></dl>
+  <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd><dt>Markdown size</dt><dd>{detail["source_bytes"]:,} bytes</dd><dt>AI handoff size</dt><dd>{detail["ai_handoff_bytes"]:,} bytes</dd></dl>
   <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{ai_handoff_href}" download>Download AI handoff</a><a class="button" href="{source_href}">View GitHub source</a><a class="button" href="{suggestion_href}">Suggest correction</a></p>
 </section></noscript>'''
 
@@ -717,6 +720,7 @@ def build(output: Path) -> list[dict]:
         record["ai_handoff_sha256"] = hashlib.sha256(
             handoff_text.encode("utf-8")
         ).hexdigest()
+        record["ai_handoff_bytes"] = len(handoff_text.encode("utf-8"))
         raw_destination = output / "raw" / record["source_path"]
         raw_destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(REPO_ROOT / record["source_path"], raw_destination)
@@ -776,6 +780,8 @@ def build(output: Path) -> list[dict]:
             metadata = (
                 f"Stable ID `{record['key']}`; version `{record['version']}`; "
                 f"lifecycle `{record['status']}`; last assessed `{assessed}`; "
+                f"source bytes `{record['source_bytes']}`; "
+                f"AI handoff bytes `{record['ai_handoff_bytes']}`; "
                 f"SHA-256 `{record['sha256']}`."
             )
             llms_lines.append(
