@@ -453,6 +453,19 @@
     return row;
   }
 
+  function formatBytes(bytes) {
+    if (!Number.isInteger(bytes) || bytes < 0) return "size unavailable";
+    if (bytes < 1024) return `${bytes} B`;
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  function payloadSizeFragment(record) {
+    const row = document.createElement("p");
+    row.className = "payload-size";
+    row.textContent = `${formatBytes(record.source_bytes)} Markdown · ${formatBytes(record.ai_handoff_bytes)} AI handoff`;
+    return row;
+  }
+
   function integrityFragment(record) {
     const section = document.createElement("section");
     section.className = "integrity-panel";
@@ -465,6 +478,8 @@
     [
       ["Stable ID", record.key],
       ["Version", record.version],
+      ["Markdown size", `${record.source_bytes.toLocaleString()} bytes`],
+      ["AI handoff size", `${record.ai_handoff_bytes.toLocaleString()} bytes`],
       ["SHA-256", record.sha256],
     ].forEach(([label, value]) => {
       const term = document.createElement("dt");
@@ -623,7 +638,7 @@
     badges.append(badge(record.kind), badge(record.verification_state, `badge--${record.verification_state}`), badge(record.status, `badge--${record.status}`));
     const summary = document.createElement("p");
     summary.textContent = record.summary;
-    article.append(heading, badges, assessmentFragment(record), summary, tagFragment(record), actions(record), ratingFragment(record));
+    article.append(heading, badges, assessmentFragment(record), payloadSizeFragment(record), summary, tagFragment(record), actions(record), ratingFragment(record));
     return article;
   }
 
@@ -729,7 +744,7 @@
     const path = document.createElement("p");
     path.className = "source-path";
     path.textContent = record.source_path;
-    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, integrityFragment(record), inlineReader(record), relatedFragment(record));
+    article.append(eyebrow, title, summary, badges, labelGuide(), assessmentFragment(record), payloadSizeFragment(record), tagFragment(record, record.tags.length), actions(record), ratingFragment(record), path, integrityFragment(record), inlineReader(record), relatedFragment(record));
     root.replaceChildren(back, article);
   }
 

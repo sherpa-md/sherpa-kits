@@ -264,6 +264,8 @@ def validate_items(manifest: dict) -> tuple[list[dict], list[str], set[str]]:
         expected_hash = item.get("sha256")
         ai_handoff_url = item.get("ai_handoff_url")
         ai_handoff_hash = item.get("ai_handoff_sha256")
+        source_bytes = item.get("source_bytes")
+        ai_handoff_bytes = item.get("ai_handoff_bytes")
         if not isinstance(source_path, str) or not safe_relative(source_path):
             raise VerificationError(f"unsafe source_path for {kind}:{item_id}")
         if raw_url != f"/raw/{source_path}":
@@ -276,6 +278,14 @@ def validate_items(manifest: dict) -> tuple[list[dict], list[str], set[str]]:
             raise VerificationError(f"unstable AI handoff URL for {kind}:{item_id}")
         if not isinstance(ai_handoff_hash, str) or not HASH_RE.fullmatch(ai_handoff_hash):
             raise VerificationError(f"invalid AI handoff SHA-256 for {kind}:{item_id}")
+        if not isinstance(source_bytes, int) or isinstance(source_bytes, bool) or source_bytes <= 0:
+            raise VerificationError(f"invalid source byte count for {kind}:{item_id}")
+        if (
+            not isinstance(ai_handoff_bytes, int)
+            or isinstance(ai_handoff_bytes, bool)
+            or ai_handoff_bytes <= 0
+        ):
+            raise VerificationError(f"invalid AI handoff byte count for {kind}:{item_id}")
         source_paths.append(source_path)
         required_routes.add(raw_url.lstrip("/"))
         required_routes.add(route.strip("/") + "/index.html")
@@ -387,9 +397,14 @@ def main() -> int:
             raise VerificationError(f"SHA256SUMS mismatch for {relative}")
     for item in items:
         raw = reader.read(item["raw_url"].lstrip("/"))
+        if len(raw) != item["source_bytes"]:
+            raise VerificationError(f"source byte count mismatch for {item['source_path']}")
         if sha256(raw) != item["sha256"]:
             raise VerificationError(f"raw file hash mismatch for {item['source_path']}")
         handoff_path = item["ai_handoff_url"].lstrip("/")
+        handoff = reader.read(handoff_path)
+        if len(handoff) != item["ai_handoff_bytes"]:
+            raise VerificationError(f"AI handoff byte count mismatch for {item['source_path']}")
         if deployed_checksums.get(handoff_path) != item["ai_handoff_sha256"]:
             raise VerificationError(
                 f"AI handoff checksum mismatch for {item['source_path']}"

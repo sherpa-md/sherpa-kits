@@ -251,6 +251,20 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
             raise UpdateError(
                 f"snapshot is missing a route, raw file, or AI handoff for {identity[0]}:{identity[1]}"
             )
+        source_bytes = item.get("source_bytes")
+        ai_handoff_bytes = item.get("ai_handoff_bytes")
+        if not isinstance(source_bytes, int) or isinstance(source_bytes, bool) or source_bytes <= 0:
+            raise UpdateError(f"invalid source byte count for {identity[0]}:{identity[1]}")
+        if (
+            not isinstance(ai_handoff_bytes, int)
+            or isinstance(ai_handoff_bytes, bool)
+            or ai_handoff_bytes <= 0
+        ):
+            raise UpdateError(f"invalid AI handoff byte count for {identity[0]}:{identity[1]}")
+        if raw.stat().st_size != source_bytes:
+            raise UpdateError(f"source byte count mismatch for {identity[0]}:{identity[1]}")
+        if ai_handoff.stat().st_size != ai_handoff_bytes:
+            raise UpdateError(f"AI handoff byte count mismatch for {identity[0]}:{identity[1]}")
         expected_hash = item.get("sha256")
         if not isinstance(expected_hash, str) or not HASH_RE.fullmatch(expected_hash):
             raise UpdateError(f"invalid SHA-256 for {identity[0]}:{identity[1]}")
