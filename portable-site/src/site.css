@@ -87,6 +87,7 @@ nav a:hover { background: var(--paper-2); color: var(--ink); }
 .badge--unverified, .badge--draft, .badge--needs-retest { border-color: color-mix(in srgb, var(--amber) 48%, var(--line)); color: var(--amber); }
 .assessment-date { color: var(--soft-ink); font-size: .8rem; }
 .assessment-date time { font-weight: 700; }
+.payload-size { margin: .25rem 0; color: var(--soft-ink); font-size: .9rem; }
 .tag-list { display: flex; flex-wrap: wrap; gap: .3rem; align-items: center; }
 .tag { padding: .12rem .42rem; border-radius: 999px; background: var(--paper-2); color: var(--soft-ink); font-size: .74rem; }
 .tag--link { display: inline-flex; min-height: 44px; align-items: center; padding: .3rem .55rem; text-decoration: none; font-weight: 700; }

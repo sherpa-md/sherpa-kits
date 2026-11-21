@@ -149,7 +149,13 @@ def main() -> None:
             fail(f"AI handoff URL is not stable for {item['source_path']}")
         if not re.fullmatch(r"[0-9a-f]{64}", str(item.get("ai_handoff_sha256", ""))):
             fail(f"AI handoff SHA-256 is invalid for {item['source_path']}")
-        source_text = (ROOT / item["source_path"]).read_text(encoding="utf-8")
+        source_file = ROOT / item["source_path"]
+        source_text = source_file.read_text(encoding="utf-8")
+        if item.get("source_bytes") != source_file.stat().st_size:
+            fail(f"source byte count mismatch for {item['source_path']}")
+        expected_handoff = expected_ai_handoff(item, source_text)
+        if item.get("ai_handoff_bytes") != len(expected_handoff.encode("utf-8")):
+            fail(f"AI handoff byte count mismatch for {item['source_path']}")
         frontmatter = re.match(r"^---\s*\n(.*?)\n---\s*\n", source_text, re.DOTALL)
         metadata = yaml.safe_load(frontmatter.group(1)) if frontmatter else {}
         expected_tags = sorted(metadata.get("tags", [])) if isinstance(metadata, dict) else []
@@ -271,7 +277,8 @@ def main() -> None:
     for item in items:
         fallback_entry = (
             f'<a href="{item["raw_url"].lstrip("/")}">{html.escape(item["title"])}</a>'
-            f'<span>{item["kind"]} · {item["verification_state"]} · {item["status"]}</span>'
+            f'<span>{item["kind"]} · {item["verification_state"]} · {item["status"]} · '
+            f'{item["source_bytes"]:,} B Markdown · {item["ai_handoff_bytes"]:,} B AI handoff</span>'
         )
         if fallback_entry not in catalog_html:
             fail(f"static catalog fallback mismatch for {item['source_path']}")
@@ -305,6 +312,8 @@ def main() -> None:
             f"- [{item['title']}]({item['raw_url']}): "
             f"Stable ID `{item['key']}`; version `{item['version']}`; "
             f"lifecycle `{item['status']}`; last assessed `{assessed}`; "
+            f"source bytes `{item['source_bytes']}`; "
+            f"AI handoff bytes `{item['ai_handoff_bytes']}`; "
             f"SHA-256 `{item['sha256']}`. {item['summary']} "
             f"[Download AI handoff]({item['ai_handoff_url']})."
         )
@@ -333,6 +342,10 @@ def main() -> None:
             item, source.read_text(encoding="utf-8")
         ):
             fail(f"generated AI handoff mismatch for {item['source_path']}")
+        if raw.stat().st_size != item["source_bytes"]:
+            fail(f"generated Markdown byte count mismatch for {item['source_path']}")
+        if ai_handoff.stat().st_size != item["ai_handoff_bytes"]:
+            fail(f"generated AI handoff byte count mismatch for {item['source_path']}")
         ai_handoff_name = item["ai_handoff_url"].lstrip("/")
         ai_handoff_hash = hashlib.sha256(ai_handoff.read_bytes()).hexdigest()
         if (
@@ -421,6 +434,8 @@ def main() -> None:
             f'<h1 id="no-script-detail-title">{html.escape(item["title"])}</h1>',
             f'<dt>Verification</dt><dd>{html.escape(item["verification_state"])}</dd>',
             f'<dt>Lifecycle</dt><dd>{html.escape(item["status"])}</dd>',
+            f'<dt>Markdown size</dt><dd>{item["source_bytes"]:,} bytes</dd>',
+            f'<dt>AI handoff size</dt><dd>{item["ai_handoff_bytes"]:,} bytes</dd>',
             f'<a class="button button--primary" href="{relative_root}{item["raw_url"].lstrip("/")}" download>Read or download exact Markdown</a>',
             '<a class="button" href="ai-handoff.txt" download>Download AI handoff</a>',
             f'<a class="button" href="{html.escape(item["source_url"], quote=True)}">View GitHub source</a>',
@@ -512,6 +527,16 @@ def main() -> None:
     ):
         if handoff_contract not in script:
             fail(f"traceable AI handoff contract is missing: {handoff_contract}")
+    for payload_size_contract in (
+        "function formatBytes(bytes)",
+        "function payloadSizeFragment(record)",
+        'row.className = "payload-size"',
+        "formatBytes(record.source_bytes)",
+        "formatBytes(record.ai_handoff_bytes)",
+        "payloadSizeFragment(record)",
+    ):
+        if payload_size_contract not in script:
+            fail(f"payload size contract is missing: {payload_size_contract}")
     for share_contract in (
         "navigator.share",
         'error?.name === "AbortError"',
@@ -596,6 +621,8 @@ def main() -> None:
         if contribution_contract not in contribution_guide:
             fail(f"guided contribution contract is missing: {contribution_contract}")
     stylesheet = (DIST / "assets" / "site.css").read_text(encoding="utf-8")
+    if ".payload-size" not in stylesheet:
+        fail("payload size style is missing")
     if ".rating-link" not in stylesheet or "min-height: 44px" not in stylesheet:
         fail("rating submission link must keep a mobile-safe touch target")
     if ".card-actions .button { min-height: 44px" not in stylesheet:
@@ -691,6 +718,8 @@ def main() -> None:
         'heading.textContent = "File integrity"',
         '["Stable ID", record.key]',
         '["Version", record.version]',
+        '["Markdown size", `${record.source_bytes.toLocaleString()} bytes`]',
+        '["AI handoff size", `${record.ai_handoff_bytes.toLocaleString()} bytes`]',
         '["SHA-256", record.sha256]',
         'button("Copy SHA-256")',
         "writeClipboard(record.sha256)",
@@ -954,6 +983,79 @@ def main() -> None:
         ):
             fail("rehost updater did not reject an invalid AI handoff digest")
 
+        invalid_size_manifest = Path(temporary) / "invalid-size-manifest"
+        shutil.copytree(DIST, invalid_size_manifest)
+        invalid_size_path = invalid_size_manifest / "index.json"
+        invalid_size = json.loads(invalid_size_path.read_text(encoding="utf-8"))
+        invalid_size["items"][0]["source_bytes"] += 1
+        invalid_size_path.write_text(
+            json.dumps(invalid_size, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        invalid_size_checksums_path = invalid_size_manifest / "SHA256SUMS"
+        invalid_size_checksums = invalid_size_checksums_path.read_text(
+            encoding="utf-8"
+        ).splitlines()
+        invalid_size_index_hash = hashlib.sha256(invalid_size_path.read_bytes()).hexdigest()
+        invalid_size_checksums_path.write_text(
+            "\n".join(
+                f"{invalid_size_index_hash}  index.json"
+                if line.endswith("  index.json")
+                else line
+                for line in invalid_size_checksums
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        invalid_size_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(invalid_size_manifest),
+                "--canonical-index",
+                str(invalid_size_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_size_check.returncode == 0
+            or "source byte count mismatch" not in invalid_size_check.stderr
+        ):
+            fail("rehost verifier did not reject an invalid source byte count")
+
+        invalid_size_archive = Path(temporary) / "invalid-size-manifest.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            invalid_size_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                if name == "index.json":
+                    data = invalid_size_path.read_bytes()
+                elif name == "SHA256SUMS":
+                    data = invalid_size_checksums_path.read_bytes()
+                else:
+                    data = source_archive.read(name)
+                changed_archive.writestr(name, data)
+        invalid_size_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(invalid_size_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_size_update.returncode == 0
+            or "source byte count mismatch" not in invalid_size_update.stderr
+        ):
+            fail("rehost updater did not reject an invalid source byte count")
+
         altered_site = Path(temporary) / "altered-site"
         shutil.copytree(DIST, altered_site)
         altered_raw = altered_site / items[0]["raw_url"].lstrip("/")
@@ -1118,6 +1220,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
     print("[PASS] every Sherpa has a checksummed, no-JavaScript downloadable AI handoff")
+    print("[PASS] exact Markdown and AI-handoff byte counts are published and fail closed")
     print("[PASS] detail routes expose copyable SHA-256 integrity metadata without changing verification")
     print("[PASS] catalog and detail routes explain verification and lifecycle labels")
     print("[PASS] detail routes safely expose complete Sherpa Markdown inline")
