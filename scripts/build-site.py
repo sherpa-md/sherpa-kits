@@ -544,6 +544,11 @@ def shell(
         f'<option value="{html.escape(tag, quote=True)}">{html.escape(tag)}</option>'
         for tag in sorted({tag for record in records for tag in record["tags"]})
     )
+    lifecycle_options = "".join(
+        f'<option value="{html.escape(status, quote=True)}">'
+        f'{html.escape(status.replace("-", " ").title())}</option>'
+        for status in sorted({record["status"] for record in records})
+    )
     detail_title = (
         "Community Projects" if projects is not None else detail["title"] if detail else "Browse Sherpas"
     )
@@ -612,6 +617,7 @@ def shell(
     <label class="search-field"><span>Search</span><input id="search" type="search" placeholder="Try photos, private data, Discord…" autocomplete="off"></label>
     <label><span>Type</span><select id="kind-filter"><option value="">All types</option><option value="handoff">Handoffs</option><option value="kit">Kits</option><option value="candidate">Candidates</option></select></label>
     <label><span>Verification</span><select id="verification-filter"><option value="">All states</option><option value="verified">Verified</option><option value="unverified">Unverified</option><option value="needs-retest">Needs retest</option></select></label>
+    <label><span>Lifecycle</span><select id="lifecycle-filter"><option value="">All lifecycles</option>{lifecycle_options}</select></label>
     <label><span>Topic</span><select id="topic-filter"><option value="">All topics</option>{topic_options}</select></label>
     <label><span>Sort</span><select id="sort-order"><option value="verified-first">Verified first</option><option value="assessed">Recently assessed</option><option value="title">Title A–Z</option></select></label>
   </section>
