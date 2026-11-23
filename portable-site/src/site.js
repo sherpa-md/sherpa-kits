@@ -666,6 +666,7 @@
     setCatalogControl("search", params.get("q") || "");
     setCatalogControl("kind-filter", params.get("kind") || "");
     setCatalogControl("verification-filter", params.get("verification") || "");
+    setCatalogControl("lifecycle-filter", params.get("lifecycle") || "");
     setCatalogControl("topic-filter", params.get("topic") || "");
     setCatalogControl("sort-order", params.get("sort") || "verified-first", "verified-first");
   }
@@ -676,6 +677,7 @@
       q: byId("search").value.trim(),
       kind: byId("kind-filter").value,
       verification: byId("verification-filter").value,
+      lifecycle: byId("lifecycle-filter").value,
       topic: byId("topic-filter").value,
       sort: byId("sort-order").value === "verified-first" ? "" : byId("sort-order").value,
     };
@@ -690,6 +692,7 @@
     setCatalogControl("search", "");
     setCatalogControl("kind-filter", "");
     setCatalogControl("verification-filter", "");
+    setCatalogControl("lifecycle-filter", "");
     setCatalogControl("topic-filter", "");
     setCatalogControl("sort-order", "verified-first", "verified-first");
     renderCatalog();
@@ -709,11 +712,12 @@
     const query = byId("search").value.trim().toLocaleLowerCase();
     const kind = byId("kind-filter").value;
     const verification = byId("verification-filter").value;
+    const lifecycle = byId("lifecycle-filter").value;
     const topic = byId("topic-filter").value;
     const sortOrder = byId("sort-order").value;
     const filtered = records.filter((record) => {
       const haystack = `${record.title} ${record.summary} ${record.domain} ${record.source_path} ${record.tags.join(" ")}`.toLocaleLowerCase();
-      return (!query || haystack.includes(query)) && (!kind || record.kind === kind) && (!verification || record.verification_state === verification) && (!topic || record.tags.includes(topic));
+      return (!query || haystack.includes(query)) && (!kind || record.kind === kind) && (!verification || record.verification_state === verification) && (!lifecycle || record.status === lifecycle) && (!topic || record.tags.includes(topic));
     }).sort((left, right) => compareRecords(left, right, sortOrder));
     grid.replaceChildren(...filtered.map(card));
     byId("results-summary").textContent = `${filtered.length} of ${records.length} Sherpa files`;
@@ -777,7 +781,7 @@
   if (byId("catalog-grid")) {
     byId("catalog-label-guide")?.replaceChildren(labelGuide());
     restoreCatalogView();
-    ["search", "kind-filter", "verification-filter", "topic-filter", "sort-order"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
+    ["search", "kind-filter", "verification-filter", "lifecycle-filter", "topic-filter", "sort-order"].forEach((id) => byId(id).addEventListener(id === "search" ? "input" : "change", renderCatalog));
     byId("clear-filters").addEventListener("click", resetCatalogView);
     byId("copy-view-link").addEventListener("click", copyCatalogView);
     document.addEventListener("ratings-ready", renderCatalog);

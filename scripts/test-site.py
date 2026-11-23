@@ -144,6 +144,7 @@ def main() -> None:
         fail("manifest count does not match public source inventory")
 
     all_tags: set[str] = set()
+    all_lifecycles: set[str] = set()
     for item in items:
         if item.get("ai_handoff_url") != item["route"] + "ai-handoff.txt":
             fail(f"AI handoff URL is not stable for {item['source_path']}")
@@ -167,6 +168,7 @@ def main() -> None:
         if len(item["tags"]) != len(set(item["tags"])):
             fail(f"duplicate tags in {item['source_path']}")
         all_tags.update(item["tags"])
+        all_lifecycles.add(item["status"])
 
     projects = json.loads((DIST / "projects.json").read_text(encoding="utf-8"))
     expected_families = sorted(
@@ -656,6 +658,21 @@ def main() -> None:
     for topic_contract in ('record.tags.join(" ")', 'record.tags.includes(topic)', '"topic-filter"'):
         if topic_contract not in script:
             fail(f"topic discovery contract is missing: {topic_contract}")
+    if 'id="lifecycle-filter"' not in index_html:
+        fail("lifecycle filter is missing from the catalog")
+    for lifecycle in all_lifecycles:
+        label = lifecycle.replace("-", " ").title()
+        if f'<option value="{lifecycle}">{label}</option>' not in index_html:
+            fail(f"lifecycle filter is missing status: {lifecycle}")
+    for lifecycle_contract in (
+        'params.get("lifecycle")',
+        'lifecycle: byId("lifecycle-filter").value',
+        'const lifecycle = byId("lifecycle-filter").value',
+        '!lifecycle || record.status === lifecycle',
+        '"lifecycle-filter"',
+    ):
+        if lifecycle_contract not in script:
+            fail(f"lifecycle discovery contract is missing: {lifecycle_contract}")
     for topic_link_contract in (
         "function topicHref(tag)",
         'url.searchParams.set("topic", tag)',
@@ -1232,6 +1249,7 @@ def main() -> None:
     print("[PASS] browser-native reader has pause, resume, stop, and speed controls")
     print("[PASS] ratings fail closed locally and submit through a moderated HTTPS form")
     print(f"[PASS] tag-aware search and topic filtering: {len(all_tags)} topics")
+    print(f"[PASS] lifecycle filtering keeps {len(all_lifecycles)} states separate from verification")
     print(f"[PASS] community project discovery: {len(expected_families)} families / {len(expected_builds)} builds")
     print("[PASS] repository data uses DOM-safe rendering")
     print("[PASS] rehost updater verifies, installs atomically, reruns idempotently, and fails closed")
