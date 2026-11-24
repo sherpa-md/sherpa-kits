@@ -168,11 +168,12 @@ def load_catalog() -> tuple[dict[str, dict], dict[str, dict]]:
     catalog = json.loads((REPO_ROOT / "catalog.json").read_text(encoding="utf-8"))
     by_path: dict[str, dict] = {}
     by_share_path: dict[str, dict] = {}
-    for item in catalog.get("kits", []):
-        if item.get("path"):
-            by_path[item["path"]] = item
-        if item.get("share_path"):
-            by_share_path[item["share_path"]] = item
+    for section in ("kits", "handoffs"):
+        for item in catalog.get(section, []):
+            if item.get("path"):
+                by_path[item["path"]] = item
+            if item.get("share_path"):
+                by_share_path[item["share_path"]] = item
     return by_path, by_share_path
 
 
@@ -210,8 +211,13 @@ def discover() -> list[dict]:
             raw = path.read_text(encoding="utf-8")
             metadata, body = frontmatter(raw)
             catalog_item = catalog_by_path.get(relative_path) or catalog_by_share.get(relative_path) or {}
-            confidentiality = metadata.get("confidentiality", catalog_item.get("confidentiality"))
-            if confidentiality and confidentiality != "public":
+            confidentiality_value = metadata.get("confidentiality") or catalog_item.get(
+                "confidentiality"
+            )
+            if not confidentiality_value:
+                raise ValueError(f"missing explicit confidentiality: {relative_path}")
+            confidentiality = str(confidentiality_value)
+            if confidentiality != "public":
                 continue
             if not metadata and root_name != "handoffs":
                 raise ValueError(f"missing front matter outside handoffs: {relative_path}")
@@ -255,6 +261,7 @@ def discover() -> list[dict]:
                     "tags": tags,
                     "version": version,
                     "status": status,
+                    "confidentiality": confidentiality,
                     "verification_state": verification,
                     "last_verified": last_verified,
                     "source_path": relative_path,
@@ -280,6 +287,7 @@ def ai_handoff(record: dict) -> str:
             f'Stable ID: {record["key"]}',
             f'Kind: {record["kind"]}',
             f'Status: {record["status"]}',
+            f'Confidentiality: {record["confidentiality"]}',
             f'Verification state: {record["verification_state"]}',
             f'Version: {record["version"]}',
             f'SHA-256: {record["sha256"]}',
@@ -531,7 +539,7 @@ def no_script_detail(detail: dict, route: str) -> str:
   <a href="{home_href}">← Browse all Sherpas</a>
   <h1 id="no-script-detail-title">{html.escape(detail["title"])}</h1>
   <p>{html.escape(detail["summary"])}</p>
-  <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd><dt>Markdown size</dt><dd>{detail["source_bytes"]:,} bytes</dd><dt>AI handoff size</dt><dd>{detail["ai_handoff_bytes"]:,} bytes</dd></dl>
+  <dl><dt>Type</dt><dd>{html.escape(detail["kind"])}</dd><dt>Confidentiality</dt><dd>{html.escape(detail["confidentiality"])}</dd><dt>Verification</dt><dd>{html.escape(detail["verification_state"])}</dd><dt>Lifecycle</dt><dd>{html.escape(detail["status"])}</dd><dt>Version</dt><dd>{html.escape(detail["version"])}</dd><dt>Markdown size</dt><dd>{detail["source_bytes"]:,} bytes</dd><dt>AI handoff size</dt><dd>{detail["ai_handoff_bytes"]:,} bytes</dd></dl>
   <p class="no-script-actions"><a class="button button--primary" href="{raw_href}" download>Read or download exact Markdown</a><a class="button" href="{ai_handoff_href}" download>Download AI handoff</a><a class="button" href="{source_href}">View GitHub source</a><a class="button" href="{suggestion_href}">Suggest correction</a></p>
 </section></noscript>'''
 
@@ -785,7 +793,8 @@ def build(output: Path) -> list[dict]:
             assessed = record["last_verified"] or "not recorded"
             metadata = (
                 f"Stable ID `{record['key']}`; version `{record['version']}`; "
-                f"lifecycle `{record['status']}`; last assessed `{assessed}`; "
+                f"lifecycle `{record['status']}`; confidentiality `{record['confidentiality']}`; "
+                f"last assessed `{assessed}`; "
                 f"source bytes `{record['source_bytes']}`; "
                 f"AI handoff bytes `{record['ai_handoff_bytes']}`; "
                 f"SHA-256 `{record['sha256']}`."

@@ -185,6 +185,7 @@
       `Stable ID: ${record.key}`,
       `Kind: ${record.kind}`,
       `Status: ${record.status}`,
+      `Confidentiality: ${record.confidentiality}`,
       `Verification state: ${record.verification_state}`,
       `Version: ${record.version}`,
       `SHA-256: ${record.sha256}`,
@@ -478,6 +479,7 @@
     [
       ["Stable ID", record.key],
       ["Version", record.version],
+      ["Confidentiality", record.confidentiality],
       ["Markdown size", `${record.source_bytes.toLocaleString()} bytes`],
       ["AI handoff size", `${record.ai_handoff_bytes.toLocaleString()} bytes`],
       ["SHA-256", record.sha256],

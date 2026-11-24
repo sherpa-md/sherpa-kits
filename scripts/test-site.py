@@ -80,6 +80,7 @@ def expected_ai_handoff(item: dict, source_text: str) -> str:
             f'Stable ID: {item["key"]}',
             f'Kind: {item["kind"]}',
             f'Status: {item["status"]}',
+            f'Confidentiality: {item["confidentiality"]}',
             f'Verification state: {item["verification_state"]}',
             f'Version: {item["version"]}',
             f'SHA-256: {item["sha256"]}',
@@ -131,11 +132,31 @@ def main() -> None:
         if hashlib.sha256((DIST / relative).read_bytes()).hexdigest() != expected_hash:
             fail(f"SHA256SUMS mismatch for {relative}")
 
-    expected = sorted(
-        path.relative_to(ROOT).as_posix()
-        for folder in ("handoffs", "kits", "candidates")
-        for path in (ROOT / folder).rglob("*.sherpa.md")
-    )
+    catalog = json.loads((ROOT / "catalog.json").read_text(encoding="utf-8"))
+    catalog_by_path: dict[str, dict] = {}
+    for section in ("kits", "handoffs"):
+        for catalog_item in catalog.get(section, []):
+            if catalog_item.get("path"):
+                catalog_by_path[catalog_item["path"]] = catalog_item
+            if catalog_item.get("share_path"):
+                catalog_by_path[catalog_item["share_path"]] = catalog_item
+    expected: list[str] = []
+    expected_confidentiality: dict[str, str] = {}
+    for folder in ("handoffs", "kits", "candidates"):
+        for path in (ROOT / folder).rglob("*.sherpa.md"):
+            relative_path = path.relative_to(ROOT).as_posix()
+            source_text = path.read_text(encoding="utf-8")
+            frontmatter = re.match(r"^---\s*\n(.*?)\n---\s*\n", source_text, re.DOTALL)
+            metadata = yaml.safe_load(frontmatter.group(1)) if frontmatter else {}
+            declared = (
+                metadata.get("confidentiality") if isinstance(metadata, dict) else None
+            ) or catalog_by_path.get(relative_path, {}).get("confidentiality")
+            if not declared:
+                fail(f"source lacks an explicit confidentiality boundary: {relative_path}")
+            expected_confidentiality[relative_path] = str(declared)
+            if declared == "public":
+                expected.append(relative_path)
+    expected.sort()
     if sorted(source_paths) != expected:
         fail(f"source/build mismatch: expected {len(expected)}, found {len(source_paths)}")
     if len(source_paths) != len(set(source_paths)):
@@ -146,6 +167,10 @@ def main() -> None:
     all_tags: set[str] = set()
     all_lifecycles: set[str] = set()
     for item in items:
+        if item.get("confidentiality") != "public":
+            fail(f"manifest contains a non-public or unlabeled item: {item['source_path']}")
+        if item["confidentiality"] != expected_confidentiality.get(item["source_path"]):
+            fail(f"manifest confidentiality mismatch for {item['source_path']}")
         if item.get("ai_handoff_url") != item["route"] + "ai-handoff.txt":
             fail(f"AI handoff URL is not stable for {item['source_path']}")
         if not re.fullmatch(r"[0-9a-f]{64}", str(item.get("ai_handoff_sha256", ""))):
@@ -313,7 +338,8 @@ def main() -> None:
         expected_entry = (
             f"- [{item['title']}]({item['raw_url']}): "
             f"Stable ID `{item['key']}`; version `{item['version']}`; "
-            f"lifecycle `{item['status']}`; last assessed `{assessed}`; "
+            f"lifecycle `{item['status']}`; confidentiality `public`; "
+            f"last assessed `{assessed}`; "
             f"source bytes `{item['source_bytes']}`; "
             f"AI handoff bytes `{item['ai_handoff_bytes']}`; "
             f"SHA-256 `{item['sha256']}`. {item['summary']} "
@@ -356,6 +382,8 @@ def main() -> None:
         ):
             fail(f"AI handoff manifest/checksum mismatch for {item['source_path']}")
         detail_html = detail.read_text(encoding="utf-8")
+        if "<dt>Confidentiality</dt><dd>public</dd>" not in detail_html:
+            fail(f"public confidentiality label missing from detail page for {item['source_path']}")
         social_title = html.escape(f"{item['title']} — SherpaMD", quote=True)
         social_description = html.escape(item["summary"], quote=True)
         canonical_url = f"https://sherpamd.org{item['route']}"
@@ -515,6 +543,7 @@ def main() -> None:
     for handoff_contract in (
         "function agentHandoff(record, raw)",
         "Stable ID: ${record.key}",
+        "Confidentiality: ${record.confidentiality}",
         "Verification state: ${record.verification_state}",
         "Status: ${record.status}",
         "Version: ${record.version}",
@@ -526,6 +555,7 @@ def main() -> None:
         "record.ai_handoff_url",
         'aiHandoff.textContent = "Download AI handoff"',
         'aiHandoff.setAttribute("aria-label", `Download a traceable AI handoff for ${record.title}`)',
+        '["Confidentiality", record.confidentiality]',
     ):
         if handoff_contract not in script:
             fail(f"traceable AI handoff contract is missing: {handoff_contract}")
@@ -853,6 +883,69 @@ def main() -> None:
         )
         if stale.returncode == 0 or "expected source commit" not in stale.stderr:
             fail("rehost verifier did not reject an unexpected source commit")
+
+        private_manifest = Path(temporary) / "private-manifest"
+        shutil.copytree(DIST, private_manifest)
+        private_manifest_path = private_manifest / "index.json"
+        private_data = json.loads(private_manifest_path.read_text(encoding="utf-8"))
+        private_data["items"][0]["confidentiality"] = "internal"
+        private_manifest_path.write_text(
+            json.dumps(private_data, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        private_checksums_path = private_manifest / "SHA256SUMS"
+        private_checksums = private_checksums_path.read_text(encoding="utf-8").splitlines()
+        private_index_hash = hashlib.sha256(private_manifest_path.read_bytes()).hexdigest()
+        private_checksums_path.write_text(
+            "\n".join(
+                f"{private_index_hash}  index.json" if line.endswith("  index.json") else line
+                for line in private_checksums
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        private_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(private_manifest),
+                "--canonical-index",
+                str(private_manifest_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if private_check.returncode == 0 or "non-public or missing confidentiality" not in private_check.stderr:
+            fail("rehost verifier did not reject a non-public manifest item")
+
+        private_archive = Path(temporary) / "private-manifest.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            private_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                if name == "index.json":
+                    data = private_manifest_path.read_bytes()
+                elif name == "SHA256SUMS":
+                    data = private_checksums_path.read_bytes()
+                else:
+                    data = source_archive.read(name)
+                changed_archive.writestr(name, data)
+        private_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(private_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if private_update.returncode == 0 or "non-public or missing confidentiality" not in private_update.stderr:
+            fail("rehost updater did not reject a non-public manifest item")
 
         invalid_download_manifest = Path(temporary) / "invalid-download-manifest"
         shutil.copytree(DIST, invalid_download_manifest)
@@ -1237,6 +1330,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
     print("[PASS] every Sherpa has a checksummed, no-JavaScript downloadable AI handoff")
+    print("[PASS] public confidentiality is explicit and non-public manifests fail closed")
     print("[PASS] exact Markdown and AI-handoff byte counts are published and fail closed")
     print("[PASS] detail routes expose copyable SHA-256 integrity metadata without changing verification")
     print("[PASS] catalog and detail routes explain verification and lifecycle labels")

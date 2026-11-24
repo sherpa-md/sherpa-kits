@@ -2,6 +2,8 @@
 
 This folder contains the authored assets for a self-contained, read-only catalog. The public Markdown in `handoffs/`, `kits/`, and `candidates/` remains the source of truth.
 
+Every published source must declare `confidentiality: public` in its front matter or catalog entry. The generated manifest, detail pages, and AI handoffs repeat that declaration, while the builder, updater, and verifier fail closed on missing or non-public items. This makes the public/private boundary independently checkable by mirrors without changing verification labels.
+
 ## Build
 
 ```bash
