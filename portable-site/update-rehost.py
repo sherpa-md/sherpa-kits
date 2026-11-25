@@ -233,6 +233,10 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
         identity = (item.get("kind"), item.get("id"))
         if not all(isinstance(value, str) and value for value in identity) or identity in identities:
             raise UpdateError("snapshot contains a missing or duplicate type-qualified ID")
+        if item.get("confidentiality") != "public":
+            raise UpdateError(
+                f"non-public or missing confidentiality for {identity[0]}:{identity[1]}"
+            )
         identities.add(identity)
 
         source_path = item.get("source_path")

@@ -97,5 +97,15 @@
       "verification_state": "unverified",
       "confidentiality": "public"
     }
+  ],
+  "handoffs": [
+    {
+      "path": "handoffs/FDELearningTrack.sherpa.md",
+      "confidentiality": "public"
+    },
+    {
+      "path": "handoffs/RaspberryPi4OxAlpha.sherpa.md",
+      "confidentiality": "public"
+    }
   ]
 }
