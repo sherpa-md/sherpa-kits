@@ -3,6 +3,7 @@ Title: Agent Outcome QA Harness — Evidence, Safety, Cost, and Repeatability
 Stable ID: candidate:agent-outcome-qa-harness
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: e8fed0ed231b38fd48bff3b82573f6907fb62000e640d84db29f74c0b019a457

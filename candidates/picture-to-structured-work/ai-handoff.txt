@@ -3,6 +3,7 @@ Title: Picture-to-Structured-Work — Multimodal Evidence and Transformation Pip
 Stable ID: candidate:picture-to-structured-work
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 09cc26b6a959110f70011cdb398955e529a819be40608fd2e887931a82a18915

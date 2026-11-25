@@ -3,6 +3,7 @@ Title: Incident Replay and Root-Cause Builder — Evidence-Preserving Investigat
 Stable ID: candidate:incident-replay-root-cause
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 1cb5d77b872bde376cc4bb102bd06d4e2d2ec7cb4a5785afd52f19dda8e179e2

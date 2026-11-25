@@ -3,6 +3,7 @@ Title: Estimate-vs-Actuals Analyst — Calibrated Forecast Learning
 Stable ID: candidate:estimate-actuals-analyst
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 17a0adfc905d276792ce87781996c4b2ec9e4029bddb7fc3c0d78dbdf5c8ed46

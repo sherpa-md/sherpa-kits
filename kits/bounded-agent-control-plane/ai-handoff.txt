@@ -3,6 +3,7 @@ Title: Bounded Agent Control Plane — Safe MCP & API Execution Gateway
 Stable ID: kit:bounded-agent-control-plane
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 1f6f628453c65c326b3b1436080b5a01fc2b5976cdf6aba686b27931a5077e1d

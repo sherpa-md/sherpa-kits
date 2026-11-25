@@ -3,6 +3,7 @@ Title: Discord Bot Fleet & SillyTavern Voice Bridge — Safe Multi-Agent Text an
 Stable ID: handoff:discord-bot-fleet-sillytavern
 Kind: handoff
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 9e9cba9f1872f0a177df87e59939318e204a8746a3b27948d6c6f18890c3e629

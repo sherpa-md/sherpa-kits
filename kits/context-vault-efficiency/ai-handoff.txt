@@ -3,6 +3,7 @@ Title: Context Vault & Token Efficiency — Living Knowledge & Model Tiering
 Stable ID: kit:context-vault-efficiency
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 7f4f93c81fcc158bfa8188f0f8068eb35892b429adb56b49d8a3295519008858

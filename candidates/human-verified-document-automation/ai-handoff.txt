@@ -3,6 +3,7 @@ Title: Human-Verified Document Automation — Typed Extraction and Controlled Fi
 Stable ID: candidate:human-verified-document-automation
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: b23621b74f8e71f24affe780d6465641a77c30ac7ddc2d897a68fd1f1ad5a43b

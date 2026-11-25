@@ -3,6 +3,7 @@ Title: Core Fleet & Multi-Agent Coordination
 Stable ID: kit:core-fleet
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 20c85ed934baab8501928a6b41fb3c7f2d325987c430828eb1460b791333870f

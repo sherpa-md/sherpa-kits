@@ -3,6 +3,7 @@ Title: Portable Agent Handoff & Workspace Bootstrap
 Stable ID: kit:portable-agent-handoff
 Kind: kit
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 32ff973a60f11c791a0e080d9976e8f553bbf896eee5fe300355fb378c56fb11

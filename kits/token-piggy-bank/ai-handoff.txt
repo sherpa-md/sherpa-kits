@@ -3,6 +3,7 @@ Title: Token Piggy Bank — LLM Quota & Value Governor
 Stable ID: kit:token-piggy-bank
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 1.0.0
 SHA-256: ba7f6e9b083697d88f2100e10e9ac462008ce8fe46032252ac9bd0ce6ce1d184

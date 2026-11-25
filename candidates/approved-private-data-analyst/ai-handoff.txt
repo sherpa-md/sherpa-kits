@@ -3,6 +3,7 @@ Title: Approved Private Data Analyst — Permission-Aware Company Intelligence
 Stable ID: candidate:approved-private-data-analyst
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 5ac131bcf81271e628ecf8eef0ddf8e6d95593a1df867001530f6cda62462e3f

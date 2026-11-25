@@ -3,6 +3,7 @@ Title: Institutional Memory Builder — Permission-Aware Living Knowledge
 Stable ID: candidate:institutional-memory-builder
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 6952719801d34d5913c9c2157f6a8408fa1ffd25e2a8e5b21d76707ef09fe0f3

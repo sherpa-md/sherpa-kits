@@ -3,6 +3,7 @@ Title: AI-to-AI Bus — Inter-Agent Coordination & Durable Event Routing
 Stable ID: kit:ai-to-ai-bus
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 5112470642dae620a5424e04268c3fb4944fdb680da318ad8b33e49d4af90093

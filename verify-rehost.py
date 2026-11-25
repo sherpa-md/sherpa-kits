@@ -253,6 +253,10 @@ def validate_items(manifest: dict) -> tuple[list[dict], list[str], set[str]]:
         kind, item_id = item.get("kind"), item.get("id")
         if not isinstance(kind, str) or not kind or not isinstance(item_id, str) or not item_id:
             raise VerificationError("index.json contains a missing type-qualified ID")
+        if item.get("confidentiality") != "public":
+            raise VerificationError(
+                f"non-public or missing confidentiality for {kind}:{item_id}"
+            )
         identity = (kind, item_id)
         if identity in identities:
             raise VerificationError(f"duplicate type-qualified ID: {kind}:{item_id}")

@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source_repository": "sherpa-md/sherpa-kits",
-  "source_commit": "b9aa54e68428aa73b17148635da8f809fbe7f235",
+  "source_commit": "baa8ae9967387d0b1b6df07340c1cd884ed2c3fc",
   "count": 24,
   "downloads": [
     {
@@ -51,6 +51,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/agent-outcome-qa-harness/AgentOutcomeQAHarness.sherpa.md",
@@ -60,8 +61,8 @@
       "route": "/candidates/agent-outcome-qa-harness/",
       "sha256": "e8fed0ed231b38fd48bff3b82573f6907fb62000e640d84db29f74c0b019a457",
       "source_bytes": 5238,
-      "ai_handoff_sha256": "919b512fcadb49a6022080bbd5777e3053795cbbf2f53f6b189ac3bb2ca9e979",
-      "ai_handoff_bytes": 6183
+      "ai_handoff_sha256": "3611524fadab4d13002f437ce74ef9820fb1edaff03b2439a418067eece3a08e",
+      "ai_handoff_bytes": 6207
     },
     {
       "key": "candidate:approved-private-data-analyst",
@@ -80,6 +81,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/approved-private-data-analyst/ApprovedPrivateDataAnalyst.sherpa.md",
@@ -89,8 +91,8 @@
       "route": "/candidates/approved-private-data-analyst/",
       "sha256": "5ac131bcf81271e628ecf8eef0ddf8e6d95593a1df867001530f6cda62462e3f",
       "source_bytes": 6524,
-      "ai_handoff_sha256": "a44c5550cda1e7e8343e1dcee8731b0d39a8c4ecf12dddf4c82ad81ab4c70e38",
-      "ai_handoff_bytes": 7490
+      "ai_handoff_sha256": "5ac4caa4da604daca332c0058ed6479130d06dc9206ec52b4fff18b683558baf",
+      "ai_handoff_bytes": 7514
     },
     {
       "key": "candidate:approved-model-routing-gateway",
@@ -108,6 +110,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/approved-model-routing-gateway/ApprovedModelRoutingGateway.sherpa.md",
@@ -117,8 +120,8 @@
       "route": "/candidates/approved-model-routing-gateway/",
       "sha256": "086654aa0283f7e2176910a4e98b95fbb3dd08924497f843b8b5028e069af787",
       "source_bytes": 4520,
-      "ai_handoff_sha256": "1e013b268f4d747d2e5692b47e6558d04dfc13296a15f811feee2c07f82d5c5a",
-      "ai_handoff_bytes": 5479
+      "ai_handoff_sha256": "2f536a23c8ceb2785ecf5669152340147ea1cba6a6232f78cad02612d46ec484",
+      "ai_handoff_bytes": 5503
     },
     {
       "key": "candidate:estimate-actuals-analyst",
@@ -136,6 +139,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/estimate-actuals-analyst/EstimateActualsAnalyst.sherpa.md",
@@ -145,8 +149,8 @@
       "route": "/candidates/estimate-actuals-analyst/",
       "sha256": "17a0adfc905d276792ce87781996c4b2ec9e4029bddb7fc3c0d78dbdf5c8ed46",
       "source_bytes": 5033,
-      "ai_handoff_sha256": "38ed89d88a4abc5172e51c0ebcea0610cf2590711ad470a2635275ccb42c1093",
-      "ai_handoff_bytes": 5969
+      "ai_handoff_sha256": "059181ee321840d2b068855cf533110b79cae1f692ec0f868519694e25c01605",
+      "ai_handoff_bytes": 5993
     },
     {
       "key": "candidate:evidence-bound-decision-engine",
@@ -164,6 +168,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/evidence-bound-decision-engine/EvidenceBoundDecisionEngine.sherpa.md",
@@ -173,8 +178,8 @@
       "route": "/candidates/evidence-bound-decision-engine/",
       "sha256": "bb18a15d81d600c8ee629e87ad85f680e5294a9e0fff57ce98fb81649527069a",
       "source_bytes": 4475,
-      "ai_handoff_sha256": "8ac73d576cb01742ea3a397bd217f4666f23993555f287cd5b6bed77568842d1",
-      "ai_handoff_bytes": 5449
+      "ai_handoff_sha256": "2a6d869ab1ef47453841b82e97987df49e62ddc31400513a5f99ff8f638011b4",
+      "ai_handoff_bytes": 5473
     },
     {
       "key": "candidate:human-verified-document-automation",
@@ -192,6 +197,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/human-verified-document-automation/HumanVerifiedDocumentAutomation.sherpa.md",
@@ -201,8 +207,8 @@
       "route": "/candidates/human-verified-document-automation/",
       "sha256": "b23621b74f8e71f24affe780d6465641a77c30ac7ddc2d897a68fd1f1ad5a43b",
       "source_bytes": 4534,
-      "ai_handoff_sha256": "0da10ee095d2ae2458ab3b7c1a6eb1730fd34cbffba5212fdcf0d8f718eb93eb",
-      "ai_handoff_bytes": 5526
+      "ai_handoff_sha256": "3cdd98bd8e4ed7fa2d868c373bf8d1901769c2a549517b0f9d8ff04a0f2e0321",
+      "ai_handoff_bytes": 5550
     },
     {
       "key": "candidate:incident-replay-root-cause",
@@ -220,6 +226,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/incident-replay-root-cause/IncidentReplayRootCause.sherpa.md",
@@ -229,8 +236,8 @@
       "route": "/candidates/incident-replay-root-cause/",
       "sha256": "1cb5d77b872bde376cc4bb102bd06d4e2d2ec7cb4a5785afd52f19dda8e179e2",
       "source_bytes": 5255,
-      "ai_handoff_sha256": "25f042b71aed9a33a825a81e16978003bc9c525eb0b1c40ac4edb2844071e5c7",
-      "ai_handoff_bytes": 6214
+      "ai_handoff_sha256": "1eddf50c75d9f51e48824844e4ab9844df38fd49a2dc08bb380cd30e49ac82de",
+      "ai_handoff_bytes": 6238
     },
     {
       "key": "candidate:institutional-memory-builder",
@@ -248,6 +255,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/institutional-memory-builder/InstitutionalMemoryBuilder.sherpa.md",
@@ -257,8 +265,8 @@
       "route": "/candidates/institutional-memory-builder/",
       "sha256": "6952719801d34d5913c9c2157f6a8408fa1ffd25e2a8e5b21d76707ef09fe0f3",
       "source_bytes": 4449,
-      "ai_handoff_sha256": "fc60e9086fa21c826308f1ef8d26d5cec45a48c80961cf905879acf38cbfca66",
-      "ai_handoff_bytes": 5407
+      "ai_handoff_sha256": "90f7ce7ec7e1a026dcbf1866ec3a23075c15b3d361bac7f5892409aa9d4462fb",
+      "ai_handoff_bytes": 5431
     },
     {
       "key": "candidate:picture-to-structured-work",
@@ -277,6 +285,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/picture-to-structured-work/PictureToStructuredWork.sherpa.md",
@@ -286,8 +295,8 @@
       "route": "/candidates/picture-to-structured-work/",
       "sha256": "09cc26b6a959110f70011cdb398955e529a819be40608fd2e887931a82a18915",
       "source_bytes": 5823,
-      "ai_handoff_sha256": "278dbc0ac9fb058127a0b774f1200da6cd803e12f2883e6841b21151530dec61",
-      "ai_handoff_bytes": 6784
+      "ai_handoff_sha256": "4940000acfd3a3b9db201da29c9d2c7affc769962b3f301f8c485ca27e0e8a46",
+      "ai_handoff_bytes": 6808
     },
     {
       "key": "candidate:planned-actual-reconciler",
@@ -306,6 +315,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-23T00:00:00Z",
       "source_path": "candidates/planned-actual-reconciler/PlannedActualReconciler.sherpa.md",
@@ -315,8 +325,8 @@
       "route": "/candidates/planned-actual-reconciler/",
       "sha256": "58aa913c435fb03b7fa81df33e42e98b94b683155534691c0ac5afac392c4845",
       "source_bytes": 4863,
-      "ai_handoff_sha256": "2dcc8ecb1e891fc017c19dd3d8ff34dfedd3f976524cf894b8d770f62fd3549c",
-      "ai_handoff_bytes": 5814
+      "ai_handoff_sha256": "2490e0c1611b0983c8840f5c41cb52178b5d539757128a8a97cad1bff6921bb8",
+      "ai_handoff_bytes": 5838
     },
     {
       "key": "handoff:discord-bot-fleet-sillytavern",
@@ -338,6 +348,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-31T01:00:00Z",
       "source_path": "handoffs/DiscordBotFleetSillyTavern.sherpa.md",
@@ -347,8 +358,8 @@
       "route": "/handoffs/DiscordBotFleetSillyTavern/",
       "sha256": "9e9cba9f1872f0a177df87e59939318e204a8746a3b27948d6c6f18890c3e629",
       "source_bytes": 35322,
-      "ai_handoff_sha256": "157a249d415db48b767946a200e32bfda4aeabb9eeb4f1d768e686b773928828",
-      "ai_handoff_bytes": 36255
+      "ai_handoff_sha256": "f6bdd1fba0a22e7998cdfc8e8aeacd5884e2c79a3b84b36beb275ceebe51b7f5",
+      "ai_handoff_bytes": 36279
     },
     {
       "key": "handoff:fdelearning-track",
@@ -360,6 +371,7 @@
       "tags": [],
       "version": "unversioned",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": null,
       "source_path": "handoffs/FDELearningTrack.sherpa.md",
@@ -369,8 +381,8 @@
       "route": "/handoffs/FDELearningTrack/",
       "sha256": "1372e61aa8581274dbfc72542fa74997a8f4186c7149444cf873c77f541a47ad",
       "source_bytes": 21789,
-      "ai_handoff_sha256": "ad8b5c3820fce663ed29afecad6dca162cf7158e3cea62ce9651abe1877b92af",
-      "ai_handoff_bytes": 22668
+      "ai_handoff_sha256": "5e51c913114ba80d2ea3eea960496d32d08f8d7f18120d26df12b80195cfac10",
+      "ai_handoff_bytes": 22692
     },
     {
       "key": "handoff:portable-agent-handoff",
@@ -382,6 +394,7 @@
       "tags": [],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": null,
       "source_path": "handoffs/ComputerGithubSetup.sherpa.md",
@@ -391,8 +404,8 @@
       "route": "/handoffs/ComputerGithubSetup/",
       "sha256": "39c0864c382a92b433344a1b0059cdf6ce21ab09f5b5980e39a64732d26da7ea",
       "source_bytes": 4610,
-      "ai_handoff_sha256": "46d13958ca1a76423ca3ccb87b22ac94884554fd47457b4567fd9ad62f360f97",
-      "ai_handoff_bytes": 5464
+      "ai_handoff_sha256": "f449086493e488ad5e711bc66fda8ac89eddb9cc57887f6a1c4075d068bcd92b",
+      "ai_handoff_bytes": 5488
     },
     {
       "key": "handoff:raspberry-pi4-ox-alpha",
@@ -404,6 +417,7 @@
       "tags": [],
       "version": "unversioned",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": null,
       "source_path": "handoffs/RaspberryPi4OxAlpha.sherpa.md",
@@ -413,8 +427,8 @@
       "route": "/handoffs/RaspberryPi4OxAlpha/",
       "sha256": "a6393cca1d15146747531afc5d5ffbea79d74b9016eb07e152572ee00b5d0a92",
       "source_bytes": 1760,
-      "ai_handoff_sha256": "ffd0b9a02c7f7f89ffc34fef2714314a12171f3dfde2d2347abee9f844d76382",
-      "ai_handoff_bytes": 2623
+      "ai_handoff_sha256": "4272111447519bd0999ab204ae2dce55eccf01cd0a8634628460432efccc3954",
+      "ai_handoff_bytes": 2647
     },
     {
       "key": "handoff:token-piggy-bank",
@@ -426,6 +440,7 @@
       "tags": [],
       "version": "1.0.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": null,
       "source_path": "handoffs/TokenPiggyBank.sherpa.md",
@@ -435,8 +450,8 @@
       "route": "/handoffs/TokenPiggyBank/",
       "sha256": "f4cddbd6b9585ed321e37924200992aff6296c6c74267d680e26de3eebdeeb80",
       "source_bytes": 21778,
-      "ai_handoff_sha256": "0a65cd4d695945174e670e80821dbf0c6bac1b3ea582629a22f72de4276e58e6",
-      "ai_handoff_bytes": 22621
+      "ai_handoff_sha256": "dd152b2ed9eba050ac1cd668b6cd6d9335feb9eb06058966b50881cf7204b672",
+      "ai_handoff_bytes": 22645
     },
     {
       "key": "kit:ai-to-ai-bus",
@@ -454,6 +469,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T22:00:00Z",
       "source_path": "kits/ai-to-ai-bus/AItoAIBus.sherpa.md",
@@ -463,8 +479,8 @@
       "route": "/kits/ai-to-ai-bus/",
       "sha256": "5112470642dae620a5424e04268c3fb4944fdb680da318ad8b33e49d4af90093",
       "source_bytes": 6002,
-      "ai_handoff_sha256": "dda32c5be0041261405daf02410d01e3a28ed8ca23a1f1c78d7c7b8c222e18f2",
-      "ai_handoff_bytes": 6869
+      "ai_handoff_sha256": "23c43c8edb9aaa7fb64864d9138813905ca98d0fd8451af32e4c8bcef7c86e6f",
+      "ai_handoff_bytes": 6893
     },
     {
       "key": "kit:bounded-agent-control-plane",
@@ -483,6 +499,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T22:00:00Z",
       "source_path": "kits/bounded-agent-control-plane/BoundedAgentControlPlane.sherpa.md",
@@ -492,8 +509,8 @@
       "route": "/kits/bounded-agent-control-plane/",
       "sha256": "1f6f628453c65c326b3b1436080b5a01fc2b5976cdf6aba686b27931a5077e1d",
       "source_bytes": 6718,
-      "ai_handoff_sha256": "084f4c2b70aabadbdc8caaba265811ee3db5927dcf0df32f4b5928aaec5c9e44",
-      "ai_handoff_bytes": 7644
+      "ai_handoff_sha256": "59b10500da18616be47f34dc2a86261113277eb955a9506559882ba82cc7fdbd",
+      "ai_handoff_bytes": 7668
     },
     {
       "key": "kit:context-vault-efficiency",
@@ -512,6 +529,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T22:00:00Z",
       "source_path": "kits/context-vault-efficiency/ContextVaultEfficiency.sherpa.md",
@@ -521,8 +539,8 @@
       "route": "/kits/context-vault-efficiency/",
       "sha256": "7f4f93c81fcc158bfa8188f0f8068eb35892b429adb56b49d8a3295519008858",
       "source_bytes": 6372,
-      "ai_handoff_sha256": "10603b6aad03613f19abb560779cef83ebddf3b3e1332bd0677b82602bc4097d",
-      "ai_handoff_bytes": 7292
+      "ai_handoff_sha256": "4dcf624a117b2a7983c1f8fb66581e34ca8572397229ff772111fafeaa8b0c16",
+      "ai_handoff_bytes": 7316
     },
     {
       "key": "kit:core-fleet",
@@ -538,6 +556,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T20:45:00-05:00",
       "source_path": "kits/core-fleet/CoreFleet.sherpa.md",
@@ -547,8 +566,8 @@
       "route": "/kits/core-fleet/",
       "sha256": "20c85ed934baab8501928a6b41fb3c7f2d325987c430828eb1460b791333870f",
       "source_bytes": 1902,
-      "ai_handoff_sha256": "164f14a2a1a608139a142d3e52e2221b696a20ffbb15c51b6e7daf567390829d",
-      "ai_handoff_bytes": 2735
+      "ai_handoff_sha256": "221245a8547067a3d88a6943922d3fe187ef6c592819abc762f482ceec885b3d",
+      "ai_handoff_bytes": 2759
     },
     {
       "key": "kit:discord-bot-fleet-sillytavern",
@@ -570,6 +589,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-31T01:00:00Z",
       "source_path": "kits/discord-bot-fleet-sillytavern/DiscordBotFleetSillyTavern.sherpa.md",
@@ -579,8 +599,8 @@
       "route": "/kits/discord-bot-fleet-sillytavern/",
       "sha256": "9e9cba9f1872f0a177df87e59939318e204a8746a3b27948d6c6f18890c3e629",
       "source_bytes": 35322,
-      "ai_handoff_sha256": "f42d6b936c093af79be8881e5f98b283ba80d6e2bbcb66e1331aea96c7ad60f8",
-      "ai_handoff_bytes": 36272
+      "ai_handoff_sha256": "c18d120b7e7cb6198283b295fce05c5b2a65e8216a770604cd8af26837e3cf39",
+      "ai_handoff_bytes": 36296
     },
     {
       "key": "kit:hermes-llm-wiki",
@@ -599,6 +619,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T20:45:00-05:00",
       "source_path": "kits/hermes-llm-wiki/HermesLLMWiki.sherpa.md",
@@ -608,8 +629,8 @@
       "route": "/kits/hermes-llm-wiki/",
       "sha256": "961392135f56b5175956225a7a4b01cacb28ec618bc0f20b62aceec0a33be1e5",
       "source_bytes": 7142,
-      "ai_handoff_sha256": "4ae2e2fb14610684225ee8f4dafeac8a27ea261fac304d990d798b19e9b30daa",
-      "ai_handoff_bytes": 7993
+      "ai_handoff_sha256": "7a77561f5b5bf6d1ff19ee9e691dce4300b00bf2571e23354036adaa7f405937",
+      "ai_handoff_bytes": 8017
     },
     {
       "key": "kit:multi-llm-watchdog",
@@ -628,6 +649,7 @@
       ],
       "version": "0.1.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T22:00:00Z",
       "source_path": "kits/multi-llm-watchdog/MultiLLMWatchdog.sherpa.md",
@@ -637,8 +659,8 @@
       "route": "/kits/multi-llm-watchdog/",
       "sha256": "76b6b27a5c04a7728169a45f1541e3f487801f4cd6dcc25789cc16a2ef208161",
       "source_bytes": 6435,
-      "ai_handoff_sha256": "a71142972a3e0f0fb28f46134b4f3e2ff86f8e976cd21c3038bf87e7e96819e4",
-      "ai_handoff_bytes": 7339
+      "ai_handoff_sha256": "f1ab5d820a7fe1f3c72222238bb1b662071c875882a2fca04b7af7bb764ef74e",
+      "ai_handoff_bytes": 7363
     },
     {
       "key": "kit:portable-agent-handoff",
@@ -657,6 +679,7 @@
       ],
       "version": "0.1.0",
       "status": "draft",
+      "confidentiality": "public",
       "verification_state": "unverified",
       "last_verified": "2026-08-22T21:30:00Z",
       "source_path": "kits/portable-agent-handoff/PortableAgentHandoff.sherpa.md",
@@ -666,8 +689,8 @@
       "route": "/kits/portable-agent-handoff/",
       "sha256": "32ff973a60f11c791a0e080d9976e8f553bbf896eee5fe300355fb378c56fb11",
       "source_bytes": 6932,
-      "ai_handoff_sha256": "09ae4e5c3bc377f7350128e3e0ae119465434ae352591d6f2b26345cc604af57",
-      "ai_handoff_bytes": 7820
+      "ai_handoff_sha256": "ee80ca0954022e1fc152969a2d1d2ef89a760acfda89309d4234dcc201364670",
+      "ai_handoff_bytes": 7844
     },
     {
       "key": "kit:token-piggy-bank",
@@ -685,6 +708,7 @@
       ],
       "version": "1.0.0",
       "status": "active",
+      "confidentiality": "public",
       "verification_state": "verified",
       "last_verified": "2026-08-21T20:45:00-05:00",
       "source_path": "kits/token-piggy-bank/TokenPiggyBank.sherpa.md",
@@ -694,8 +718,8 @@
       "route": "/kits/token-piggy-bank/",
       "sha256": "ba7f6e9b083697d88f2100e10e9ac462008ce8fe46032252ac9bd0ce6ce1d184",
       "source_bytes": 2697,
-      "ai_handoff_sha256": "6ea0b23071ac343f0d29e7aaa81e042f3acde591d078b9c0b49b16f9237f6d93",
-      "ai_handoff_bytes": 3563
+      "ai_handoff_sha256": "116266499dd58d9bee2e256bfa566e6d37ecb7dbad7839523f5067fc5b8d3b40",
+      "ai_handoff_bytes": 3587
     }
   ]
 }

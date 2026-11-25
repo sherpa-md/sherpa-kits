@@ -3,6 +3,7 @@ Title: Token Piggy Bank — Sherpa
 Stable ID: handoff:token-piggy-bank
 Kind: handoff
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 1.0.0
 SHA-256: f4cddbd6b9585ed321e37924200992aff6296c6c74267d680e26de3eebdeeb80

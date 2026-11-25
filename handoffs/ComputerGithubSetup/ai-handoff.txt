@@ -3,6 +3,7 @@ Title: Portable Agent Handoff
 Stable ID: handoff:portable-agent-handoff
 Kind: handoff
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 39c0864c382a92b433344a1b0059cdf6ce21ab09f5b5980e39a64732d26da7ea

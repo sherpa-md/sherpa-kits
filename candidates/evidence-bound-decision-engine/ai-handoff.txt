@@ -3,6 +3,7 @@ Title: Evidence-Bound Decision Engine — Cited Options, Uncertainty, and Approv
 Stable ID: candidate:evidence-bound-decision-engine
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: bb18a15d81d600c8ee629e87ad85f680e5294a9e0fff57ce98fb81649527069a

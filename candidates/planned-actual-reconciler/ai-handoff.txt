@@ -3,6 +3,7 @@ Title: Planned-vs-Actual Reconciler — Explainable Variance and Change Ledger
 Stable ID: candidate:planned-actual-reconciler
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 58aa913c435fb03b7fa81df33e42e98b94b683155534691c0ac5afac392c4845

@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "source_repository": "sherpa-md/sherpa-kits",
-  "source_commit": "b9aa54e68428aa73b17148635da8f809fbe7f235",
+  "source_commit": "baa8ae9967387d0b1b6df07340c1cd884ed2c3fc",
   "family_count": 1,
   "build_count": 0,
   "submit_url": "https://github.com/sherpa-md/sherpa-kits/issues/new?template=share-community-project.yml",

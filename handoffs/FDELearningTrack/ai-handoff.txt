@@ -3,6 +3,7 @@ Title: Living Forward Deployed Engineering Learning Track
 Stable ID: handoff:fdelearning-track
 Kind: handoff
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: unversioned
 SHA-256: 1372e61aa8581274dbfc72542fa74997a8f4186c7149444cf873c77f541a47ad

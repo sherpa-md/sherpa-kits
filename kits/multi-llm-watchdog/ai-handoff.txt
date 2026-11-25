@@ -3,6 +3,7 @@ Title: Multi-LLM Watchdog — Provider Health, Quota Telemetry & Deduplicated Al
 Stable ID: kit:multi-llm-watchdog
 Kind: kit
 Status: active
+Confidentiality: public
 Verification state: verified
 Version: 0.1.0
 SHA-256: 76b6b27a5c04a7728169a45f1541e3f487801f4cd6dcc25789cc16a2ef208161

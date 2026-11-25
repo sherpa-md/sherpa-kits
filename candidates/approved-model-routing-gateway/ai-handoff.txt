@@ -3,6 +3,7 @@ Title: Approved-Model Routing Gateway — Policy-Bound AI Execution
 Stable ID: candidate:approved-model-routing-gateway
 Kind: candidate
 Status: draft
+Confidentiality: public
 Verification state: unverified
 Version: 0.1.0
 SHA-256: 086654aa0283f7e2176910a4e98b95fbb3dd08924497f843b8b5028e069af787
