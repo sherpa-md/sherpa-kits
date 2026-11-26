@@ -12,7 +12,7 @@ python3 scripts/build-site.py
 python3 scripts/test-site.py
 ```
 
-Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog, the repository's exact contribution guide, security policy, and MIT license, plus `SHA256SUMS` for every generated file; `dist/all-sherpas.zip` contains every public `.sherpa.md` source file; and `dist/all-ai-handoffs.zip` contains every generated agent handoff. Both focused archives preserve stable repository or site-relative paths.
+Serve `dist/` with any static file server, GitHub Pages, Cloudflare Pages, Netlify, nginx, Apache, or an object-storage website host. `dist/sherpamd-portable-site.zip` contains the complete generated catalog, the repository's exact contribution guide, security policy, and MIT license, plus `SHA256SUMS` for every generated file; `dist/all-sherpas.zip` contains every public `.sherpa.md` source file; and `dist/all-ai-handoffs.zip` contains every generated agent handoff. Both focused archives preserve stable repository or site-relative paths. `dist/all-sherpas-for-ai.txt` contains those same handoffs in one checksummed, directly uploadable text library with stable-ID boundaries and an explicit warning not to execute every entry automatically.
 
 Every successful GitHub Actions run also publishes all three ZIPs as a 90-day `sherpamd-portable-<commit>` artifact. Open the run, download the artifact, then follow `REHOSTING.md` inside the site ZIP. The workflow checks that the archives contain every generated detail page, raw Markdown download, and AI handoff before publishing them.
 

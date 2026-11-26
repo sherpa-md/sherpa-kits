@@ -42,6 +42,7 @@ REQUIRED_FILES = (
     "assets/site.js",
     "all-sherpas.zip",
     "all-ai-handoffs.zip",
+    "all-sherpas-for-ai.txt",
     "sherpamd-portable-site.zip",
 )
 MAX_DOWNLOAD_BYTES = 100 * 1024 * 1024
@@ -59,6 +60,13 @@ EXPECTED_DOWNLOADS = [
         "url": "/all-ai-handoffs.zip",
         "media_type": "application/zip",
         "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
+    },
+    {
+        "id": "ai-text-library",
+        "title": "AI-readable Sherpa library",
+        "url": "/all-sherpas-for-ai.txt",
+        "media_type": "text/plain",
+        "contents": "Every public AI handoff in one directly uploadable text file.",
     },
     {
         "id": "portable-site",
@@ -329,6 +337,28 @@ def verify_handoff_archive(data: bytes, items: list[dict]) -> None:
         raise VerificationError("all-ai-handoffs.zip is not a valid ZIP archive") from exc
 
 
+def expected_ai_text_library(reader: SiteReader, items: list[dict]) -> bytes:
+    lines = [
+        "SherpaMD AI-readable library",
+        f"Entries: {len(items)} public Sherpas",
+        "GitHub Markdown is the source of truth.",
+        "Choose one Sherpa by Stable ID for the requested outcome. Do not execute every handoff automatically.",
+        "Preserve each lifecycle, confidentiality, and verification label exactly as written.",
+        "",
+    ]
+    for item in items:
+        handoff = reader.read(item["ai_handoff_url"].lstrip("/")).decode("utf-8")
+        lines.extend(
+            (
+                f'===== BEGIN SHERPA {item["key"]} =====',
+                handoff.rstrip("\n"),
+                f'===== END SHERPA {item["key"]} =====',
+                "",
+            )
+        )
+    return "\n".join(lines).encode("utf-8")
+
+
 def verify_site_archive(data: bytes, expected_files: set[str]) -> None:
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as archive:
@@ -416,6 +446,8 @@ def main() -> int:
 
     verify_archive(reader.read("all-sherpas.zip"), items, source_paths)
     verify_handoff_archive(reader.read("all-ai-handoffs.zip"), items)
+    if reader.read("all-sherpas-for-ai.txt") != expected_ai_text_library(reader, items):
+        raise VerificationError("AI-readable Sherpa library does not match its handoffs")
     verify_site_archive(
         reader.read("sherpamd-portable-site.zip"), set(deployed_checksums)
     )
@@ -423,7 +455,7 @@ def main() -> int:
     print(f"[PASS] mirror matches canonical source commit {commit}")
     print(f"[PASS] {len(items)}/{len(items)} Sherpa identities, routes, and SHA-256 hashes")
     print(f"[PASS] {len(deployed_checksums)} generated files match canonical SHA256SUMS")
-    print("[PASS] required assets and all three download archives are complete")
+    print("[PASS] required assets, AI text library, and all three download archives are complete")
     return 0
 
 
