@@ -8,6 +8,7 @@ Use each lifecycle and verification label exactly as written. A verified Sherpa 
 
 - [All Sherpa Markdown files](/all-sherpas.zip): Exact public .sherpa.md source files with repository paths preserved.
 - [All AI handoffs](/all-ai-handoffs.zip): One generated, independently checksummed AI handoff per public Sherpa.
+- [AI-readable Sherpa library](/all-sherpas-for-ai.txt): Every public AI handoff in one directly uploadable text file.
 - [Complete rehostable site](/sherpamd-portable-site.zip): The complete static catalog, downloads, policies, and rehosting tools.
 - [SHA-256 checksums](/SHA256SUMS): SHA-256 inventory for the generated public files.
 
