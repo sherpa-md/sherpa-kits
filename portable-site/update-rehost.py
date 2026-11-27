@@ -41,6 +41,7 @@ REQUIRED_FILES = (
     "assets/site.js",
     "all-sherpas.zip",
     "all-ai-handoffs.zip",
+    "all-sherpas-for-ai.txt",
 )
 EXPECTED_DOWNLOADS = [
     {
@@ -56,6 +57,13 @@ EXPECTED_DOWNLOADS = [
         "url": "/all-ai-handoffs.zip",
         "media_type": "application/zip",
         "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
+    },
+    {
+        "id": "ai-text-library",
+        "title": "AI-readable Sherpa library",
+        "url": "/all-sherpas-for-ai.txt",
+        "media_type": "text/plain",
+        "contents": "Every public AI handoff in one directly uploadable text file.",
     },
     {
         "id": "portable-site",
@@ -76,6 +84,30 @@ EXPECTED_DOWNLOADS = [
 
 class UpdateError(RuntimeError):
     """Raised when a candidate snapshot is unsafe or invalid."""
+
+
+def expected_ai_text_library(root: Path, items: list[dict]) -> bytes:
+    lines = [
+        "SherpaMD AI-readable library",
+        f"Entries: {len(items)} public Sherpas",
+        "GitHub Markdown is the source of truth.",
+        "Choose one Sherpa by Stable ID for the requested outcome. Do not execute every handoff automatically.",
+        "Preserve each lifecycle, confidentiality, and verification label exactly as written.",
+        "",
+    ]
+    for item in items:
+        handoff = local_path(root, item["ai_handoff_url"], "ai_handoff_url").read_text(
+            encoding="utf-8"
+        )
+        lines.extend(
+            (
+                f'===== BEGIN SHERPA {item["key"]} =====',
+                handoff.rstrip("\n"),
+                f'===== END SHERPA {item["key"]} =====',
+                "",
+            )
+        )
+    return "\n".join(lines).encode("utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -303,6 +335,10 @@ def validate_payload(root: Path, expected_commit: str | None = None) -> str:
                     raise UpdateError(f"all-ai-handoffs.zip mismatch for {item['source_path']}")
     except zipfile.BadZipFile as exc:
         raise UpdateError("all-ai-handoffs.zip is invalid") from exc
+    if (root / "all-sherpas-for-ai.txt").read_bytes() != expected_ai_text_library(
+        root, items
+    ):
+        raise UpdateError("AI-readable Sherpa library does not match its handoffs")
     return commit
 
 

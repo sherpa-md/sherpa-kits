@@ -36,6 +36,13 @@ EXPECTED_DOWNLOADS = [
         "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
     },
     {
+        "id": "ai-text-library",
+        "title": "AI-readable Sherpa library",
+        "url": "/all-sherpas-for-ai.txt",
+        "media_type": "text/plain",
+        "contents": "Every public AI handoff in one directly uploadable text file.",
+    },
+    {
         "id": "portable-site",
         "title": "Complete rehostable site",
         "url": "/sherpamd-portable-site.zip",
@@ -99,6 +106,28 @@ def expected_ai_handoff(item: dict, source_text: str) -> str:
             "",
         )
     )
+
+
+def expected_ai_text_library(items: list[dict]) -> str:
+    lines = [
+        "SherpaMD AI-readable library",
+        f"Entries: {len(items)} public Sherpas",
+        "GitHub Markdown is the source of truth.",
+        "Choose one Sherpa by Stable ID for the requested outcome. Do not execute every handoff automatically.",
+        "Preserve each lifecycle, confidentiality, and verification label exactly as written.",
+        "",
+    ]
+    for item in items:
+        source_text = (ROOT / item["source_path"]).read_text(encoding="utf-8")
+        lines.extend(
+            (
+                f'===== BEGIN SHERPA {item["key"]} =====',
+                expected_ai_handoff(item, source_text).rstrip("\n"),
+                f'===== END SHERPA {item["key"]} =====',
+                "",
+            )
+        )
+    return "\n".join(lines)
 
 
 def main() -> None:
@@ -297,6 +326,10 @@ def main() -> None:
         fail("catalog page must link to private security reporting guidance")
     if '<a class="button" href="all-ai-handoffs.zip" download>Download AI handoffs</a>' not in catalog_html:
         fail("catalog page must offer the complete AI handoff bundle")
+    if '<a class="button" href="all-sherpas-for-ai.txt" download>Download one AI-ready file</a>' not in catalog_html:
+        fail("catalog page must offer the directly uploadable AI text library")
+    if '<a href="all-sherpas-for-ai.txt">AI-ready library</a>' not in catalog_html:
+        fail("catalog footer must expose the AI-readable text library")
     if '<noscript><section class="no-script-panel" aria-labelledby="no-script-title">' not in catalog_html:
         fail("catalog page must provide a static no-JavaScript fallback")
     if catalog_html.count('class="no-script-item"') != len(items):
@@ -484,6 +517,12 @@ def main() -> None:
             handoff_name = item["ai_handoff_url"].lstrip("/")
             if archive.read(handoff_name) != (DIST / handoff_name).read_bytes():
                 fail(f"all-ai-handoffs.zip mismatch for {item['source_path']}")
+    ai_text_library = (DIST / "all-sherpas-for-ai.txt").read_text(encoding="utf-8")
+    if ai_text_library != expected_ai_text_library(items):
+        fail("AI-readable Sherpa library does not exactly match generated handoffs")
+    for item in items:
+        if ai_text_library.count(f'===== BEGIN SHERPA {item["key"]} =====') != 1:
+            fail(f"AI-readable library boundary mismatch for {item['source_path']}")
     if (DIST / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
         fail("portable site must preserve the repository license exactly")
     if (DIST / "CONTRIBUTING.md").read_bytes() != (ROOT / "CONTRIBUTING.md").read_bytes():
@@ -512,6 +551,7 @@ def main() -> None:
             "assets/site.js",
             "all-sherpas.zip",
             "all-ai-handoffs.zip",
+            "all-sherpas-for-ai.txt",
         )
         for name in required:
             if name not in names:
@@ -883,6 +923,85 @@ def main() -> None:
         )
         if stale.returncode == 0 or "expected source commit" not in stale.stderr:
             fail("rehost verifier did not reject an unexpected source commit")
+
+        invalid_ai_library = Path(temporary) / "invalid-ai-library"
+        shutil.copytree(DIST, invalid_ai_library)
+        invalid_ai_library_path = invalid_ai_library / "all-sherpas-for-ai.txt"
+        altered_ai_library = invalid_ai_library_path.read_text(encoding="utf-8").replace(
+            "Do not execute every handoff automatically.",
+            "Execute every handoff automatically.",
+            1,
+        )
+        invalid_ai_library_path.write_text(altered_ai_library, encoding="utf-8")
+        invalid_ai_checksums_path = invalid_ai_library / "SHA256SUMS"
+        invalid_ai_checksums = invalid_ai_checksums_path.read_text(
+            encoding="utf-8"
+        ).splitlines()
+        invalid_ai_library_hash = hashlib.sha256(
+            invalid_ai_library_path.read_bytes()
+        ).hexdigest()
+        invalid_ai_checksums_path.write_text(
+            "\n".join(
+                f"{invalid_ai_library_hash}  all-sherpas-for-ai.txt"
+                if line.endswith("  all-sherpas-for-ai.txt")
+                else line
+                for line in invalid_ai_checksums
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        invalid_ai_check = subprocess.run(
+            [
+                sys.executable,
+                str(verifier),
+                "--site-dir",
+                str(invalid_ai_library),
+                "--canonical-index",
+                str(invalid_ai_library / "index.json"),
+                "--canonical-checksums",
+                str(invalid_ai_checksums_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_ai_check.returncode == 0
+            or "AI-readable Sherpa library does not match its handoffs"
+            not in invalid_ai_check.stderr
+        ):
+            fail("rehost verifier did not reject an altered AI-readable library")
+
+        invalid_ai_archive = Path(temporary) / "invalid-ai-library.zip"
+        with zipfile.ZipFile(archive) as source_archive, zipfile.ZipFile(
+            invalid_ai_archive, "w", zipfile.ZIP_DEFLATED
+        ) as changed_archive:
+            for name in source_archive.namelist():
+                if name == "all-sherpas-for-ai.txt":
+                    data = invalid_ai_library_path.read_bytes()
+                elif name == "SHA256SUMS":
+                    data = invalid_ai_checksums_path.read_bytes()
+                else:
+                    data = source_archive.read(name)
+                changed_archive.writestr(name, data)
+        invalid_ai_update = subprocess.run(
+            [
+                sys.executable,
+                str(updater),
+                "--archive",
+                str(invalid_ai_archive),
+                "--root",
+                str(mirror),
+                "--dry-run",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if (
+            invalid_ai_update.returncode == 0
+            or "AI-readable Sherpa library does not match its handoffs"
+            not in invalid_ai_update.stderr
+        ):
+            fail("rehost updater did not reject an altered AI-readable library")
 
         private_manifest = Path(temporary) / "private-manifest"
         shutil.copytree(DIST, private_manifest)
@@ -1330,6 +1449,7 @@ def main() -> None:
     print("[PASS] Use with AI has confirmed modern and static-host clipboard paths")
     print("[PASS] AI handoffs include source, identity, version, hash, and verification context")
     print("[PASS] every Sherpa has a checksummed, no-JavaScript downloadable AI handoff")
+    print("[PASS] one checksummed AI-readable text library contains all bounded handoffs")
     print("[PASS] public confidentiality is explicit and non-public manifests fail closed")
     print("[PASS] exact Markdown and AI-handoff byte counts are published and fail closed")
     print("[PASS] detail routes expose copyable SHA-256 integrity metadata without changing verification")

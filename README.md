@@ -10,6 +10,7 @@ Sherpa files are descriptive Markdown handoffs that a person can read and an AI 
 
 - **[Download every Sherpa Markdown file](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-sherpas.zip)** — the latest validated `.sherpa.md` files in one ZIP.
 - **[Download every AI handoff](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-ai-handoffs.zip)** — one checksummed, execution-ready text handoff per public Sherpa, with stable paths preserved.
+- **[Upload one AI-ready text library](https://github.com/sherpa-md/sherpa-kits/raw/refs/heads/portable-site/all-sherpas-for-ai.txt)** — every public handoff in one bounded text file for agents that cannot unpack ZIP archives.
 - **[Download the complete rehostable site](https://github.com/sherpa-md/sherpa-kits/archive/refs/heads/portable-site.zip)** — the catalog, detail pages, raw files, search data, contribution and security guidance, archives, updater, verifier, MIT license, and whole-site SHA-256 checksums.
 - **[Read the rehosting guide](https://github.com/sherpa-md/sherpa-kits/blob/portable-site/REHOSTING.md)** — preview locally, publish to any static host, verify the mirror, and update it safely.
 

@@ -51,6 +51,13 @@ BULK_DOWNLOADS = [
         "contents": "One generated, independently checksummed AI handoff per public Sherpa.",
     },
     {
+        "id": "ai-text-library",
+        "title": "AI-readable Sherpa library",
+        "url": "/all-sherpas-for-ai.txt",
+        "media_type": "text/plain",
+        "contents": "Every public AI handoff in one directly uploadable text file.",
+    },
+    {
         "id": "portable-site",
         "title": "Complete rehostable site",
         "url": "/sherpamd-portable-site.zip",
@@ -306,6 +313,28 @@ def ai_handoff(record: dict) -> str:
             "",
         )
     )
+
+
+def ai_text_library(records: list[dict]) -> str:
+    """Return one uploadable reference file with explicit, stable entry boundaries."""
+    lines = [
+        "SherpaMD AI-readable library",
+        f"Entries: {len(records)} public Sherpas",
+        "GitHub Markdown is the source of truth.",
+        "Choose one Sherpa by Stable ID for the requested outcome. Do not execute every handoff automatically.",
+        "Preserve each lifecycle, confidentiality, and verification label exactly as written.",
+        "",
+    ]
+    for record in records:
+        lines.extend(
+            (
+                f'===== BEGIN SHERPA {record["key"]} =====',
+                ai_handoff(record).rstrip("\n"),
+                f'===== END SHERPA {record["key"]} =====',
+                "",
+            )
+        )
+    return "\n".join(lines)
 
 
 def discover_projects() -> list[dict]:
@@ -607,6 +636,7 @@ def shell(
     <div class="bundle-actions" aria-label="Download options">
       <a class="button button--primary" href="all-sherpas.zip" download>Download all Sherpas</a>
       <a class="button" href="all-ai-handoffs.zip" download>Download AI handoffs</a>
+      <a class="button" href="all-sherpas-for-ai.txt" download>Download one AI-ready file</a>
       <a class="button" href="sherpamd-portable-site.zip" download>Download this site</a>
       <a class="button" href="{SHERPA_SUGGEST_URL}">Suggest a Sherpa or correction</a>
     </div>
@@ -677,7 +707,7 @@ def shell(
     <button id="reader-stop" class="button" type="button">Stop</button>
   </div>
 </aside>
-<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/all-ai-handoffs.zip')}">AI handoffs</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/CONTRIBUTING.md')}">contribute</a><a href="{relative_from(route, '/SECURITY.md')}">report security privately</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
+<footer><div><strong>SherpaMD</strong><span>Readable by people. Followable by AI.</span></div><div><a href="{relative_from(route, '/index.json')}">index.json</a><a href="{relative_from(route, '/llms.txt')}">llms.txt</a><a href="{relative_from(route, '/all-sherpas-for-ai.txt')}">AI-ready library</a><a href="{relative_from(route, '/all-ai-handoffs.zip')}">AI handoffs</a><a href="{relative_from(route, '/ratings.json')}">ratings snapshot</a><a href="{relative_from(route, '/CONTRIBUTING.md')}">contribute</a><a href="{relative_from(route, '/SECURITY.md')}">report security privately</a><a href="{relative_from(route, '/SHA256SUMS')}">checksums</a><a href="{relative_from(route, '/LICENSE')}">MIT license</a></div></footer>
 <script id="sherpa-data" type="application/json">{safe_json(payload)}</script>
 <script>window.SHERPA_DETAIL_KEY={safe_json(detail_key)};window.SHERPA_ASSET_PREFIX={safe_json(relative_from(route, '/'))};</script>
 <script src="{relative_from(route, '/assets/site.js')}" defer></script>
@@ -826,6 +856,10 @@ def build(output: Path) -> list[dict]:
         for record in records:
             handoff_path = record["ai_handoff_url"].lstrip("/")
             archive.write(output / handoff_path, handoff_path)
+
+    (output / "all-sherpas-for-ai.txt").write_text(
+        ai_text_library(records), encoding="utf-8"
+    )
 
     write_checksums(output)
 
